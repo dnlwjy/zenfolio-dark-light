@@ -32,6 +32,10 @@ const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
     featured,
 }`
 
+const TITLECARD = "flex flex-col gap-8 z-10 flex-1 min-w-80"
+const IMAGE = "flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square lg:h-60 h-50"
+const LINKBUTTONS = "flex flex-wrap items-center sm:gap-x-5 gap-x-4 gap-y-2"
+
 export default async function Builds() {
     const builds = await client.fetch(query)
     const featured = builds.find((e: Shop) => e.featured) as Shop
@@ -42,8 +46,8 @@ export default async function Builds() {
             <section className="md:flex-row flex-col md:items-start items-center lg:gap-24 md:gap-16 gap-0 max-w-520 md:p-0 sm:px-12 px-6">
 
                 {/* NON FEATURED */}
-                <MotionDiv styles="flex flex-col flex-1 gap-0 max-w-240 w-full py-32 md:pl-32 pl-0 md:order-1 order-2">
-                    <span className="btn-text text-(--gray) md:flex hidden">{description}</span>
+                <MotionDiv styles="flex flex-col flex-1 gap-0 max-w-240 w-full lg:py-32 py-24 md:pl-32 pl-0 md:order-1 order-2">
+                    <span className="btn-text text-(--gray) w-[80%] lg:text-[14px] text-[12px]">{description}</span>
 
                     {nonFeatured.map((e) => (
                         <div key={e._id} className="flex flex-col gap-4 pb-8 sm:items-center items-start">
@@ -52,7 +56,7 @@ export default async function Builds() {
                             <div className="flex flex-wrap items-center gap-8 w-full">
 
                                 {/* IMAGE */}
-                                <div className="flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square h-60">
+                                <div className={IMAGE}>
                                     <div className="w-[80%] aspect-square relative">
                                         <Image
                                             src={urlFor(e.coverImage!).format("webp").url()}
@@ -65,21 +69,20 @@ export default async function Builds() {
                                 </div>
 
                                 {/* TITLE CARD */}
-                                <div className="flex flex-col gap-8 z-10 flex-1">
+                                <div className={TITLECARD}>
                                     <div className="flex flex-col gap-4">
                                         <h3 className="text-start">{e.title}</h3>
-                                        <p className="line-clamp-4 lg:text-[18px] text-[16px] leading-[160%]">{e.description}</p>
+                                        <p className="line-clamp-3">{e.description}</p>
                                     </div>
 
-                                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                                        <LinkButton title="Preview" link={e.preview} styles="text-[14px]" />
+                                    <div className={LINKBUTTONS}>
+                                        <LinkButton title="Preview" link={e.preview} />
                                         {e.marketplaceURL && (
                                             <>
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                                 <LinkButton
-                                                    title="View on Marketplace"
+                                                    title="View Listing"
                                                     link={e.marketplaceURL}
-                                                    styles="text-[14px]"
                                                 />
                                             </>
                                         )}
@@ -96,12 +99,12 @@ export default async function Builds() {
 
                             <div className="flex flex-wrap items-center gap-8 w-full">
                                 {/* IMAGE SKELETON */}
-                                <div className="flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square h-60">
+                                <div className={IMAGE}>
                                     <div className="w-[80%] aspect-square bg-(--divider) rounded-sm" />
                                 </div>
 
                                 {/* TITLE CARD SKELETON */}
-                                <div className="flex flex-col gap-8 z-10 flex-1">
+                                <div className={TITLECARD}>
                                     <div className="flex flex-col gap-4">
                                         <div className="h-7 bg-(--divider) rounded-sm w-3/4" />
                                         <div className="flex flex-col gap-2">
@@ -121,28 +124,28 @@ export default async function Builds() {
                 </MotionDiv>
 
                 {/* FEATURED CARD */}
-                <MotionDiv variant="right" del={0.5} styles="flex flex-col gap-8 flex-1 w-full lg:max-w-none max-w-[760px] md:pt-28 md:pb-12 md:pr-32 pr-0 pt-16 pb-0 md:h-screen md:sticky top-0 md:order-2 order-1">
-                    <span className="btn-text text-(--gray) md:hidden flex">{description}</span>
+                <MotionDiv variant="right" del={0.5} styles="flex flex-col gap-8 flex-1 w-full lg:max-w-none max-w-[680px] md:pt-24 lg:pb-16 md:pb-6 md:pr-32 pr-0 md:h-screen md:sticky top-0 md:order-2 order-1">
+
                     <div className="h-full w-full justify-center items-center border border-(--divider) bg-(--white)/7 flex flex-col">
                         <ItemZoom
                             styles="w-full h-full"
                             image={featured.coverImage ? urlFor(featured.coverImage).format("webp").url() : ""}
                             alt={featured.title ?? ""}
                         />
-                        <div className="flex flex-col gap-8 z-10 w-full lg:p-12 md:p-9 sm:p-12 p-7">
+                        <div className="flex flex-col gap-8 z-10 w-full lg:p-12 md:p-9 sm:p-12 p-5">
                             <div className="flex flex-col gap-4">
                                 <div className="flex gap-4 items-center h-1.25 w-full justify-between"><Divider /><span className="tag">{featured.year}</span></div>
                                 <h2 className="text-start">{featured.title}</h2>
-                                <p>{featured.description}</p>
+                                <p className="line-clamp-4">{featured.description}</p>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                            <div className={LINKBUTTONS}>
                                 <LinkButton title="Preview" link={featured.preview} />
                                 {featured.marketplaceURL && (
                                     <>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                         <LinkButton
-                                            title="View on Marketplace"
+                                            title="View Listing"
                                             link={featured.marketplaceURL}
                                         />
                                     </>

@@ -1,18 +1,21 @@
-import type { NextConfig } from "next";
-import path from "path";
+import type { NextConfig } from "next"
+import path from "path"
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    root: path.resolve(__dirname),
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-      },
-    ],
-  },
-};
+    allowedDevOrigins: ["192.168.0.136"],
 
-export default nextConfig;
+    turbopack: {
+        root: path.resolve(__dirname),
+    },
+
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "cdn.sanity.io",
+            },
+        ],
+    },
+}
+
+export default nextConfig

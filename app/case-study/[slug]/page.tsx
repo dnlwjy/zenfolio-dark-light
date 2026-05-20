@@ -9,6 +9,7 @@ import { listStyles } from '../page'
 import { generateSEO } from '@/lib/seo'
 import { urlFor } from '../../../sanity/lib/image'
 import type { Projects } from '@/types/sanity.types'
+import Divider from '@/components/Divider'
 
 // 1. Rendering config: switched to SSG - better performance and SEO, but has to redeploy every time there's data change
 export const dynamic = 'force-static'
@@ -97,7 +98,9 @@ export default async function CaseStudyDetail({ params }: { params: Promise<{ sl
                 </MotionDiv>
             </section>
 
-            <section id="more-case-studies" className="sm">
+            <Divider styles="pt-40"/>
+
+            <section id="more-case-studies" className="sm pt-40">
                 <div className={listStyles}>
                     {moreCaseStudies.map((e: Projects) => (
                         <TitleCard
