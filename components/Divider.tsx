@@ -1,7 +1,6 @@
 interface DividerProps {
     variant?: keyof typeof variantDivider,
     title?: number | string
-    titleStyles?: string
     styles?: string
 }
 
@@ -19,14 +18,13 @@ const variantDivider = {
 const Divider = ({
     variant = "left",
     title,
-    titleStyles = "tag",
     styles = ""
 }: DividerProps) => (
-    <div className={`flex ${title ? "justify-between" : variant === "left" ? "justify-start" : "justify-end"} w-18 items-end border-b border-b-(--divider) ${styles}`}>
+    <div className={`flex ${title ? "justify-between" : variant === "left" ? "justify-start" : "justify-end"} min-w-18 w-fit items-end border-b border-b-(--divider) gap-4 ${styles}`}>
         <svg className={variantDivider[variant].icon} width="42" height="5" viewBox="0 0 42 5" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M42 5H0L6.26866 0H35.7313L42 5Z" fill="var(--divider)" />
         </svg>
-        {title && <span className={`${titleStyles} text-(--gray) pb-2 ${variantDivider[variant].title}`}>{title}</span>}
+        {title && <span className={`tag text-(--gray) pb-2 ${variantDivider[variant].title}`}>{title}</span>}
     </div>
 )
 

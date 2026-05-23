@@ -15,34 +15,17 @@ const meta: Meta<typeof SubInfo> = {
 export default meta;
 type Story = StoryObj<typeof SubInfo>;
 
-export const TitleOnly: Story = {
-  args: {
-    title: "Category",
-  },
-};
-
-export const WithSubtitle: Story = {
-  args: {
-    title: "Client",
-    subtitle: "Acme Corporation",
-  },
-};
-
-export const WithExternalLink: Story = {
+export const AllVariants: Story = {
   args: {
     title: "Website",
-    subtitle: "https://github.com",
+    subtitle: "https://www.danielwijaya.com/",
   },
-};
-
-export const AllVariants = {
-  render: () => (
-    <div className="flex flex-wrap gap-8 p-8">
-      <SubInfo title="Category" subtitle="Branding" />
-      <SubInfo title="Year" subtitle="2024" />
-      <SubInfo title="Client" subtitle="Acme Corp" />
-      <SubInfo title="Website" subtitle="https://github.com" />
-      <SubInfo title="Role" />
+  argTypes: {
+    styles: { control: false },
+  },
+  render: (args) => (
+    <div className="flex flex-col gap-8 p-8 w-full max-w-125">
+      <SubInfo {...args} />
     </div>
   ),
 };

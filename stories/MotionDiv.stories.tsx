@@ -28,7 +28,7 @@ const SampleContent = () => (
   </div>
 );
 
-export const Default: Story = {
+export const Left: Story = {
   args: {
     variant: "left",
     del: 0.3,
@@ -36,21 +36,21 @@ export const Default: Story = {
   },
 };
 
-export const FromUp: Story = {
+export const Up: Story = {
   args: {
     variant: "up",
     children: <SampleContent />,
   },
 };
 
-export const FromDown: Story = {
+export const Down: Story = {
   args: {
     variant: "down",
     children: <SampleContent />,
   },
 };
 
-export const FromRight: Story = {
+export const Right: Story = {
   args: {
     variant: "right",
     children: <SampleContent />,

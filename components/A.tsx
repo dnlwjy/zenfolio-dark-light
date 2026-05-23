@@ -63,13 +63,14 @@ const A = ({
         </a>
       );
     };
+  }
 
-    return (
+  // SAFETY NET
+  return (
       <span className={wrapperStyles}>
-        {CONTENT}
+        {title}
       </span>
     )
-  }
 }
 
 export default A;

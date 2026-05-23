@@ -63,7 +63,7 @@ section {
   @apply flex px-5 py-16 sm:px-12 sm:py-32 md:p-32 gap-8 items-center justify-center w-full;
 }
 section.sm {
-  @apply flex-col pt-50 gap-24 max-w-400;
+  @apply flex-col sm:pt-50 pt-32 gap-24 max-w-400;
 }
 
 h1, h2, h3 {

@@ -4,6 +4,7 @@ import AboutImage from './AboutImage';
 import { TOOLS_AND_STACKS, EXPERIENCE } from './siteContent';
 import { LOGOS } from './Logos';
 import { generateSEO } from '@/lib/seo';
+import Divider from '../../components/Divider';
 
 export const metadata = generateSEO({
     title: "About | Daniel Wijaya",
@@ -30,7 +31,7 @@ export default function About() {
 
                 <MotionDiv variant="up" del={0.5}><AboutImage /></MotionDiv>
 
-                <MotionDiv variant="up" del={0.5} styles="flex flex-wrap gap-40 w-full justify-center">
+                <MotionDiv variant="up" del={0.5} styles="flex flex-wrap gap-x-40 gap-y-16 w-full justify-center">
                     {TOOLS_AND_STACKS.map((pass) => (
                         <div key={pass.name} className="flex flex-col gap-4 items-center w-100">
                             <span className="btn-text text-(--gray)">{pass.name}</span>
@@ -48,7 +49,7 @@ export default function About() {
             </section>
 
             <section id="experience" className="sm py-0">
-                <hr className="border-(--divider) w-full"/>
+                <Divider styles="w-full" />
                 <MotionDiv variant="up" del={0.5} styles={SUPPORT}>
                     <div className="flex flex-col gap-4 max-w-280 items-center">
                         <span className="btn-text text-(--gray)">Experience</span>
@@ -71,7 +72,7 @@ export default function About() {
             </section>
 
             <section id="clients" className="sm pt-32">
-                <hr className="border-(--divider) w-full"/>
+                <Divider styles="w-full" />
                 <MotionDiv variant="up" del={0.5} styles={SUPPORT}>
                     <div className="flex flex-col gap-4 max-w-280 items-center">
                         <span className="btn-text text-(--gray)">Clients</span>

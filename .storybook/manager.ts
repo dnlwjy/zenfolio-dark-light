@@ -5,7 +5,7 @@ addons.setConfig({
   theme: create({
     base: "dark",
     brandTitle: "My Portfolio",
-    brandImage: "/storybook-static/dw-logo.svg",
+    brandImage: "./favicon.png",
     brandTarget: "_self",
   }),
 });

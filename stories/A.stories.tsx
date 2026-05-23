@@ -3,60 +3,39 @@ import type { Meta, StoryObj } from "@storybook/react";
 import A from "../components/A";
 
 const meta: Meta<typeof A> = {
-  title: "Components/A",
+  title: "Components/Text Link",
   component: A,
   argTypes: {
     title: { control: "text" },
     link: { control: "text" },
-    styles: { control: "text" },
+    styles: { control: false },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof A>;
 
-export const NoLink: Story = {
+export const Default: Story = {
   args: {
-    title: "Plain Text (no link)",
+    title: "Visit my website",
+    link: "https://danielwijaya.com",
   },
-};
-
-export const InternalLink: Story = {
-  args: {
-    title: "Go to About",
-    link: "/about",
-  },
-};
-
-export const ExternalLink: Story = {
-  args: {
-    title: "Visit GitHub",
-    link: "https://github.com",
-  },
-};
-
-export const MailtoLink: Story = {
-  args: {
-    title: "Send Email",
-    link: "mailto:hello@example.com",
-  },
-};
-
-export const TelLink: Story = {
-  args: {
-    title: "Call Us",
-    link: "tel:+1234567890",
-  },
-};
-
-export const AllVariants = {
-  render: () => (
-    <div className="flex flex-col gap-6 p-8">
-      <A title="Plain Text (no link)" />
-      <A title="Internal Link → /about" link="/about" />
-      <A title="External Link → GitHub" link="https://github.com" />
-      <A title="Email → hello@example.com" link="mailto:hello@example.com" />
-      <A title="Phone → +1234567890" link="tel:+1234567890" />
+  render: (args) => (
+    <div className="flex flex-wrap justify-center gap-8 p-8">
+      <A {...args} />
     </div>
+  ),
+};
+
+export const DummyParagraph: Story = {
+  args: {
+    title: "Storybook",
+    link: "https://storybook.js.org",
+  },
+  render: (args) => (
+    <p className="p-8 max-w-160">
+      This is a design system consisting of reusable components, design tokens, and documentation to improve consistency.
+      By documenting everything in <A {...args} />, everything becomes visible to the entire team making it easier to spot any flaws or to suggest improvements without technical knowledge.
+    </p>
   ),
 };

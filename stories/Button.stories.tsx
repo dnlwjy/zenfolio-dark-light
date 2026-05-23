@@ -1,26 +1,12 @@
 import "../app/globals.css";
-import type { Meta } from '@storybook/react'
+import { useState } from "react";
 import Button from '../components/Button'
 import { Home } from '../components/IconLibrary'
+import ContactForm from '../components/ContactForm'
 
-const meta: Meta<typeof Button> = {
-  title: 'Components/Button',
-  component: Button,
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['primary', 'secondary'],
-    },
-    additionalHoverLogic: {
-      control: 'boolean',
-    },
-    click: { action: 'clicked' },
-  },
-}
+export default { title: "Components/Button" };
 
-export default meta
-
-export const variantsButton = {
+export const AllVariants = {
   render: (args: any) => (
     <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
       <Button title="Primary" variant="primary" {...args} />
@@ -30,4 +16,42 @@ export const variantsButton = {
     </div>
   ),
   args: {},
+};
+
+export const EventTrigger = {
+  render: (args: { defaultTitle: string; activeTitle: string }) => {
+    const [active, setActive] = useState(false);
+    return (
+      <div className="flex flex-col items-center gap-6 p-8">
+
+        <span className="tag text-(--gray)">
+          {active ? "An 'event' is triggered!" : "Click me..."}
+        </span>
+
+        <Button
+          title={active ? args.activeTitle : args.defaultTitle}
+          variant="primary"
+          additionalHoverLogic={active}
+          click={() => setActive((v) => !v)}
+        />
+
+      </div>
+    );
+  },
+  argTypes: {
+    defaultTitle: { control: "text", name: "Default Title" },
+    activeTitle: { control: "text", name: "Active Title" },
+  },
+  args: {
+    defaultTitle: "Send Message",
+    activeTitle: "Sending...",
+  },
+};
+
+export const EventTriggerExample = {
+  render: () => (
+    <div className="w-full max-w-xl p-8">
+      <ContactForm />
+    </div>
+  ),
 };
