@@ -17,7 +17,7 @@ const config: StorybookConfig = {
     config.define = {
       ...config.define,
       'process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY': JSON.stringify(
-        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? 'storybook-placeholder'
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ''
       ),
     };
     return config;

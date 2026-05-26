@@ -29,13 +29,13 @@ export const Default: Story = {
 
 export const DummyParagraph: Story = {
   args: {
-    title: "Storybook",
-    link: "https://storybook.js.org",
+    title: "my website",
+    link: "https://danielwijaya.com",
   },
   render: (args) => (
     <p className="p-8 max-w-160">
-      This is a design system consisting of reusable components, design tokens, and documentation to improve consistency.
-      By documenting everything in <A {...args} />, everything becomes visible to the entire team making it easier to spot any flaws or to suggest improvements without technical knowledge.
+      This design system provides a collection of reusable components, design tokens, and documentation that help maintain consistency across <A {...args} />.
+      This way, everything becomes visible to the entire team making it easier to spot any flaws or to suggest improvements without technical knowledge.
     </p>
   ),
 };

@@ -6,8 +6,8 @@ import { contactFormSchema, type ContactApiResponse } from '@/lib/contact/schema
 import { envServer } from '@/lib/env.server'
 
 const resend = new Resend(envServer.RESEND_API_KEY)
-const OWNER_SUBJECT_PREFIX = '[Portfolio] New Contact Message from'
-const VISITOR_SUBJECT = '[Portfolio] Thanks for reaching out to Daniel Wijaya'
+const OWNER_SUBJECT_PREFIX = 'New Contact Message from'
+const VISITOR_SUBJECT = 'Thanks for reaching out to Daniel'
 
 function logEvent(level: 'info' | 'error', event: string, context: Record<string, unknown>) {
   const payload = JSON.stringify({ level, event, ...context })

@@ -22,7 +22,17 @@ const CIRCLE_CENTER_Y = 19;
 const CIRCLE_RADIUS = 5;
 const CIRCLE_PATH: string = toCircle(MOON_PATH, CIRCLE_CENTER_X, CIRCLE_CENTER_Y, CIRCLE_RADIUS)(1);
 
-const ToggleTheme = ({ styles = "" }: { styles?: string }) => {
+const ToggleTheme = ({
+    styles = "",
+    size = 38,
+    strokeWidth = 1,
+    filled = false,
+}: {
+    styles?: string;
+    size?: number;
+    strokeWidth?: number;
+    filled?: boolean;
+}) => {
     const { theme, setTheme } = useTheme()
     const isDark = theme === "dark"
     const progress = useMotionValue(isDark ? 1 : 0)
@@ -84,7 +94,8 @@ const ToggleTheme = ({ styles = "" }: { styles?: string }) => {
     return (
         <button
             onClick={handleToggle}
-            className={`group w-10 h-10 flex items-center justify-center cursor-pointer ${styles}`}
+            style={{ width: size, height: size }}
+            className={`group flex items-center justify-center cursor-pointer ${styles}`}
             aria-label={ariaLabel}
             aria-pressed={!isDark}
             role="switch"
@@ -93,21 +104,21 @@ const ToggleTheme = ({ styles = "" }: { styles?: string }) => {
             <svg
                 className="z-10"
                 aria-hidden="true"
-                width="38" height="38" viewBox="0 0 38 38"
+                width={size} height={size} viewBox="0 0 38 38"
                 fill="none"
             >
                 {/* Morphing path: crescent moon → full circle */}
                 <m.path
                     d={pathD}
-                    fill="none"
+                    fill={filled ? "var(--gray)" : "none"}
                     stroke="var(--gray)"
-                    strokeWidth="1"
+                    strokeWidth={strokeWidth}
                     strokeLinejoin="round"
                     style={{ originX: 0.5, originY: 0.5 }}
                 />
 
                 {/* Sun rays */}
-                <g stroke="var(--gray)" strokeWidth="1" strokeLinecap="round">
+                <g stroke="var(--gray)" strokeWidth={strokeWidth} strokeLinecap="round">
                     {RAYS.map(({ x1, y1, x2, y2, hide }, i) => (
                         <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
                             className={`transition-all duration-500 ${isDark ? "opacity-100 translate-x-0 translate-y-0 delay-400" : hide}`} />

@@ -5,7 +5,7 @@ export default { title: "Components/ContactForm" };
 
 export const Default = {
   render: () => (
-    <div className="w-full max-w-xl p-8">
+    <div className="w-full max-w-200 p-8">
       <ContactForm />
     </div>
   ),

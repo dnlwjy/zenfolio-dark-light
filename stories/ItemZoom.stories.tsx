@@ -1,10 +1,9 @@
 import "../app/globals.css";
 import type { Meta, StoryObj } from "@storybook/react";
 import ItemZoom from "../components/ItemZoom";
-import { IMAGE } from "../app/builds/page";
 
 const meta: Meta<typeof ItemZoom> = {
-  title: "Components/ItemZoom",
+  title: "Components/ImagePreview",
   component: ItemZoom,
   argTypes: {
     image: { control: "text" },
@@ -22,7 +21,7 @@ type Story = StoryObj<typeof ItemZoom>;
 export const Default: Story = {
   decorators: [
     (Story) => (
-      <div className={`relative ${IMAGE}`}>
+      <div className="relative flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square lg:h-120 h-100">
         <Story />
       </div>
     ),

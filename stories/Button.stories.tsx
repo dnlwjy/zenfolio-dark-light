@@ -24,9 +24,9 @@ export const EventTrigger = {
     return (
       <div className="flex flex-col items-center gap-6 p-8">
 
-        <span className="tag text-(--gray)">
+        <p className="text-center">
           {active ? "An 'event' is triggered!" : "Click me..."}
-        </span>
+        </p>
 
         <Button
           title={active ? args.activeTitle : args.defaultTitle}
@@ -46,12 +46,4 @@ export const EventTrigger = {
     defaultTitle: "Send Message",
     activeTitle: "Sending...",
   },
-};
-
-export const EventTriggerExample = {
-  render: () => (
-    <div className="w-full max-w-xl p-8">
-      <ContactForm />
-    </div>
-  ),
 };

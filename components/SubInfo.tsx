@@ -13,6 +13,8 @@ const SubInfo = ({
 }: SubInfoProps) => {
     const isExternal = typeof subtitle === "string" && (subtitle.startsWith('http://') || subtitle.startsWith('https://') || subtitle.startsWith('//'));
 
+    if (!subtitle) return null;
+
     return (
         <dl className={`flex flex-col gap-2 sm:items-start items-center flex-1 border-b border-(--divider) pb-6 ${styles}`}>
 

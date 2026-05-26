@@ -8,7 +8,7 @@ export const metadata = generateSEO({
     url: "/contact",
 })
 
-export default async function Contact() {
+export default function Contact() {
 
     return (
         <main>

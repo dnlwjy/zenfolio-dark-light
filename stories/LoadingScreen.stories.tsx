@@ -45,7 +45,7 @@ export const PreloadingVideo: Story = {
         <video src="/cs1.webm" autoPlay loop muted playsInline className="w-full max-w-300 rounded" />
         <div className="flex flex-col gap-2 items-center text-center max-w-120">
           <span className="tag text-(--white)">This video was preloaded</span>
-          <p className="text-[16px] leading-[160%]">The video was preloaded during loading screen before the mounting begins.</p>
+          <p className="text-[16px] leading-[160%]">The video was preloaded in real-time during the loading screen before the mounting begins.</p>
         </div>
       </div>
     ),

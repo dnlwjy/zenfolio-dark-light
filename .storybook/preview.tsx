@@ -15,7 +15,10 @@ const preview: Preview = {
       test: "todo",
     },
     options: {
-      storySort: { method: "alphabetical" },
+      storySort: {
+          order: ["Foundations", ["Colors", "Typography", "Headings", "Texts", "Breakpoints", "Spacings"], "Components", "*"],
+          method: "alphabetical",
+        },
     },
   },
 

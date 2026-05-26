@@ -18,17 +18,19 @@ const meta: Meta<typeof Divider> = {
 export default meta;
 type Story = StoryObj<typeof Divider>;
 
-export const Left: Story = {
+export const Default: Story = {
   args: {
     variant: "left",
   },
 };
 
-export const Right: Story = {
+export const LongDivider: Story = {
   args: {
-    variant: "right",
+    variant: "left",
+    styles: "w-full",
   },
 };
+
 
 export const WithCaption: Story = {
   args: {

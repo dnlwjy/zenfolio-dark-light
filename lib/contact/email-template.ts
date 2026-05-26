@@ -13,6 +13,9 @@ function escapeHtml(value: string): string {
     .replaceAll("'", '&#39;')
 }
 
+// ============================================================
+// EMAIL YOU RECEIVE (incoming message notification)
+// ============================================================
 export function buildOwnerEmailTemplate(args: ContactEmailTemplateArgs): {
   html: string
   text: string
@@ -56,6 +59,9 @@ ${args.message}
   }
 }
 
+// ============================================================
+// EMAIL THE SENDER RECEIVES (auto-reply)
+// ============================================================
 export function buildVisitorAutoReplyTemplate(args: Pick<ContactFormInput, 'name'>): {
   html: string
   text: string
@@ -65,18 +71,18 @@ export function buildVisitorAutoReplyTemplate(args: Pick<ContactFormInput, 'name
     html: `
       <div style="font-family:Arial,sans-serif;line-height:1.6;color:#101828;background:#f8fafc;padding:24px;">
         <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e4e7ec;border-radius:12px;padding:24px;">
-          <h2 style="margin:0 0 12px;color:#111827;">Thanks for reaching out to Daniel Wijaya</h2>
+          <h2 style="margin:0 0 12px;color:#111827;">Thanks for reaching out 👋</h2>
           <p style="margin:0 0 12px;color:#344054;">Hi ${name},</p>
-          <p style="margin:0 0 12px;color:#344054;">Your message has been received. I will reply within an estimated 24 hours.</p>
-          <p style="margin:0;color:#667085;">This is an automated email from the portfolio contact form.</p>
+          <p style="margin:0 0 12px;color:#344054;">I've received your message and will get back to you within 24 hours.</p>
+          <p style="margin:0;color:#667085;">This is an automated message. Please do not reply to this email.</p>
         </div>
       </div>
     `,
-    text: `Thanks for reaching out to Daniel Wijaya
+    text: `Thanks for reaching out to Daniel
 
 Hi ${args.name},
-Your message has been received. I will reply within an estimated 24 hours.
+I've received your message and will get back to you within 24 hours.
 
-This is an automated email from the portfolio contact form.`,
+This is an automated message. Please do not reply to this email.`,
   }
 }
