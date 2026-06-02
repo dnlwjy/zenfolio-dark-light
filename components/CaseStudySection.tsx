@@ -8,9 +8,16 @@ interface CaseStudySectionProps {
     title: string;
     description: string;
     link: string;
-    video: string;
+    videoWebm: string;
+    videoMov: string;
     variant?: keyof typeof variantCaseStudySection;
     loopStart?: number;
+}
+
+function isSafariBrowser(): boolean {
+    if (typeof navigator === 'undefined') return false
+    const ua = navigator.userAgent
+    return /Safari/i.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Android|FxiOS/i.test(ua)
 }
 
 export const variantCaseStudySection = {
@@ -34,13 +41,15 @@ const CaseStudySection = ({
     title,
     description,
     link,
-    video,
+    videoWebm,
+    videoMov,
     variant = "type A",
     loopStart = 0
 }: CaseStudySectionProps) => {
     const sectionRef = useRef<HTMLDivElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
     const visible = useInView(videoRef, { amount: 0 })
+    const videoSrc = isSafariBrowser() ? videoMov : videoWebm
 
     // Track if video has played at least once
     useEffect(() => {
@@ -106,7 +115,7 @@ const CaseStudySection = ({
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 aspect-video w-[175%]">
                     <video
                         ref={videoRef}
-                        src={video}
+                        src={videoSrc}
                         muted
                         playsInline
                         className="absolute inset-0 mx-auto h-full"

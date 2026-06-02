@@ -7,34 +7,35 @@ type Theme = "light" | "dark"
 type ThemeContextType = {
   theme: Theme
   setTheme: (theme: Theme) => void
+  mounted: boolean
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null)
 
 export default function ThemeProvider({
-  initialTheme,
   children,
 }: {
-  initialTheme: Theme
   children: React.ReactNode
 }) {
-  const [theme, setThemeState] = useState<Theme>(initialTheme)
+  const [theme, setThemeState] = useState<Theme>("dark")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const nextTheme = (localStorage.getItem("theme") as Theme | null) ?? "dark"
+    setThemeState(nextTheme)
+    setMounted(true)
+  }, [])
 
   const setTheme = (next: Theme) => {
     setThemeState(next)
-    // Remove both classes first, then add the correct one
+    // Remove both first, then add the new one
     document.documentElement.classList.remove("dark", "light")
     document.documentElement.classList.add(next)
-    document.cookie = `theme=${next}; path=/; max-age=31536000`
+    localStorage.setItem("theme", next)
   }
 
-  useEffect(() => {
-    document.documentElement.classList.remove("dark", "light")
-    document.documentElement.classList.add(theme)
-  }, [theme])
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, mounted }} >
       {children}
     </ThemeContext.Provider>
   )

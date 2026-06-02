@@ -5,13 +5,13 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 const SESSION_KEY = 'home-loaded'
 
 interface LoadingScreenProps {
-    videos: string[]
+    preloadVideos: string[]
     children: React.ReactNode
 }
 
-export default function LoadingScreen({ videos, children }: LoadingScreenProps) {
+export default function LoadingScreen({ preloadVideos, children }: LoadingScreenProps) {
     const [ready, setReady] = useState(false)
-    const videoSrcs = useRef(videos)
+    const videoSrcs = useRef(preloadVideos)
 
     // Restore loaded state before browser paint to avoid flash on return navigation
     useLayoutEffect(() => {
@@ -73,7 +73,7 @@ export default function LoadingScreen({ videos, children }: LoadingScreenProps) 
     }, [])
 
     return (
-        <main>
+        <>
             {!ready && (
                 <div
                     className={`fixed inset-0 z-9999 bg-(--black) flex items-center justify-center transition-opacity duration-300 ${ready ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -94,6 +94,6 @@ export default function LoadingScreen({ videos, children }: LoadingScreenProps) 
                     </div>
             )}
             {ready && children}
-        </main>
+        </>
     )
 }

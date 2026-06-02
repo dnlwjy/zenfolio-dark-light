@@ -1,25 +1,21 @@
 import MotionDiv from '../../components/MotionDiv'
 import { client } from '../../sanity/lib/client'
-import { generateSEO } from '@/lib/seo'
 import type { Shop } from '@/types/sanity.types'
 import ItemZoom from "@/components/ItemZoom"
 import Image from 'next/image'
 import { urlFor } from "@/sanity/lib/image"
 import Divider from '../../components/Divider'
 import LinkButton from '@/components/LinkButton'
+import { Metadata } from 'next'
 
-// 1. Rendering config: switched to SSG - better performance and SEO, but has to redeploy every time there's data change
-export const dynamic = 'force-static'
+// 1. const
+const TITLECARD = "flex flex-col gap-8 z-10 flex-1 min-w-80"
+const IMAGE = "flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square lg:h-60 h-50"
+const LINKBUTTONS = "flex flex-wrap items-center sm:gap-x-5 gap-x-4 gap-y-2"
+const WRAPPER = "flex flex-col gap-4 md:pb-16 pb-20 sm:items-center items-start"
+const SUPPORT = "Things I've Built in the past"
 
-// 2. metadata (SEO / head)
-const description = "Things I've Built in the past"
-export const metadata = generateSEO({
-    title: "Builds | Daniel Wijaya",
-    description,
-    url: "/builds",
-})
-
-// 3. queries
+// 2. queries
 const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
     _id,
     title,
@@ -32,11 +28,13 @@ const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
     featured,
 }`
 
-const TITLECARD = "flex flex-col gap-8 z-10 flex-1 min-w-80"
-const IMAGE = "flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square lg:h-60 h-50"
-const LINKBUTTONS = "flex flex-wrap items-center sm:gap-x-5 gap-x-4 gap-y-2"
-const WRAPPER = "flex flex-col gap-4 md:pb-16 pb-20 sm:items-center items-start"
+// 3. metadata
+export const metadata: Metadata = {
+  title: "Builds",
+  description: SUPPORT,
+}
 
+// 4. render
 export default async function Builds() {
     const builds = await client.fetch(query)
     const featured = builds.find((e: Shop) => e.featured) as Shop
@@ -48,7 +46,7 @@ export default async function Builds() {
 
                 {/* NON FEATURED */}
                 <MotionDiv styles="flex flex-col flex-1 gap-0 max-w-240 w-full lg:py-32 py-24 md:pl-32 pl-0 md:order-1 order-2">
-                    <span className="btn-text text-(--gray) md:flex hidden">{description}</span>
+                    <span className="btn-text text-(--gray) md:flex hidden">{SUPPORT}</span>
 
                     {nonFeatured.map((e) => (
                         <div key={e._id} className={WRAPPER}>
@@ -126,7 +124,7 @@ export default async function Builds() {
 
                 {/* FEATURED CARD */}
                 <MotionDiv variant="right" del={0.5} styles="flex flex-col gap-6 flex-1 w-full lg:max-w-none max-w-[680px] lg:pt-30 lg:pb-20 md:pb-6 md:pr-32 pr-0 pt-16 md:h-screen md:sticky top-0 md:order-2 order-1">
-                    <span className="btn-text text-(--gray) flex md:hidden">{description}</span>
+                    <span className="btn-text text-(--gray) flex md:hidden">{SUPPORT}</span>
 
                     <div className="h-full w-full justify-center items-center border border-(--divider) bg-(--white)/7 flex flex-col">
                         <ItemZoom

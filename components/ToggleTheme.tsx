@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { m, useMotionValue, animate } from "framer-motion"
 import { interpolate, toCircle } from "flubber"
 import { useTheme } from "@/context/ThemeProvider"
@@ -33,18 +33,20 @@ const ToggleTheme = ({
     strokeWidth?: number;
     filled?: boolean;
 }) => {
-    const { theme, setTheme } = useTheme()
+    const { theme, setTheme, mounted } = useTheme()
     const isDark = theme === "dark"
     const progress = useMotionValue(isDark ? 1 : 0)
     const [pathD, setPathD] = useState(() => isDark ? CIRCLE_PATH : MOON_PATH)
-
-    // Memoize morph interpolators for performance
     const [moonToCircle, circleToMoon] = useMemo(() => {
         return [
             interpolate(MOON_PATH, CIRCLE_PATH, { maxSegmentLength: 1.5 }),
             interpolate(CIRCLE_PATH, MOON_PATH, { maxSegmentLength: 1.5 }),
         ];
     }, []);
+
+    useEffect(() => {
+        setPathD(isDark ? CIRCLE_PATH : MOON_PATH)
+    }, [isDark])
 
     // Morphing effect
     useEffect(() => {
@@ -57,14 +59,14 @@ const ToggleTheme = ({
         });
     }, [progress, isDark, moonToCircle, circleToMoon]);
 
-    const handleToggle = () => {
+    const handleToggle = useCallback(() => {
         const next = isDark ? "light" : "dark"
         setTheme(next)
         animate(progress, next === "dark" ? 1 : 0, {
             duration: 0.5,
             ease: [0.4, 0, 0.2, 1],
         })
-    }
+    }, [isDark, progress, setTheme])
 
     // Keyboard shortcut: T for toggle
     useEffect(() => {
@@ -88,6 +90,8 @@ const ToggleTheme = ({
         return () => window.removeEventListener("keydown", handleKeyDown)
     }, [handleToggle])
 
+    if (!mounted) return null
+
     // Accessibility
     const ariaLabel = isDark ? "Switch to light mode" : "Switch to dark mode";
 
@@ -97,7 +101,7 @@ const ToggleTheme = ({
             style={{ width: size, height: size }}
             className={`group flex items-center justify-center cursor-pointer ${styles}`}
             aria-label={ariaLabel}
-            aria-pressed={!isDark}
+            aria-checked={isDark}
             role="switch"
             tabIndex={0}
         >

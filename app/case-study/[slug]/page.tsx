@@ -6,39 +6,12 @@ import Serializers from "@/lib/Serializers"
 import TitleCard from '../../../components/TitleCard'
 import { notFound } from 'next/navigation'
 import { listStyles } from '../page'
-import { generateSEO } from '@/lib/seo'
+import type { Metadata } from "next";
 import { urlFor } from '../../../sanity/lib/image'
 import type { Projects } from '@/types/sanity.types'
 import Divider from '@/components/Divider'
 
-// 1. Rendering config: switched to SSG - better performance and SEO, but has to redeploy every time there's data change
-export const dynamic = 'force-static'
-export async function generateStaticParams() {
-    const slugs: string[] = await client.fetch(`*[_type == "projects"].slug.current`)
-    return slugs.map((slug) => ({ slug }))
-}
-
-// 2. metadata (SEO / head)
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params
-    const data = await client.fetch(
-        `*[_type == "projects" && slug.current == $slug][0]{
-        title,
-        description,
-        coverImage
-        }`,
-        { slug }
-    )
-    if (!data) return {}
-    return generateSEO({
-        title: `${data.title} | Daniel Wijaya`,
-        description: data.description ?? "",
-        image: data.coverImage ? urlFor(data.coverImage).width(1200).height(630).url() : undefined,
-        url: `/case-study/${slug}`,
-    })
-}
-
-// 3. queries
+// 1. queries
 const query = `*[_type == "projects" && slug.current == $slug][0]{
     _id,
     title,
@@ -49,7 +22,6 @@ const query = `*[_type == "projects" && slug.current == $slug][0]{
     content,
     documentation,
 }`
-
 const moreQuery = `*[_type == "projects" && slug.current != $slug]{
     _id,
     title,
@@ -58,6 +30,54 @@ const moreQuery = `*[_type == "projects" && slug.current != $slug]{
     slug,
 }`
 
+// 2. slug
+export async function generateStaticParams() {
+    const slugs: string[] = await client.fetch(`*[_type == "projects"].slug.current`)
+    return slugs.map((slug) => ({ slug }))
+}
+
+// 3. metadata
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params
+    const data = await client.fetch(`*[_type == "projects" && slug.current == $slug][0]{
+        title,
+        description,
+        coverImage
+        }`,
+        { slug }
+    )
+    if (!data) return {}
+
+    const image = data.coverImage
+    ? urlFor(data.coverImage).width(1200).height(630).url()
+    : "/og-default.jpg"
+
+    return {
+    title: data.title,
+    description: data.description,
+
+    openGraph: {
+      title: data.title,
+      description: data.description,
+      type: "article",
+      images: [image],
+      url: `/case-study/${slug}`,
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: data.title,
+      description: data.description,
+      images: [image],
+    },
+
+    alternates: {
+      canonical: `/case-study/${slug}`,
+    },
+  }
+}
+
+// 4. render
 export default async function CaseStudyDetail({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const caseStudy = await client.fetch(query, { slug });
@@ -81,7 +101,7 @@ export default async function CaseStudyDetail({ params }: { params: Promise<{ sl
                         <SubInfo title="Role" subtitle={caseStudy.role} />
                         <SubInfo title="Client" subtitle={caseStudy.client} />
                         <SubInfo title="Year" subtitle={caseStudy.year} />
-                        <SubInfo title="Website" subtitle={caseStudy.website ?? "-"} />
+                        <SubInfo title="Website" subtitle={caseStudy.website} />
                     </MotionDiv>
                     <MotionDiv del={0.7} variant="right" styles="flex-1">
                         <PortableText value={caseStudy.content} components={Serializers} />

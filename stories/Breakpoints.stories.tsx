@@ -1,6 +1,6 @@
 import "../app/globals.css";
 
-export default { title: "Foundations/Breakpoints" };
+export default { title: "Foundation/Breakpoints" };
 
 const breakpoints = [
     { name: "0 – 680", tailwind: "(base)", description: "For mobiles" },
@@ -12,9 +12,7 @@ const breakpoints = [
 export const AllBreakpoints = {
     name: "All Breakpoints",
     render: () => (
-        <section className="flex flex-col gap-20 w-full items-center">
-            <div className="flex flex-col gap-4 items-center">
-                <h1>Breakpoints</h1>
+        <section className="flex flex-col gap-16 w-full items-center">
                 <p>
                     Current viewport: {""}
                     <span className="text-(--white) sm:hidden">{breakpoints[0].tailwind}</span>
@@ -22,7 +20,6 @@ export const AllBreakpoints = {
                     <span className="text-(--white) hidden md:inline lg:hidden">{breakpoints[2].tailwind}</span>
                     <span className="text-(--white) hidden lg:inline">{breakpoints[3].tailwind}</span>
                 </p>
-            </div>
             <div className="flex flex-col gap-0 w-full max-w-200">
                 {breakpoints.map(({ name, tailwind, description }) => (
                     <div key={name} className="flex items-center gap-6 py-5 border-b border-(--divider)">

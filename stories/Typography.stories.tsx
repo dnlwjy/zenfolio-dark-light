@@ -1,6 +1,6 @@
 import "../app/globals.css";
 
-export default { title: "Foundations/Typography" };
+export default { title: "Foundation/Typography" };
 
 const fonts = [
     {

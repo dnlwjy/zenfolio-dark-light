@@ -15,6 +15,66 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type About = {
+  _id: string;
+  _type: "about";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heading?: string;
+  about?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?:
+          | "normal"
+          | "h1"
+          | "h2"
+          | "h3"
+          | "h4"
+          | "h5"
+          | "h6"
+          | "blockquote";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        text?: string;
+        href?: string;
+        _type: "link";
+        _key: string;
+      }
+  >;
+  experiences?: Array<{
+    company?: string;
+    url?: string;
+    role?: string;
+    year?: string;
+    _key: string;
+  }>;
+  skills?: Array<{
+    category?: "tools" | "stacks";
+    items?: Array<string>;
+    _key: string;
+  }>;
+  clients?: Array<{
+    name?: string;
+    svg?: string;
+    _key: string;
+  }>;
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -110,13 +170,6 @@ export type Slug = {
   source?: string;
 };
 
-export type SanityFileAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
-};
-
 export type Shop = {
   _id: string;
   _type: "shop";
@@ -124,18 +177,18 @@ export type Shop = {
   _updatedAt: string;
   _rev: string;
   orderRank?: string;
-  title: string;
+  title?: string;
   slug?: Slug;
-  coverImage: {
+  coverImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
   };
-  description: string;
-  year: number;
-  preview: string;
+  description?: string;
+  year?: number;
+  preview?: string;
   marketplaceURL?: string;
   featured?: boolean;
 };
@@ -238,12 +291,12 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | About
   | SanityImageAssetReference
   | Projects
   | SanityImageCrop
   | SanityImageHotspot
   | Slug
-  | SanityFileAssetReference
   | Shop
   | SanityImagePaletteSwatch
   | SanityImagePalette

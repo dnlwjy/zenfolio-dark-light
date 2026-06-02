@@ -1,45 +1,64 @@
 import MotionDiv from '../../components/MotionDiv';
 import A from '../../components/A';
 import AboutImage from './AboutImage';
-import { TOOLS_AND_STACKS, EXPERIENCE } from './siteContent';
-import { LOGOS } from './Logos';
-import { generateSEO } from '@/lib/seo';
+import type { Metadata } from "next";
 import Divider from '../../components/Divider';
+import { client } from '../../sanity/lib/client'
+import type { About } from '@/types/sanity.types'
 
-export const metadata = generateSEO({
-    title: "About | Daniel Wijaya",
-    url: "/about",
-})
-
-const START_DATE = new Date('2020-09-19')
-const YEARS_OF_EXPERIENCE = Math.round(((Date.now() - START_DATE.getTime()) / (1000 * 60 * 60 * 24 * 365.25)) * 2) / 2
+// 1. const
+const START_DATE = new Date('2020-12-20')
+const YEARS_OF_EXPERIENCE = Math.round(
+    (Date.now() - START_DATE.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
+const START_UX_ENGINEER = new Date('2024-02-20')
+const YEARS_OF_UX_ENGINEER_EXPERIENCE = Math.round(
+  (Date.now() - START_UX_ENGINEER.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
 const DIVIDER = <svg xmlns="http://www.w3.org/2000/svg" className="w-1.75 lg:w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
 const SUPPORT = "flex flex-col gap-8 max-w-320 items-center mt-8"
 
-export default function About() {
+// 2. queries
+const query = `*[_type == "about" && _id == "about"][0] {
+  heading,
+  skills,
+  experiences,
+  clients,
+}`
+
+// 3. metadata
+export const metadata: Metadata = {
+  title: "About",
+}
+
+// 4. render
+export default async function About() {
+    const about = await client.fetch<About>(query)
+
     return (
         <main>
             <section id="about-me" className="sm">
 
-                <MotionDiv variant="up" styles="flex flex-col gap-8 max-w-320 items-center">
-                    <div className="flex flex-col gap-4 max-w-280 items-center">
+                <MotionDiv variant="up" styles="flex flex-col gap-8 items-center w-full">
+                    <div className="flex flex-col gap-4 max-w-300 items-center">
                         <span className="btn-text text-(--gray)">About me</span>
-                        <h2>I’m Daniel Wijaya, a UX engineer who focuses on design-to-code implementation while maintaining user empathy and scalable business. I specialize in animated and interactive media that actually converts.</h2>
+                        <h2>{about.heading}</h2>
                     </div>
-                    <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve worked with founders and rising startups around the world as a UX engineer, both remotely and in-office, either independently or as part of small teams. In my spare time, I enjoy playing tennis and walking in nature.</p>
+                    <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve been working with companies and agencies around the world as a designer and web developer. In the last {YEARS_OF_UX_ENGINEER_EXPERIENCE} years, I've pivoted into UX engineering bridging the gap between design and code. In my spare time, I make <A title="new-age music" link="https://www.youtube.com/@danielwijaya" /> and enjoy playing tennis.</p>
                 </MotionDiv>
 
                 <MotionDiv variant="up" del={0.5}><AboutImage /></MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="flex flex-wrap gap-x-40 gap-y-16 w-full justify-center">
-                    {TOOLS_AND_STACKS.map((pass) => (
-                        <div key={pass.name} className="flex flex-col gap-4 items-center w-100">
-                            <span className="btn-text text-(--gray)">{pass.name}</span>
+                    {about.skills?.map((e) => (
+                        <div key={e._key} className="flex flex-col gap-4 items-center w-100">
+                            <span className="btn-text text-(--gray)">
+                                {e.category === "tools" ? "Tools" : "Stacks"}
+                            </span>
+
                             <div className="flex flex-wrap gap-4 justify-center">
-                                {pass.items.map((e, i) => (
-                                    <div key={e.name} className="flex items-center gap-3">
-                                        <h3 className="text-[20px]">{e.name}</h3>
-                                        {i < pass.items.length - 1 && DIVIDER}
+                                {e.items?.map((item, i) => (
+                                    <div key={item} className="flex items-center gap-3">
+                                        <h3 className="text-[20px]">{item}</h3>
+                                        {i < (e.items?.length ?? 0) - 1 && DIVIDER}
                                     </div>
                                 ))}
                             </div>
@@ -55,17 +74,23 @@ export default function About() {
                         <span className="btn-text text-(--gray)">Experience</span>
                         <h2>Over {YEARS_OF_EXPERIENCE} years of experience</h2>
                     </div>
-                    <p className="text-center max-w-280">Over the past {YEARS_OF_EXPERIENCE} years I’ve had the pleasure to work with companies from various sectors on many interesting projects. For more details, head over to <A title="my LinkedIn" link="https://www.linkedin.com/in/dnlwjy/" />.</p>
+                    <p className="text-center max-w-280">Over the past {YEARS_OF_EXPERIENCE} years I’ve had the pleasure to work with companies from various sectors on many interesting projects. For more details, head over to my <A title="LinkedIn Profile" link="https://www.linkedin.com/in/dnlwjy/" />.</p>
                 </MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="flex flex-col gap-8 sm:gap-4 py-4 w-full">
-                    {EXPERIENCE.map((e) => (
-                        <div key={e.company} className="flex sm:flex-row flex-col text-center sm:text-start">
+                    {about.experiences?.map((e) => (
+                        <div key={e._key} className="flex sm:flex-row flex-col text-center sm:text-start">
                             <div className="w-full">
-                            <a href={e.link} className="text-[18px]" target="_blank" rel="noopener noreferrer">{e.company}</a>
+                                {e.url ? (
+                                    <a href={e.url} className="text-[18px]" target="_blank" rel="noopener noreferrer">
+                                        {e.company}
+                                    </a>
+                                ) : (
+                                    <span className="text-[18px] text-(--white)">{e.company}</span>
+                                )}
                             </div>
                             <span className="w-full text-[18px]">{e.role}</span>
-                            <span className="w-full text-[18px]">{e.period}</span>
+                            <span className="w-full text-[18px]">{e.year}</span>
                         </div>
                     ))}
                 </MotionDiv>
@@ -81,11 +106,15 @@ export default function About() {
                     <p className="text-center max-w-280">I’ve been lucky enough to establish relationships with amazing clients from all over the world, ranging from individual clients, through up-and-coming startups, to multinational companies.</p>
                 </MotionDiv>
 
-                <MotionDiv variant="up" del={0.5} styles="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 w-full">
-                    {LOGOS.map((Logo, i) => (
-                        <div key={i} className="flex items-center justify-center">
-                            <Logo styles="w-40 lg:w-48 h-auto text-(--white)" />
-                        </div>
+                <MotionDiv variant="up" del={0.5} styles="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 w-full justify-items-center">
+                    {about.clients?.map((e) => (
+                        <div
+                            key={e._key}
+                            aria-label={e.name}
+                            role="img"
+                            className="w-40 lg:w-48 aspect-square flex items-center justify-center text-(--white)"
+                            dangerouslySetInnerHTML={{ __html: e.svg ?? "" }}
+                        />
                     ))}
                 </MotionDiv>
             </section>

@@ -30,7 +30,7 @@ const Footer = ({
                 ))}
             </span>
 
-            <span className="tag">© {new Date().getFullYear()} Daniel Wijaya</span>
+            <span className="tag">© {new Date().getFullYear()} Daniel Wijaya / <a href="https://storybook.danielwijaya.com/" target="_blank" rel="noopener noreferrer">View Storybook</a></span>
         
         </footer>
     )

@@ -1,13 +1,18 @@
+import { Metadata } from 'next'
 import MotionDiv from '../../components/MotionDiv'
 import ContactForm from '@/components/ContactForm'
-import { generateSEO } from '@/lib/seo'
 
-export const metadata = generateSEO({
-    title: "Contact | Daniel Wijaya",
-    description: "Have a project in mind? Let's talk — I'm open to freelance, collaboration, and full-time opportunities.",
-    url: "/contact",
-})
+// 1. const
 
+// 2. queries
+
+// 3. metadata
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Have a project in mind? Let's talk — I'm open to freelance, collaboration, and full-time opportunities.",
+}
+
+// 4. render
 export default function Contact() {
 
     return (

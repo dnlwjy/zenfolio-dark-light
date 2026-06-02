@@ -4,31 +4,61 @@ import { LazyMotion, domAnimation, MotionConfig } from "framer-motion"
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ToggleTheme from '@/components/ToggleTheme'
-import { cookies } from "next/headers"
 import ThemeProvider from "@/context/ThemeProvider"
+import { client } from '../sanity/lib/client'
+import type { About } from "@/types/sanity.types"
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://danielwijaya.com'),
-  title: "Daniel Wijaya | UX Engineer",
-  description: "Bridging design and code — from Figma and Framer to production-ready Next.js.",
-  icons: {
-    icon: '/favicon.png',
-  },
-};
+// 1. const
+const SITE_NAME = "Daniel Wijaya"
+const SITE_TITLE = `${SITE_NAME} | UX Engineer`
+const TEMPLATE = `%s | ${SITE_NAME}`
+const FALLBACK_SITE_DESCRIPTION = "I’m Daniel Wijaya, a UX engineer specializing in bridging design and code through user-centered thinking while building scalable and maintainable systems. I live at the intersection of user empathy and systems."
 
+// 2. queries
+const query = `*[_type == "about" && _id == "about"][0] {
+  heading,
+}`
+
+// 3. metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const siteDesc = await client.fetch<Pick<About, "heading">>(query)
+    .catch(() => ({ heading: FALLBACK_SITE_DESCRIPTION }))
+
+  return {
+    metadataBase: new URL("https://danielwijaya.com"),
+    title: { default: SITE_TITLE, template: TEMPLATE },
+    description: siteDesc?.heading ?? FALLBACK_SITE_DESCRIPTION,
+    alternates: { canonical: "/" },
+    icons: { icon: "/favicon.png" },
+    openGraph: {
+      type: "website",
+      url: "https://danielwijaya.com",
+      siteName: SITE_NAME,
+      images: ["/og-default.jpg"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: ["/og-default.jpg"],
+    },
+  }
+}
+
+// 4. render
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies()
-  const cookieTheme = cookieStore.get("theme")?.value
-  const initialTheme: "dark" | "light" = cookieTheme === "light" ? "light" : "dark"
 
   return (
-    <html lang="en" className={initialTheme === "dark" ? "dark" : ""}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `try{var t=localStorage.getItem('theme')||'dark';document.documentElement.classList.add(t)}catch(e){}`
+        }} />
+      </head>
       <body>
-        <ThemeProvider initialTheme={initialTheme}>
+        <ThemeProvider>
           <LazyMotion features={domAnimation} strict>
             <MotionConfig
               transition={{ type: "spring", stiffness: 500, damping: 50 }}

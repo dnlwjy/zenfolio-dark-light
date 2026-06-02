@@ -22,9 +22,9 @@ export default meta;
 type Story = StoryObj<typeof MotionDiv>;
 
 const SampleContent = () => (
-  <div className="p-6 bg-(--divider) rounded">
+  <div className="p-6 bg-(--divider)">
     <h3>Animated Content</h3>
-    <p className="text-(--gray) mt-2">This block animates into view.</p>
+    <p className="text-(--white) mt-2">This block animates into view.</p>
   </div>
 );
 
@@ -62,8 +62,8 @@ export const AllVariants = {
     <div className="grid grid-cols-2 gap-6 p-8">
       {(["up", "down", "left", "right"] as const).map((variant) => (
         <MotionDiv key={variant} variant={variant}>
-          <div className="p-6 bg-(--divider) rounded">
-            <p className="tag text-(--gray) mb-1">variant: {variant}</p>
+          <div className="p-6 bg-(--divider)">
+            <p className="tag text-(--white) mb-1">variant: {variant}</p>
             <h3>Animated ({variant})</h3>
           </div>
         </MotionDiv>

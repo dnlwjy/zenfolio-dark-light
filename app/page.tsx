@@ -4,23 +4,37 @@ import LinkButton from '../components/LinkButton'
 import CaseStudySection from '../components/CaseStudySection'
 import AboutImage from '../components/AboutImage'
 import { client } from '../sanity/lib/client'
-import A from '../components/A'
 import LoadingScreen from '../components/LoadingScreen'
+import { PortableText } from "@portabletext/react"
+import Serializers from "@/lib/Serializers"
+import type { About } from '@/types/sanity.types'
 
+// 1. const
+const videos = ['/ava-black.mp4', '/ava-white.webm', '/cs1.webm', '/cs2.webm', '/cs3.webm', '/cs1.mov', '/cs2.mov', '/cs3.mov']
+
+// 2. queries
 const query = `*[_type == "projects" && featured == true] | order(orderRank asc) {
   _id,
   title,
   description,
   slug,
 }`
+const queryAbout = `*[_type == "about" && _id == "about"][0] {
+  about,
+}`
 
-const videos = ['/ava-black.mp4', '/ava-white.webm', '/cs1.webm', '/cs2.webm', '/cs3.webm']
+// 3. metadata
 
+// 4. render
 export default async function Home() {
-  const projects = await client.fetch(query)
+  const [projects, bio] = await Promise.all([
+  client.fetch(query),
+  client.fetch<Pick<About, "about">>(queryAbout),
+])
 
   return (
-    <LoadingScreen videos={videos}>
+    <LoadingScreen preloadVideos={videos}>
+      <main>
 
       {/* Hero Section */}
       <section id="hero" className="h-screen p-4">
@@ -45,8 +59,8 @@ export default async function Home() {
 
               <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
               <LinkButton
-                title="View CV"
-                link="https://drive.google.com/file/d/1g2-1tF6l2J3GOTJN6D0DE1R_SZnUv4wU/view"
+                title="About"
+                link="/about"
               />
             </div>
           </MotionDiv>
@@ -58,7 +72,8 @@ export default async function Home() {
         title={projects[0].title}
         description={projects[0].description}
         link={`/case-study/${projects[0].slug.current}`}
-        video="/cs1.webm"
+        videoWebm="/cs1.webm"
+        videoMov="/cs1.mov"
         loopStart={3.8}
       />
       <CaseStudySection
@@ -66,18 +81,20 @@ export default async function Home() {
         title={projects[1].title}
         description={projects[1].description}
         link={`/case-study/${projects[1].slug.current}`}
-        video="/cs2.webm"
+        videoWebm="/cs2.webm"
+        videoMov="/cs2.mov"
       />
       <CaseStudySection
         title={projects[2].title}
         description={projects[2].description}
         link={`/case-study/${projects[2].slug.current}`}
-        video="/cs3.webm"
+        videoWebm="/cs3.webm"
+        videoMov="/cs3.mov"
         loopStart={2.4}
       />
 
       {/* About me */}
-      <section className="md:flex-row flex-col max-w-480 md:items-start items-center mt-0 sm:-mt-16 md:mt-0">
+      <section id="about" className="md:flex-row flex-col max-w-480 md:items-start items-center mt-0 sm:-mt-16 md:mt-0">
         <MotionDiv styles="relative w-full aspect-3/4 min-w-108 max-w-170">
           <AboutImage />
           <div className="absolute z-10 inset-0 bg-[radial-gradient(farthest-side_at_center,#12121200_90%,var(--black)_100%)]" />
@@ -93,12 +110,10 @@ export default async function Home() {
           variant='right'
           del={0.5}
           styles="w-full mt-10 max-w-120">
-          <p>
-            I currently live in Jakarta working as a remote worker for global clients from different countries. My projects include UI UX design, Framer development, and Next.js development. Being comfortable with design and code allows me to work end-to-end with team including with backend developers. I specialize in design-to-code implementation, design systems, and advocating UX. Though I might be associated with engineer, I'm also responsible to scale businesses.<br /><br />
-            I am currently available for a full-time role for UX engineer role in Australia or Singapore. Outside work, I do my own personal projects such as making <A link="https://www.youtube.com/@danielwijaya" title="new-age music" /> for piano and strings.
-          </p>
+          <PortableText value={bio.about} components={Serializers} />
         </MotionDiv>
       </section>
+      </main>
     </LoadingScreen>
   );
 }

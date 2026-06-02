@@ -26,7 +26,7 @@ export const products = defineType({
       name: "year",
       title: "Year",
       type: "number",
-      validation: (Rule) => Rule.required().integer().min(2000).error("Tahun wajib diisi"),
+      validation: (Rule) => Rule.required().integer().min(2000).error("Year is required"),
     },
     { name: "preview", title: "Preview", type: "url", validation: (Rule) => Rule.required().uri({ scheme: ['http', 'https'] }) },
     {

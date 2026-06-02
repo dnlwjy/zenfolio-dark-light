@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: ['/api/', '/studio/'],
     },
     sitemap: 'https://danielwijaya.com/sitemap.xml',
   }

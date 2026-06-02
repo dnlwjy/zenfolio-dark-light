@@ -1,21 +1,14 @@
 import MotionDiv from '../../components/MotionDiv'
 import { client } from '../../sanity/lib/client'
 import TitleCard from '../../components/TitleCard'
-import { generateSEO } from '@/lib/seo'
 import type { Projects } from '@/types/sanity.types'
+import { Metadata } from 'next'
 
-// 1. Rendering config: switched to SSG - better performance and SEO, but has to redeploy every time there's data change
-export const dynamic = 'force-static'
+// 1. const
+export const listStyles = "flex flex-col gap-20 w-full"
+const SUPPORT = "Archive of client-based projects from 2023 onward."
 
-// 2. metadata (SEO / head)
-const description = "Archive of client-based projects from 2024 onward."
-export const metadata = generateSEO({
-    title: "Case Study | Daniel Wijaya",
-    description,
-    url: "/case-study",
-})
-
-// 3. queries
+// 2. queries
 const query = `*[_type == "projects"] | order(year desc, orderRank asc) {
     _id,
     title,
@@ -24,8 +17,13 @@ const query = `*[_type == "projects"] | order(year desc, orderRank asc) {
     slug,
 }`
 
-export const listStyles = "flex flex-col gap-20 w-full"
+// 3. metadata
+export const metadata: Metadata = {
+  title: "Case Study",
+  description: SUPPORT
+}
 
+// 4. render
 export default async function CaseStudies() {
     const caseStudies = await client.fetch(query)
 
@@ -39,7 +37,7 @@ export default async function CaseStudies() {
                         <br />
                         Case Studies
                     </h1>
-                    <p className="text-center">{description}</p>
+                    <p className="text-center">{SUPPORT}</p>
                 </MotionDiv>
 
                 <div className={listStyles}>

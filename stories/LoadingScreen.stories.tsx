@@ -21,7 +21,7 @@ type Story = StoryObj<typeof LoadingScreen>;
 
 export const Splash: Story = {
   render: () => (
-    <div className="fixed inset-0 z-9999 bg-(--black) flex items-center justify-center">
+    <section className="fixed inset-0 z-9999 bg-(--black) flex items-center justify-center">
       <svg
         width="52" height="52" viewBox="0 0 52 52"
         fill="var(--white)"
@@ -33,21 +33,21 @@ export const Splash: Story = {
         <path d="M49.1453 12.1161L35.7155 37.3538H32.1147L24.232 22.6264L22.7074 19.9339C21.7342 18.5715 20.4366 17.4685 18.9444 16.7224C17.4847 15.9763 15.8303 15.5546 14.1434 15.5546H7.85024L7.42854 14.7112H14.1434C15.1491 14.7112 17.1278 14.841 19.3013 15.9763C21.5071 17.1117 22.7723 18.6688 23.3562 19.4798L24.9132 22.2047L32.5689 36.5428H35.1965L48.2046 12.1161H49.1453Z" fill="var(--white)" />
         <path d="M52 12.1161L37.2402 39.8516H30.428L29.9738 39.0082C27.0543 33.5259 24.1348 28.0437 21.2152 22.5291C21.1828 22.4642 21.1504 22.3993 21.1179 22.3344V22.302C19.7879 19.7717 17.0955 18.1173 14.1435 18.1173H9.24519L8.79104 17.3064H14.1435C17.4847 17.3064 20.534 19.2203 21.9613 22.1722L30.9146 39.0406H36.7536L51.0593 12.1161H52Z" fill="var(--white)" />
       </svg>
-    </div>
+    </section>
   ),
 };
 
 export const PreloadingVideo: Story = {
   args: {
-    videos: ["/cs1.webm"],
+    preloadVideos: ["/cs1.webm"],
     children: (
-      <div className="flex flex-col items-center justify-center gap-0 p-16">
-        <video src="/cs1.webm" autoPlay loop muted playsInline className="w-full max-w-300 rounded" />
+      <section className="flex flex-col h-screen items-center justify-center gap-0">
+        <video src="/cs1.webm" autoPlay loop muted playsInline aria-hidden="true" className="w-full max-w-200" />
         <div className="flex flex-col gap-2 items-center text-center max-w-120">
           <span className="tag text-(--white)">This video was preloaded</span>
-          <p className="text-[16px] leading-[160%]">The video was preloaded in real-time during the loading screen before the mounting begins.</p>
+          <p className="text-[16px] leading-[160%]">The video was preloaded during the loading screen before mounting.</p>
         </div>
-      </div>
+      </section>
     ),
   },
 };

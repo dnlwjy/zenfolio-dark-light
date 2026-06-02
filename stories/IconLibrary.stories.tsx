@@ -15,7 +15,7 @@ import {
 } from "../components/IconLibrary";
 
 const meta: Meta = {
-  title: "Foundations/IconLibrary",
+  title: "Foundation/IconLibrary",
 };
 
 export default meta;

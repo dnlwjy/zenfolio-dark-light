@@ -20,11 +20,22 @@ type AllVariantsArgs = {
   title3: string; subtitle3: string;
 };
 
-export const AllVariants: StoryObj<AllVariantsArgs> = {
+export const Default: StoryObj<typeof SubInfo> = {
+  render: (args) => (
+    <div className="flex flex-col gap-8 p-8 w-full max-w-125">
+      <SubInfo title={args.title} subtitle={args.subtitle} />
+    </div>
+  ),
+  args: {
+    title: "Full Name", subtitle: "Daniel Wijaya",
+  },
+};
+
+export const Stack: StoryObj<AllVariantsArgs> = {
   args: {
     title1: "Full Name", subtitle1: "Daniel Wijaya",
-    title2: "Personal Website", subtitle2: "https://www.danielwijaya.com/",
-    title3: "TikTok", subtitle3: "",
+    title2: "Role", subtitle2: "UX Engineer",
+    title3: "Personal Website", subtitle3: "https://www.danielwijaya.com/",
   } as AllVariantsArgs,
   argTypes: {
     title1: { control: "text", name: "Title", table: { category: "Item 1" } },

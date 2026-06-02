@@ -1,7 +1,7 @@
 import type { ElementType } from "react";
 import "../app/globals.css";
 
-export default { title: "Foundations/Headings" };
+export default { title: "Foundation/Headings" };
 
 const headings: { tag: ElementType; base: string; sm: string; lg: string; text: string }[] = [
   { tag: "h1", base: "48px", sm: "72px", lg: "96px", text: "Heading 1" },

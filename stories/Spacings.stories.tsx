@@ -1,6 +1,6 @@
 import "../app/globals.css";
 
-export default { title: "Foundations/Spacings" };
+export default { title: "Foundation/Spacings" };
 
 const spacings = [
   { label: "1",  px: 4   },
@@ -32,16 +32,10 @@ const SpacingBox = ({ label, px }: { label: string; px: number }) => (
 export const AllSpacings = {
   name: "All Spacings",
   render: () => (
-    <section className="flex flex-col gap-20 w-full items-center">
-      <div className="flex flex-col gap-4 items-center">
-        <h1>Spacings</h1>
-        <p>4-point grid system</p>
-      </div>
-      <div className="flex flex-wrap gap-8 justify-center items-end w-full max-w-5xl">
+      <div className="flex flex-wrap gap-6 justify-center items-end w-full">
         {spacings.map(({ label, px }) => (
           <SpacingBox key={label} label={label} px={px} />
         ))}
       </div>
-    </section>
   ),
 };
