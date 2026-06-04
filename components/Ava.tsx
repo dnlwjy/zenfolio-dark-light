@@ -14,6 +14,7 @@ const AvaComponent = ({ springOpacity }: { springOpacity: MotionValue<number> })
             viewport={{ once: true, amount: 0 }}
             transition={{ duration: 1, ease: [0.44, 0, 0.56, 1], delay: 0.3 }}
             style={{ opacity: springOpacity }}
+            className="aspect-3/4 h-[138%] relative"
         >
             <video
                 key={theme}
