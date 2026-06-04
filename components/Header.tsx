@@ -15,8 +15,8 @@ const navItems = [
 
 const Header = ({ styles = "" }: { styles?: string }) => {
     const pathname = usePathname()
-    const active = navItems.find((item) =>
-        item.link === "/" ? pathname === "/" : pathname.startsWith(item.link)
+    const active = navItems.find((e) =>
+        e.link === "/" ? pathname === "/" : pathname.startsWith(e.link)
     )
     const router = useRouter()
 

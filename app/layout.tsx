@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from '@next/third-parties/google'
+import { envPublic } from '@/lib/env.public'
 import "./globals.css";
 import { LazyMotion, domAnimation, MotionConfig } from "framer-motion"
 import Header from '../components/Header'
@@ -53,6 +55,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Saved theme to head to avoid flickering (sync) */}
         <script dangerouslySetInnerHTML={{
           __html: `try{var t=localStorage.getItem('theme')||'dark';document.documentElement.classList.add(t)}catch(e){}`
         }} />
@@ -71,6 +74,7 @@ export default async function RootLayout({
           </LazyMotion>
         </ThemeProvider>
       </body>
+      <GoogleAnalytics gaId={envPublic.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
     </html>
   );
 }

@@ -37,15 +37,15 @@ export default async function About() {
         <main>
             <section id="about-me" className="sm">
 
-                <MotionDiv variant="up" styles="flex flex-col gap-8 items-center w-full">
-                    <div className="flex flex-col gap-4 max-w-300 items-center">
+                <MotionDiv variant="up" styles="flex flex-col gap-8 items-center w-full max-w-280">
+                    <div className="flex flex-col gap-4 items-center">
                         <span className="btn-text text-(--gray)">About me</span>
                         <h2>{about.heading}</h2>
                     </div>
                     <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve been working with companies and agencies around the world as a designer and web developer. In the last {YEARS_OF_UX_ENGINEER_EXPERIENCE} years, I've pivoted into UX engineering bridging the gap between design and code. In my spare time, I make <A title="new-age music" link="https://www.youtube.com/@danielwijaya" /> and enjoy playing tennis.</p>
                 </MotionDiv>
 
-                <MotionDiv variant="up" del={0.5}><AboutImage /></MotionDiv>
+                <MotionDiv variant="up" del={0.5} styles="w-full"><AboutImage /></MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="flex flex-wrap gap-x-40 gap-y-16 w-full justify-center">
                     {about.skills?.map((e) => (

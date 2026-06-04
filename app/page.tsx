@@ -10,7 +10,13 @@ import Serializers from "@/lib/Serializers"
 import type { About } from '@/types/sanity.types'
 
 // 1. const
-const videos = ['/ava-black.mp4', '/ava-white.webm', '/cs1.webm', '/cs2.webm', '/cs3.webm', '/cs1.mov', '/cs2.mov', '/cs3.mov']
+const videos = [
+  '/ava-black.mp4', '/ava-white.webm',
+  // only load on Chrome, Firefox, etc
+  '/cs1.webm', '/cs2.webm',
+  // only load on Safari
+  '/cs1.mov', '/cs2.mov'
+]
 
 // 2. queries
 const query = `*[_type == "projects" && featured == true] | order(orderRank asc) {

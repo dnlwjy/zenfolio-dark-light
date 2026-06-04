@@ -26,8 +26,8 @@ function logicSubmitButton(a: StatusType) {
 
 const RECAPTCHA_SITE_KEY = envPublic.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
-export const peerInput = "peer pt-8.5 pb-3.5 placeholder-transparent"
-export const peerLabel = `absolute left-3 top-9 text-(--divider) transition-all duration-300 pointer-events-none
+const peerInput = "peer pt-8.5 pb-3.5 placeholder-transparent"
+const peerLabel = `absolute left-3 top-9 text-(--divider) transition-all duration-300 pointer-events-none
                    peer-focus:top-2 peer-focus:text-xs peer-focus:text-(--gray)
                    peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-(--gray)`
 

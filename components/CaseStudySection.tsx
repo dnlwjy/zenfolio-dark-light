@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react'
 import { m, useScroll, useTransform, useSpring, useInView } from "framer-motion"
 import TitleCard from './TitleCard'
+import { isSafariBrowser } from '@/lib/isSafariBrowser'
 
 interface CaseStudySectionProps {
     title: string;
@@ -12,12 +13,6 @@ interface CaseStudySectionProps {
     videoMov: string;
     variant?: keyof typeof variantCaseStudySection;
     loopStart?: number;
-}
-
-function isSafariBrowser(): boolean {
-    if (typeof navigator === 'undefined') return false
-    const ua = navigator.userAgent
-    return /Safari/i.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Android|FxiOS/i.test(ua)
 }
 
 export const variantCaseStudySection = {

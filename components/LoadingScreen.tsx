@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { isSafariBrowser } from '@/lib/isSafariBrowser'
 
 const SESSION_KEY = 'home-loaded'
 
@@ -9,9 +10,20 @@ interface LoadingScreenProps {
     children: React.ReactNode
 }
 
+function filterVideosByBrowser(videos: string[]) {
+    const isSafari = isSafariBrowser()
+    return videos.filter(url => {
+        if (isSafari) {
+            return url.endsWith('.mov') || url.endsWith('.mp4')
+        } else {
+            return url.endsWith('.webm') || url.endsWith('.mp4')
+        }
+    })
+}
+
 export default function LoadingScreen({ preloadVideos, children }: LoadingScreenProps) {
     const [ready, setReady] = useState(false)
-    const videoSrcs = useRef(preloadVideos)
+    const videoSrcs = useRef(filterVideosByBrowser(preloadVideos))
 
     // Restore loaded state before browser paint to avoid flash on return navigation
     useLayoutEffect(() => {

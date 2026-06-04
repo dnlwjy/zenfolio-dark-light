@@ -11,6 +11,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.7",
     "@portabletext/react": "^6.0.3",
     "@sanity/client": "^7.21.0",
     "flubber": "^0.4.2",

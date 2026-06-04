@@ -1,8 +1,11 @@
 import "../app/globals.css";
-import { peerInput, peerLabel } from "../components/ContactForm";
 
 export default { title: "Components/Input" };
 
+const peerInput = "peer pt-8.5 pb-3.5 placeholder-transparent"
+const peerLabel = `absolute left-3 top-9 text-(--divider) transition-all duration-300 pointer-events-none
+                   peer-focus:top-2 peer-focus:text-xs peer-focus:text-(--gray)
+                   peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-(--gray)`
 const SUPPORT = "relative w-full max-w-150 flex flex-col gap-8"
 
 export const SingleInput = {
