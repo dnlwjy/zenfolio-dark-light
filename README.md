@@ -5,7 +5,7 @@
 <div align="left">
 
 ##
-The website is fully **static** enabling the best load time and a strong SEO. The important data are delivered via Sanity, not hard-coded, in which they all are prepared during build time resulting no additional requests when visitors visiting the website. Here are some the key features:
+The website is fully **static** enabling the best load time and a strong SEO. The important data are delivered via Sanity, not hard-coded, in which they all are prepared during build time resulting in zero CMS requests at runtime. Here are some the key features:
 
 - **Keyboard Navigation** — use hotkeys ( Q / W / E / R ) to navigate between pages
 - **Moon / Sun transition** — transition between icons using [Flubber](https://github.com/veltman/flubber) (SVG morphing)
@@ -14,9 +14,9 @@ The website is fully **static** enabling the best load time and a strong SEO. Th
 - **Sanity TypeGen** — Enable TypeScript sync between Sanity schema and frontend
 - **Optimized for big screens** — spacings & typography looks great on larger screens (2K 4K monitors)
 - **Loading screen** — preloads critical videos before first render
-- **Framer Motion** — uses lightweight bundle `{ m }` with `LazyMotion`
+- **Framer Motion** — smooth page transitions and animations with optimized bundle loading
 - **Storybook** — Design system and documentation
-- **Google Analytics 4** — tracks anonymous visitor to gather insights
+- **Google Analytics 4** — tracks anonymous visitors to gather insights
 
 ##
 
@@ -34,11 +34,7 @@ The website is fully **static** enabling the best load time and a strong SEO. Th
 This project includes Google Analytics 4 integration for educational and learning purposes only. It does not collect sensitive information such as names, email addresses, phone numbers, etc. If you fork this project, you are responsible for reviewing and complying with any applicable privacy, cookie, or data protection requirements in your jurisdiction.
 
 ## License
-This project is licensed under the [MIT License](./LICENSE) — it grants anyone the freedom to view, learn from, and build upon the code, as long as the original copyright notice is retained. That said, please respect the spirit of open source:
-
-- For personal use and learning —> welcome 👍
-- Sharing with attribution —> appreciated 🙏
-- Redistributing, reselling, or publishing as your own —> strictly prohibited 😡
+This project is licensed under the [MIT License](./LICENSE) — it grants anyone the freedom to view, learn from, and build upon the code, as long as the original copyright notice is retained. That said, please respect the spirit of open source.
 
 ## Get Started
 To start:
