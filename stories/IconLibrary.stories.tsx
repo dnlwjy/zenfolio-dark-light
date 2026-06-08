@@ -36,7 +36,7 @@ const icons = [
 
 export const AllIcons = {
   render: () => (
-    <div className="flex flex-wrap gap-8 p-6">
+    <div className="flex flex-wrap justify-center gap-8 p-6">
       {icons.map((Icon, i) => (
         <div key={i} className="flex flex-col items-center gap-2">
           <Icon size={32} />

@@ -1,8 +1,10 @@
 import "../app/globals.css";
 import type { Meta, StoryObj } from "@storybook/react";
 import LoadingScreen from "../components/LoadingScreen";
+import { isSafariBrowser } from "../lib/isSafariBrowser";
 
 const SESSION_KEY = "home-loaded";
+const videoSrc = isSafariBrowser() ? "/cs1.mov" : "/cs1.webm";
 
 const meta: Meta<typeof LoadingScreen> = {
   title: "Components/LoadingScreen",
@@ -39,10 +41,10 @@ export const Splash: Story = {
 
 export const PreloadingVideo: Story = {
   args: {
-    preloadVideos: ["/cs1.webm"],
+    preloadVideos: [videoSrc],
     children: (
       <section className="flex flex-col h-screen items-center justify-center gap-0">
-        <video src="/cs1.webm" autoPlay loop muted playsInline aria-hidden="true" className="w-full max-w-200" />
+        <video src={videoSrc} autoPlay loop muted playsInline aria-hidden="true" className="w-full max-w-200" />
         <div className="flex flex-col gap-2 items-center text-center max-w-120">
           <span className="tag text-(--white)">This video was preloaded</span>
           <p className="text-[16px] leading-[160%]">The video was preloaded during the loading screen before mounting.</p>

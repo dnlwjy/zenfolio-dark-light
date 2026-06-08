@@ -2,6 +2,8 @@ import "../app/globals.css";
 import type { Meta, StoryObj } from "@storybook/react";
 import MotionDiv from "../components/MotionDiv";
 
+const wrapperStyles = "p-4 md:p-6 bg-(--divider)"
+
 const meta: Meta<typeof MotionDiv> = {
   title: "Components/MotionDiv",
   component: MotionDiv,
@@ -22,7 +24,7 @@ export default meta;
 type Story = StoryObj<typeof MotionDiv>;
 
 const SampleContent = () => (
-  <div className="p-6 bg-(--divider)">
+  <div className={wrapperStyles}>
     <h3>Animated Content</h3>
     <p className="text-(--white) mt-2">This block animates into view.</p>
   </div>
@@ -31,7 +33,6 @@ const SampleContent = () => (
 export const Left: Story = {
   args: {
     variant: "left",
-    del: 0.3,
     children: <SampleContent />,
   },
 };
@@ -59,13 +60,11 @@ export const Right: Story = {
 
 export const AllVariants = {
   render: () => (
-    <div className="grid grid-cols-2 gap-6 p-8">
+    <div className="grid grid-cols-2 gap-4 sm:gap-6 p-8 w-full max-w-150">
       {(["up", "down", "left", "right"] as const).map((variant) => (
-        <MotionDiv key={variant} variant={variant}>
-          <div className="p-6 bg-(--divider)">
-            <p className="tag text-(--white) mb-1">variant: {variant}</p>
-            <h3>Animated ({variant})</h3>
-          </div>
+        <MotionDiv key={variant} variant={variant} styles={wrapperStyles}>
+            <p className="tag text-mb-1">variant:</p>
+            <span className="text-(--white)">({variant})</span>
         </MotionDiv>
       ))}
     </div>
