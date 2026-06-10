@@ -12,9 +12,9 @@ The website is fully **static** enabling the best load time and a strong SEO. Th
 - **TypeScript + Zod** — build-time type checking and runtime validation
 - **Sanity CMS** — GROQ query during build time (zero-runtime CMS overhead)
 - **Sanity TypeGen** — Enable TypeScript sync between Sanity schema and frontend
-- **Optimized for big screens** — spacings & typography looks great on larger screens (2K 4K monitors)
+- **Responsiveness** — spacings & typography looks great on big screens (2K or above)
 - **Loading screen** — preloads critical videos before first render
-- **Framer Motion** — smooth page transitions and animations with optimized bundle loading
+- **Framer Motion** — smooth page transitions and animations with minimal JS bundle
 - **Storybook** — Design system and documentation
 - **Google Analytics 4** — tracks anonymous visitors to gather insights
 

@@ -112,7 +112,7 @@ export default async function About() {
                             key={e._key}
                             aria-label={e.name}
                             role="img"
-                            className="w-40 lg:w-48 aspect-square flex items-center justify-center text-(--white)"
+                            className="w-36 sm:w-48 aspect-square flex items-center justify-center text-(--white)"
                             dangerouslySetInnerHTML={{ __html: e.svg ?? "" }}
                         />
                     ))}

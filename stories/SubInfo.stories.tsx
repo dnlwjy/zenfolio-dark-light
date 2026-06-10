@@ -31,7 +31,7 @@ export const Default: StoryObj<typeof SubInfo> = {
   },
 };
 
-export const Stack: StoryObj<AllVariantsArgs> = {
+export const Group: StoryObj<AllVariantsArgs> = {
   args: {
     title1: "Full Name", subtitle1: "Daniel Wijaya",
     title2: "Role", subtitle2: "UX Engineer",
