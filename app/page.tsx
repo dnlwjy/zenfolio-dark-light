@@ -4,19 +4,11 @@ import LinkButton from '../components/LinkButton'
 import CaseStudySection from '../components/CaseStudySection'
 import AboutImage from '../components/AboutImage'
 import { client } from '../sanity/lib/client'
-import LoadingScreen from '../components/LoadingScreen'
 import { PortableText } from "@portabletext/react"
 import Serializers from "@/lib/Serializers"
 import type { About } from '@/types/sanity.types'
 
 // 1. const
-const videos = [
-  '/ava-black.mp4', '/ava-white.webm',
-  // only load on Chrome, Firefox, etc
-  '/cs1.webm', '/cs2.webm',
-  // only load on Safari
-  '/cs1.mov', '/cs2.mov'
-]
 
 // 2. queries
 const query = `*[_type == "projects" && featured == true] | order(orderRank asc) {
@@ -39,8 +31,7 @@ export default async function Home() {
 ])
 
   return (
-    <LoadingScreen preloadVideos={videos}>
-      <main>
+    <main>
 
       {/* Hero Section */}
       <section id="hero" className="h-screen p-4">
@@ -119,7 +110,6 @@ export default async function Home() {
           <PortableText value={bio.about} components={Serializers} />
         </MotionDiv>
       </section>
-      </main>
-    </LoadingScreen>
+    </main>
   );
 }
