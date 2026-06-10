@@ -3,7 +3,13 @@
 import { useRef, useEffect } from 'react'
 import { m, useScroll, useTransform, useSpring, useInView } from "framer-motion"
 import TitleCard from './TitleCard'
-import { isSafariBrowser } from '@/lib/isSafariBrowser'
+
+// Client-side detection: must be in client component because server doesn't have navigator (otherwise it's always undefined)
+function isSafariBrowser(): boolean {
+    if (typeof navigator === "undefined") return false
+    const ua = navigator.userAgent
+    return /Safari/i.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Android|FxiOS/i.test(ua)
+}
 
 interface CaseStudySectionProps {
     title: string;
@@ -113,6 +119,7 @@ const CaseStudySection = ({
                         src={videoSrc}
                         muted
                         playsInline
+                        preload="metadata"
                         className="absolute inset-0 mx-auto h-full"
                     />
                 </div>
