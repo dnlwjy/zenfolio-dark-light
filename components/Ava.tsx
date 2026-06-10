@@ -17,8 +17,8 @@ const AvaComponent = ({ springOpacity }: { springOpacity: MotionValue<number> })
             className="aspect-3/4 h-[138%] relative"
         >
             <video
-                key={theme}
                 src={theme === "dark" ? "/ava-black.mp4" : "/ava-white.webm"}
+                poster={theme === "dark" ? "/poster-black.webp" : "/poster-white.webp"}
                 className="absolute top-0 inset-x-0 mx-auto w-full"
                 preload="auto"
                 autoPlay
