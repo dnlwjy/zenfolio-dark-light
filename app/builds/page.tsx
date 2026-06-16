@@ -81,7 +81,7 @@ export default async function Builds() {
                                             <>
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                                 <LinkButton
-                                                    title="Marketplace"
+                                                    title="View Online"
                                                     link={e.marketplaceURL}
                                                 />
                                             </>
