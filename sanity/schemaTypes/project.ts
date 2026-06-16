@@ -55,6 +55,7 @@ export const caseStudy = defineType({
             name: "documentation", title: "Documentation", type: "array", of: [
                 { type: "image" }
             ],
+            options: { layout: "grid" },
         },
     ],
 });

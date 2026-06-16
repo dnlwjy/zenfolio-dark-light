@@ -9,11 +9,12 @@ import LinkButton from '@/components/LinkButton'
 import { Metadata } from 'next'
 
 // 1. const
-const TITLECARD = "flex flex-col gap-8 z-10 flex-1 min-w-80"
-const IMAGE = "flex items-center justify-center border border-(--divider) bg-(--white)/7 aspect-square lg:h-60 h-50"
+const TITLECARD = "flex flex-col gap-8 z-10 w-full"
+const IMAGE = "flex items-center justify-center border border-(--divider) bg-(--white)/7 w-full h-fit sm:size-60 sm:shrink-0 md:w-full md:h-fit md:shrink min-[1350px]:size-50 min-[1350px]:shrink-0 min-[1920px]:size-60"
 const LINKBUTTONS = "flex flex-wrap items-center sm:gap-x-5 gap-x-4 gap-y-2"
 const WRAPPER = "flex flex-col gap-4 md:pb-16 pb-20 sm:items-center items-start"
-const SUPPORT = "Things I've Built in the past"
+const TITLE = "Things I've Built in the past"
+const SUPPORT = "flex flex-col sm:flex-row md:flex-col min-[1350px]:flex-row items-start sm:items-center md:items-start min-[1350px]:items-center gap-8 w-full"
 
 // 2. queries
 const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
@@ -31,7 +32,7 @@ const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
 // 3. metadata
 export const metadata: Metadata = {
   title: "Builds",
-  description: SUPPORT,
+  description: TITLE,
 }
 
 // 4. render
@@ -46,13 +47,13 @@ export default async function Builds() {
 
                 {/* NON FEATURED */}
                 <MotionDiv styles="flex flex-col flex-1 gap-0 max-w-240 w-full lg:py-32 py-24 md:pl-32 pl-0 md:order-1 order-2">
-                    <span className="btn-text text-(--gray) md:flex hidden">{SUPPORT}</span>
+                    <span className="btn-text text-(--gray) md:flex hidden">{TITLE}</span>
 
                     {nonFeatured.map((e) => (
                         <div key={e._id} className={WRAPPER}>
 
                             <Divider styles="w-full mb-4" title={e.year} />
-                            <div className="flex flex-wrap items-center gap-8 w-full">
+                            <div className={SUPPORT}>
 
                                 {/* IMAGE */}
                                 <div className={IMAGE}>
@@ -61,7 +62,7 @@ export default async function Builds() {
                                             src={urlFor(e.coverImage!).format("webp").url()}
                                             alt={e.title ?? ""}
                                             fill
-                                            sizes="(max-width: 680px) 35vw, (max-width: 1080px) 25vw, 350px"
+                                            sizes="(max-width: 680px) 90vw, 450px"
                                             className="object-contain filter-[drop-shadow(0px_20px_16px_rgba(0,0,0,0.35))]"
                                         />
                                     </div>
@@ -80,7 +81,7 @@ export default async function Builds() {
                                             <>
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                                 <LinkButton
-                                                    title="View Listing"
+                                                    title="Marketplace"
                                                     link={e.marketplaceURL}
                                                 />
                                             </>
@@ -96,13 +97,16 @@ export default async function Builds() {
                         <div key={`skeleton-${i}`} className={WRAPPER}>
                             <Divider styles="w-full mb-4" title="Coming Soon" />
 
-                            <div className="flex flex-wrap items-center gap-8 w-full">
-                                {/* IMAGE SKELETON */}
+                            <div className={SUPPORT}>
+
+                                {/* IMAGE */}
                                 <div className={IMAGE}>
-                                    <div className="w-[80%] aspect-square bg-(--divider) rounded-sm" />
+                                    <div className="w-[80%] aspect-square flex items-center justify-center">
+                                        <div className="aspect-square h-[80%] bg-(--divider) rounded-sm" />
+                                    </div>
                                 </div>
 
-                                {/* TITLE CARD SKELETON */}
+                                {/* TITLE CARD */}
                                 <div className={TITLECARD}>
                                     <div className="flex flex-col gap-4">
                                         <div className="h-7 bg-(--divider) rounded-sm w-3/4" />
@@ -124,7 +128,7 @@ export default async function Builds() {
 
                 {/* FEATURED CARD */}
                 <MotionDiv variant="right" del={0.5} styles="flex flex-col gap-6 flex-1 w-full lg:max-w-none max-w-[680px] lg:pt-30 lg:pb-20 md:pb-6 md:pr-32 pr-0 pt-16 md:h-screen md:sticky top-0 md:order-2 order-1">
-                    <span className="btn-text text-(--gray) flex md:hidden">{SUPPORT}</span>
+                    <span className="btn-text text-(--gray) flex md:hidden">{TITLE}</span>
 
                     <div className="h-full w-full justify-center items-center border border-(--divider) bg-(--white)/7 flex flex-col">
                         <ItemZoom
@@ -132,7 +136,7 @@ export default async function Builds() {
                             image={featured.coverImage ? urlFor(featured.coverImage).format("webp").url() : ""}
                             alt={featured.title ?? ""}
                         />
-                        <div className="flex flex-col gap-8 z-10 w-full lg:p-12 md:p-9 pt-0! sm:p-12 p-5">
+                        <div className="flex flex-col gap-8 z-10 w-full sm:px-12 px-6 pb-12 pt-0!">
                             <div className="flex flex-col gap-4">
                                 <div className="flex gap-4 items-center h-1.25 w-full justify-between"><Divider /><span className="tag">{featured.year}</span></div>
                                 <h2 className="text-start">{featured.title}</h2>
@@ -145,7 +149,7 @@ export default async function Builds() {
                                     <>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                         <LinkButton
-                                            title="View Listing"
+                                            title="View Online"
                                             link={featured.marketplaceURL}
                                         />
                                     </>

@@ -15,6 +15,57 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type Uses = {
+  _id: string;
+  _type: "uses";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  orderRank?: string;
+  title?: string;
+  slug?: Slug;
+  content?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?:
+          | "normal"
+          | "h1"
+          | "h2"
+          | "h3"
+          | "h4"
+          | "h5"
+          | "h6"
+          | "blockquote";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        text?: string;
+        href?: string;
+        _type: "link";
+        _key: string;
+      }
+  >;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type About = {
   _id: string;
   _type: "about";
@@ -164,12 +215,6 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type Shop = {
   _id: string;
   _type: "shop";
@@ -291,12 +336,13 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | Uses
+  | Slug
   | About
   | SanityImageAssetReference
   | Projects
   | SanityImageCrop
   | SanityImageHotspot
-  | Slug
   | Shop
   | SanityImagePaletteSwatch
   | SanityImagePalette

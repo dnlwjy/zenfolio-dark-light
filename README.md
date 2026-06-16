@@ -7,16 +7,15 @@
 ##
 The website is fully **static** enabling the best load time and a strong SEO. The important data are delivered via Sanity, not hard-coded, in which they all are prepared during build time resulting in zero CMS requests at runtime. Here are some the key features:
 
-- **Keyboard Navigation** — use hotkeys ( Q / W / E / R ) to navigate between pages
-- **Moon / Sun transition** — transition between icons using [Flubber](https://github.com/veltman/flubber) (SVG morphing)
-- **TypeScript + Zod** — build-time type checking and runtime validation
-- **Sanity CMS** — GROQ query during build time (zero-runtime CMS overhead)
-- **Sanity TypeGen** — Enable TypeScript sync between Sanity schema and frontend
-- **Responsiveness** — spacings & typography looks great on big screens (2K or above)
-- **Loading screen** — preloads critical videos before first render
-- **Framer Motion** — smooth page transitions and animations with minimal JS bundle
-- **Storybook** — Design system and documentation
-- **Google Analytics 4** — tracks anonymous visitors to gather insights
+- **Keyboard Navigation**: use hotkeys ( Q / W / E / R ) to navigate between pages
+- **Moon / Sun transition**: transition between icons using [Flubber](https://github.com/veltman/flubber) (SVG morphing)
+- **TypeScript + Zod**: build-time type checking and runtime validation
+- **Sanity CMS**: GROQ query during build time (zero-runtime CMS overhead)
+- **Sanity TypeGen**: Enable TypeScript sync between Sanity schema and frontend
+- **Responsiveness**: spacings & typography looks great on big screens (2K or above)
+- **Framer Motion**: smooth animations using optimized version { m }
+- **Storybook**: Design system and documentation
+- **Google Analytics 4**: tracks anonymous visitors to gather insights
 
 ##
 

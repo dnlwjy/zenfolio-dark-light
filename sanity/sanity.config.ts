@@ -39,9 +39,16 @@ export default defineConfig({
               context,
             }),
 
+            orderableDocumentListDeskItem({
+              type: 'uses',
+              title: 'Uses',
+              S,
+              context,
+            }),
+
             ...S.documentTypeListItems().filter(
               (listItem) =>
-                !['shop', 'projects', 'about'].includes(
+                !['shop', 'projects', 'about', 'uses'].includes(
                   listItem.getId() || ''
                 )
             ),

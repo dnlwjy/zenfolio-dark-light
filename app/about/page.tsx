@@ -10,11 +10,8 @@ import type { About } from '@/types/sanity.types'
 const START_DATE = new Date('2020-12-20')
 const YEARS_OF_EXPERIENCE = Math.round(
     (Date.now() - START_DATE.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
-const START_UX_ENGINEER = new Date('2024-02-20')
-const YEARS_OF_UX_ENGINEER_EXPERIENCE = Math.round(
-  (Date.now() - START_UX_ENGINEER.getTime()) / (1000 * 60 * 60 * 24 * 365.25))
 const DIVIDER = <svg xmlns="http://www.w3.org/2000/svg" className="w-1.75 lg:w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
-const SUPPORT = "flex flex-col gap-8 max-w-320 items-center mt-8"
+const SUPPORT = "flex flex-col gap-8 max-w-250 items-center mt-8"
 
 // 2. queries
 const query = `*[_type == "about" && _id == "about"][0] {
@@ -42,7 +39,7 @@ export default async function About() {
                         <span className="btn-text text-(--gray)">About me</span>
                         <h2>{about.heading}</h2>
                     </div>
-                    <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve been working with companies and agencies around the world as a designer and web developer. In the last {YEARS_OF_UX_ENGINEER_EXPERIENCE} years, I've pivoted into UX engineering bridging the gap between design and code. In my spare time, I make <A title="new-age music" link="https://www.youtube.com/@danielwijaya" /> and enjoy playing tennis.</p>
+                    <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve partnered with startups and agencies from the U.S., Canada, New Zealand, and beyond. I'm currently open to full-time UX Engineer role in Singapore, feel free to check out <A title="my resume" link="https://drive.google.com/file/d/1g2-1tF6l2J3GOTJN6D0DE1R_SZnUv4wU/view?usp=sharing" /> or <A title="my LinkedIn" link="https://www.linkedin.com/in/dnlwjy/" /> to learn more about me.</p>
                 </MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="w-full"><AboutImage /></MotionDiv>
@@ -74,7 +71,7 @@ export default async function About() {
                         <span className="btn-text text-(--gray)">Experience</span>
                         <h2>Over {YEARS_OF_EXPERIENCE} years of experience</h2>
                     </div>
-                    <p className="text-center max-w-280">Over the past {YEARS_OF_EXPERIENCE} years I’ve had the pleasure to work with companies from various sectors on many interesting projects. For more details, head over to my <A title="LinkedIn Profile" link="https://www.linkedin.com/in/dnlwjy/" />.</p>
+                    <p className="text-center max-w-280">As a fresh graduate living in the post-COVID era, I am grateful to have worked with companies, agencies, and startups on both on-site and remote role.</p>
                 </MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="flex flex-col gap-8 sm:gap-4 py-4 w-full">
@@ -103,7 +100,7 @@ export default async function About() {
                         <span className="btn-text text-(--gray)">Clients</span>
                         <h2>Brands I’ve worked or partnered with...</h2>
                     </div>
-                    <p className="text-center max-w-280">I’ve been lucky enough to establish relationships with amazing clients from all over the world, ranging from individual clients, through up-and-coming startups, to multinational companies.</p>
+                    <p className="text-center max-w-280">Throughout my career, I’ve partnered with these brands, and more to come...</p>
                 </MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 w-full justify-items-center">

@@ -14,7 +14,7 @@ const AboutImage = () => {
             alt="Picture of Daniel Wijaya"
             fill
             placeholder="blur"
-            sizes="(max-width: 680px) 100vw, 680px"
+            sizes="(max-width: 680px) 90vw, 680px"
             className="object-cover"
         />
     )
