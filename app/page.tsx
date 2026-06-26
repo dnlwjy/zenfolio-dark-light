@@ -46,7 +46,7 @@ export default async function Home() {
             <h1>
               <span className="text-(--gray)">I'm Daniel</span>
               <br />
-              UX Engineer
+              Frontend Engineer
             </h1>
             <div className="flex gap-6 items-center">
               <LinkButton

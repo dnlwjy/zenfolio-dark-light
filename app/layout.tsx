@@ -12,9 +12,9 @@ import type { About } from "@/types/sanity.types"
 
 // 1. const
 const SITE_NAME = "Daniel Wijaya"
-const SITE_TITLE = `${SITE_NAME} | UX Engineer`
+const SITE_TITLE = `${SITE_NAME} | Frontend Engineer`
 const TEMPLATE = `%s | ${SITE_NAME}`
-const FALLBACK_SITE_DESCRIPTION = "I’m Daniel Wijaya, a UX engineer specializing in bridging design and code through user-centered thinking while building scalable and maintainable systems. I live at the intersection of user empathy and systems."
+const FALLBACK_SITE_DESCRIPTION = "I’m Daniel Wijaya, a Frontend engineer specializing in bridging design and code through user-centered thinking while building scalable and maintainable systems. I live at the intersection of user, business, and backend systems."
 
 // 2. queries
 const query = `*[_type == "about" && _id == "about"][0] {

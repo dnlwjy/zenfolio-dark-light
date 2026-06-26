@@ -39,7 +39,7 @@ export default async function About() {
                         <span className="btn-text text-(--gray)">About me</span>
                         <h2>{about.heading}</h2>
                     </div>
-                    <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve partnered with startups and agencies from the U.S., Canada, New Zealand, and beyond. I'm currently open to full-time UX Engineer role in Singapore, feel free to check out <A title="my resume" link="https://drive.google.com/file/d/1g2-1tF6l2J3GOTJN6D0DE1R_SZnUv4wU/view?usp=sharing" /> or <A title="my LinkedIn" link="https://www.linkedin.com/in/dnlwjy/" /> to learn more about me.</p>
+                    <p className="text-center max-w-240">Over the past {YEARS_OF_EXPERIENCE} years, I’ve partnered with startups and agencies from the U.S., Canada, New Zealand, and beyond. I'm currently open to full-time Frontend Engineer role in Singapore or Australia, feel free to check out <A title="my resume" link="https://drive.google.com/file/d/1g2-1tF6l2J3GOTJN6D0DE1R_SZnUv4wU/view?usp=sharing" /> or <A title="my LinkedIn" link="https://www.linkedin.com/in/dnlwjy/" /> to learn more about me.</p>
                 </MotionDiv>
 
                 <MotionDiv variant="up" del={0.5} styles="w-full"><AboutImage /></MotionDiv>

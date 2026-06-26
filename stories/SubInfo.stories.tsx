@@ -34,7 +34,7 @@ export const Default: StoryObj<typeof SubInfo> = {
 export const Group: StoryObj<AllVariantsArgs> = {
   args: {
     title1: "Full Name", subtitle1: "Daniel Wijaya",
-    title2: "Role", subtitle2: "UX Engineer",
+    title2: "Role", subtitle2: "Frontend Engineer",
     title3: "Personal Website", subtitle3: "https://www.danielwijaya.com/",
   } as AllVariantsArgs,
   argTypes: {
