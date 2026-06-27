@@ -37,6 +37,11 @@ export const products = defineType({
       validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
     },
     {
+      name: "marketplaceName",
+      title: "Marketplace Name",
+      type: "string",
+    },
+    {
       name: "featured",
       title: "Featured",
       type: "boolean",

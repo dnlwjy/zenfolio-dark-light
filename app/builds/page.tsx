@@ -10,11 +10,14 @@ import { Metadata } from 'next'
 
 // 1. const
 const TITLECARD = "flex flex-col gap-8 z-10 w-full"
+const TITLECARD_CONTENT = "flex flex-col gap-4"
+const DIVIDER = "w-full mb-4"
 const IMAGE = "flex items-center justify-center border border-(--divider) bg-(--white)/7 w-full h-fit sm:size-60 sm:shrink-0 md:w-full md:h-fit md:shrink min-[1350px]:size-50 min-[1350px]:shrink-0 min-[1920px]:size-60"
 const LINKBUTTONS = "flex flex-wrap items-center sm:gap-x-5 gap-x-4 gap-y-2"
-const WRAPPER = "flex flex-col gap-4 md:pb-16 pb-20 sm:items-center items-start"
+const WRAPPER = "flex flex-col gap-4 pb-16 sm:items-center items-start"
 const TITLE = "Things I've Built in the past"
 const SUPPORT = "flex flex-col sm:flex-row md:flex-col min-[1350px]:flex-row items-start sm:items-center md:items-start min-[1350px]:items-center gap-8 w-full"
+const SKELETON_BAR = "h-4 bg-(--divider) rounded-sm"
 
 // 2. queries
 const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
@@ -25,14 +28,15 @@ const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
     year,
     preview,
     marketplaceURL,
+    marketplaceName,
     slug,
     featured,
 }`
 
 // 3. metadata
 export const metadata: Metadata = {
-  title: "Builds",
-  description: TITLE,
+    title: "Builds",
+    description: TITLE,
 }
 
 // 4. render
@@ -52,7 +56,7 @@ export default async function Builds() {
                     {nonFeatured.map((e) => (
                         <div key={e._id} className={WRAPPER}>
 
-                            <Divider styles="w-full mb-4" title={e.year} />
+                            <Divider styles={DIVIDER} title={e.year} />
                             <div className={SUPPORT}>
 
                                 {/* IMAGE */}
@@ -70,7 +74,7 @@ export default async function Builds() {
 
                                 {/* TITLE CARD */}
                                 <div className={TITLECARD}>
-                                    <div className="flex flex-col gap-4">
+                                    <div className={TITLECARD_CONTENT}>
                                         <h3 className="text-start">{e.title}</h3>
                                         <p className="line-clamp-3">{e.description}</p>
                                     </div>
@@ -81,7 +85,7 @@ export default async function Builds() {
                                             <>
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                                 <LinkButton
-                                                    title="View Online"
+                                                    title={e.marketplaceName?.trim() || "View Online"}
                                                     link={e.marketplaceURL}
                                                 />
                                             </>
@@ -93,37 +97,35 @@ export default async function Builds() {
                     ))}
 
                     {/* SKELETON PLACEHOLDERS */}
-                    {[0, 1, 2].map((i) => (
-                        <div key={`skeleton-${i}`} className={WRAPPER}>
-                            <Divider styles="w-full mb-4" title="Coming Soon" />
+                    <div className={WRAPPER}>
+                        <Divider styles={DIVIDER} title="Coming Soon" />
 
-                            <div className={SUPPORT}>
+                        <div className={SUPPORT}>
 
-                                {/* IMAGE */}
-                                <div className={IMAGE}>
-                                    <div className="w-[80%] aspect-square flex items-center justify-center">
-                                        <div className="aspect-square h-[80%] bg-(--divider) rounded-sm" />
+                            {/* IMAGE */}
+                            <div className={IMAGE}>
+                                <div className="w-[80%] aspect-square flex items-center justify-center">
+                                    <div className="aspect-square h-[80%] bg-(--divider) rounded-sm" />
+                                </div>
+                            </div>
+
+                            {/* TITLE CARD */}
+                            <div className={TITLECARD}>
+                                <div className={TITLECARD_CONTENT}>
+                                    <div className={`${SKELETON_BAR} w-3/4`} />
+                                    <div className="flex flex-col gap-2">
+                                        <div className={`${SKELETON_BAR} w-full`} />
+                                        <div className={`${SKELETON_BAR} w-5/6`} />
+                                        <div className={`${SKELETON_BAR} w-4/6`} />
                                     </div>
                                 </div>
-
-                                {/* TITLE CARD */}
-                                <div className={TITLECARD}>
-                                    <div className="flex flex-col gap-4">
-                                        <div className="h-7 bg-(--divider) rounded-sm w-3/4" />
-                                        <div className="flex flex-col gap-2">
-                                            <div className="h-4 bg-(--divider) rounded-sm w-full" />
-                                            <div className="h-4 bg-(--divider) rounded-sm w-5/6" />
-                                            <div className="h-4 bg-(--divider) rounded-sm w-4/6" />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-5">
-                                        <div className="h-4 bg-(--divider) rounded-sm w-16" />
-                                        <div className="h-4 bg-(--divider) rounded-sm w-36" />
-                                    </div>
+                                <div className={LINKBUTTONS}>
+                                    <div className={`${SKELETON_BAR} w-16`} />
+                                    <div className={`${SKELETON_BAR} w-36`} />
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    </div>
                 </MotionDiv>
 
                 {/* FEATURED CARD */}
@@ -138,7 +140,9 @@ export default async function Builds() {
                         />
                         <div className="flex flex-col gap-8 z-10 w-full sm:px-12 px-6 pb-12 pt-0!">
                             <div className="flex flex-col gap-4">
-                                <div className="flex gap-4 items-center h-1.25 w-full justify-between"><Divider /><span className="tag">{featured.year}</span></div>
+                                <div className="flex gap-4 items-center h-1.25 w-full justify-between">
+                                    <Divider /><span className="tag">{featured.year}</span>
+                                </div>
                                 <h2 className="text-start">{featured.title}</h2>
                                 <p className="line-clamp-4">{featured.description}</p>
                             </div>
@@ -149,7 +153,7 @@ export default async function Builds() {
                                     <>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-2.25" fill="currentColor" viewBox="-1 -1 7 12"><path stroke="var(--gray)" strokeWidth=".5" d="M.826 9.949H0L3.318.05h.826z" /></svg>
                                         <LinkButton
-                                            title="View Online"
+                                            title={featured.marketplaceName?.trim() || "View Online"}
                                             link={featured.marketplaceURL}
                                         />
                                     </>

@@ -235,6 +235,7 @@ export type Shop = {
   year?: number;
   preview?: string;
   marketplaceURL?: string;
+  marketplaceName?: string;
   featured?: boolean;
 };
 
