@@ -37,6 +37,12 @@ const query = `*[_type == "shop"] | order(year desc, orderRank asc) {
 export const metadata: Metadata = {
     title: "Builds",
     description: TITLE,
+    alternates: {
+        canonical: "/builds",
+    },
+    openGraph: {
+        url: "https://danielwijaya.com/builds",
+    },
 }
 
 // 4. render

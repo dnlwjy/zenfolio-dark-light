@@ -30,11 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL("https://danielwijaya.com"),
     title: { default: SITE_TITLE, template: TEMPLATE },
     description: siteDesc?.heading ?? FALLBACK_SITE_DESCRIPTION,
-    alternates: { canonical: "/" },
     icons: { icon: "/favicon.png" },
     openGraph: {
       type: "website",
-      url: "https://danielwijaya.com",
       siteName: SITE_NAME,
       images: ["/og-default.jpg"],
     },

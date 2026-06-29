@@ -8,8 +8,14 @@ import ContactForm from '@/components/ContactForm'
 
 // 3. metadata
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Have a project in mind? Let's talk — I'm open to freelance, collaboration, and full-time opportunities.",
+    title: "Contact",
+    description: "Have a project in mind? Let's talk — I'm open to freelance, collaboration, and full-time opportunities.",
+    alternates: {
+        canonical: "/contact",
+    },
+    openGraph: {
+        url: "https://danielwijaya.com/contact",
+    },
 }
 
 // 4. render

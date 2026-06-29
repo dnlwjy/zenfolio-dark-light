@@ -19,8 +19,14 @@ const query = `*[_type == "projects"] | order(year desc, orderRank asc) {
 
 // 3. metadata
 export const metadata: Metadata = {
-  title: "Case Study",
-  description: SUPPORT
+    title: "Case Study",
+    description: SUPPORT,
+    alternates: {
+        canonical: "/case-study",
+    },
+    openGraph: {
+        url: "https://danielwijaya.com/case-study",
+    },
 }
 
 // 4. render
@@ -30,7 +36,7 @@ export default async function CaseStudies() {
     return (
         <main>
             <section className="sm">
-                
+
                 <MotionDiv variant="up" styles="flex flex-col gap-6 items-center w-full">
                     <h1>
                         <span className="text-(--gray)">Archive of</span>

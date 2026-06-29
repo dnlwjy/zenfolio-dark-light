@@ -23,7 +23,13 @@ const query = `*[_type == "about" && _id == "about"][0] {
 
 // 3. metadata
 export const metadata: Metadata = {
-  title: "About",
+    title: "About",
+    alternates: {
+        canonical: "/about",
+    },
+    openGraph: {
+        url: "https://danielwijaya.com/about",
+    },
 }
 
 // 4. render

@@ -7,6 +7,7 @@ import { client } from '../sanity/lib/client'
 import { PortableText } from "@portabletext/react"
 import Serializers from "@/lib/Serializers"
 import type { About } from '@/types/sanity.types'
+import type { Metadata } from "next";
 
 // 1. const
 
@@ -22,6 +23,14 @@ const queryAbout = `*[_type == "about" && _id == "about"][0] {
 }`
 
 // 3. metadata
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    url: "https://danielwijaya.com",
+  },
+}
 
 // 4. render
 export default async function Home() {
