@@ -4,7 +4,7 @@ import "../app/globals.css";
 export default { title: "Foundation/Headings" };
 
 const headings: { tag: ElementType; base: string; sm: string; lg: string; text: string }[] = [
-  { tag: "h1", base: "48px", sm: "72px", lg: "96px", text: "Heading 1" },
+  { tag: "h1", base: "48px", sm: "68px", lg: "92px", text: "Heading 1" },
   { tag: "h2", base: "28px", sm: "32px", lg: "40px", text: "Heading 2" },
   { tag: "h3", base: "24px", sm: "24px", lg: "28px", text: "Heading 3" },
 ];

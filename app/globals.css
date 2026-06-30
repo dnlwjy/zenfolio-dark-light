@@ -70,7 +70,7 @@ h1, h2, h3 {
   font-family: "playfair", serif;
   @apply text-center text-(--white) leading-[1.1];
 }
-h1 { @apply lg:text-[96px] sm:text-[72px] text-[48px]; }
+h1 { @apply lg:text-[92px] sm:text-[68px] text-[48px]; }
 h2 { @apply lg:text-[40px] sm:text-[32px] text-[28px]; }
 h3 { @apply lg:text-[28px] text-[24px]; }
 
