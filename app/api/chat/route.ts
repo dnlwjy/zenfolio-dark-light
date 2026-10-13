@@ -20,8 +20,9 @@ import { computeCost } from '@/lib/ai/pricing'
 import { resolveActiveModel, type ResolvedModel } from '@/lib/ai/providers'
 import { chatConfig } from '@/lib/config/chat'
 import { detectEscalationIntent } from '@/lib/chat/boundary'
-import { kbVersion } from '@/lib/knowledge'
+import { kbVersion, chatbotContent } from '@/lib/knowledge'
 import { visitorMessages } from '@/lib/chat/messages'
+import { resolveChatbotContent } from '@/lib/chat/content'
 import { runCompletion } from '@/lib/chat/complete'
 import { buildMessages, type ChatMessage, type HistoryMessage } from '@/lib/chat/prompt'
 import { checkMessageLimits, checkSessionLimit, createMemoryRateLimitStore } from '@/lib/chat/rate-limit'
@@ -103,6 +104,7 @@ export async function POST(request: Request) {
     route: turn.route,
     history: turn.history as HistoryMessage[],
     question: turn.question,
+    faqs: resolveChatbotContent(chatbotContent).faqs,
   })
 
   const escalated = detectEscalationIntent(turn.question)

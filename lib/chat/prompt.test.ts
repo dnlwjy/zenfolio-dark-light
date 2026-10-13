@@ -21,6 +21,13 @@ describe('buildSystemPrompt', () => {
 
     expect(one.length).toBeLessThan(many.length)
   })
+
+  it('menyertakan FAQ saat diberikan', () => {
+    const prompt = buildSystemPrompt('/about', 2, [{ question: 'Apakah tersedia?', answer: 'Ya, cek halaman kontak.' }])
+
+    expect(prompt).toContain('FREQUENTLY ASKED QUESTIONS')
+    expect(prompt).toContain('Apakah tersedia?')
+  })
 })
 
 describe('buildMessages', () => {
