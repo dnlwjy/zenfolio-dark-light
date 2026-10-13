@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run knowledge:build && next dev",
+    "build": "npm run knowledge:build && next build",
     "start": "next start",
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "knowledge:build": "node scripts/build-knowledge.mts",
+    "knowledge:build:force": "node scripts/build-knowledge.mts --force"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.7",

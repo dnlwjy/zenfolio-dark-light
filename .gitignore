@@ -46,3 +46,6 @@ storybook-static
 
 # local-only planning docs (PRD, specs) — intentionally not committed
 /docs/
+
+# generated knowledge bundle (dibuat saat dev/build)
+/lib/knowledge/knowledge.generated.json
