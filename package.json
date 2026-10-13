@@ -10,7 +10,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "knowledge:build": "node scripts/build-knowledge.mts",
-    "knowledge:build:force": "node scripts/build-knowledge.mts --force"
+    "knowledge:build:force": "node scripts/build-knowledge.mts --force",
+    "test:unit": "vitest run --project unit"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.7",
