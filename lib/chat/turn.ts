@@ -31,7 +31,7 @@ export const chatRequestSchema = z.object({
 export type ChatRequest = z.infer<typeof chatRequestSchema>
 
 export type PreparedTurn =
-  | { ok: true; question: string; route: string; sessionId: string; turnCount: number; history: HistoryMessage[] }
+  | { ok: true; question: string; route: string; sessionId: string; turnCount: number; history: HistoryMessage[]; recaptchaToken: string }
   | { ok: false; status: number; message: string }
 
 export function prepareTurn(payload: unknown, maxInputChars?: number): PreparedTurn {
@@ -52,5 +52,6 @@ export function prepareTurn(payload: unknown, maxInputChars?: number): PreparedT
     sessionId: parsed.data.sessionId,
     turnCount: parsed.data.turnCount,
     history: parsed.data.history ?? [],
+    recaptchaToken: parsed.data.recaptchaToken ?? '',
   }
 }
