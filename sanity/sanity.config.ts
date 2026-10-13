@@ -25,6 +25,15 @@ export default defineConfig({
                   .documentId('about')
               ),
 
+            S.listItem()
+              .title('Chatbot')
+              .id('chatbot')
+              .child(
+                S.document()
+                  .schemaType('chatbot')
+                  .documentId('chatbot')
+              ),
+
             orderableDocumentListDeskItem({
               type: 'shop',
               title: 'Builds',
@@ -41,7 +50,7 @@ export default defineConfig({
 
             ...S.documentTypeListItems().filter(
               (listItem) =>
-                !['shop', 'projects', 'about'].includes(
+                !['shop', 'projects', 'about', 'chatbot'].includes(
                   listItem.getId() || ''
                 )
             ),
@@ -56,7 +65,7 @@ export default defineConfig({
 
   document: {
     newDocumentOptions: (prev) =>
-      prev.filter((item) => item.templateId !== 'about'),
+      prev.filter((item) => !['about', 'chatbot'].includes(item.templateId ?? '')),
 
     actions: (prev, context) => {
       if (context.schemaType === 'about') {
