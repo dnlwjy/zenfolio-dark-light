@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { m } from 'framer-motion'
@@ -10,6 +10,7 @@ import { Chat, Close, Contact } from './IconLibrary'
 import { useChatStream } from './chat/useChatStream'
 import { resolveGreeting, resolveSuggestedQuestions, type ResolvedChatbotContent } from '@/lib/chat/content'
 import { trackEvent } from '@/lib/chat/events'
+import { getRecaptchaToken } from '@/lib/chat/recaptcha-client'
 import { visitorMessages } from '@/lib/chat/messages'
 
 const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
@@ -35,17 +36,27 @@ export interface ChatbotProps {
   content: ResolvedChatbotContent
   whatsappNumber: string
   contactPath: string
+  recaptchaSiteKey: string
+  recaptchaAction: string
   styles?: string
 }
 
-export default function Chatbot({ content, whatsappNumber, contactPath, styles = '' }: ChatbotProps) {
+export default function Chatbot({
+  content,
+  whatsappNumber,
+  contactPath,
+  recaptchaSiteKey,
+  recaptchaAction,
+  styles = '',
+}: ChatbotProps) {
   const pathname = usePathname() ?? '/'
   const [open, setOpen] = useState(false)
   const [mount, setMount] = useState(false)
   const [input, setInput] = useState('')
   const [teaser, setTeaser] = useState('')
   const sessionId = useMemo(sessionIdFor, [])
-  const { state, send, stop } = useChatStream({ route: pathname, sessionId })
+  const getToken = useCallback(() => getRecaptchaToken(recaptchaSiteKey, recaptchaAction), [recaptchaSiteKey, recaptchaAction])
+  const { state, send, stop } = useChatStream({ route: pathname, sessionId, getToken })
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const greeting = resolveGreeting(pathname, content)

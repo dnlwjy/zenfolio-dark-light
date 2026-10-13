@@ -88,7 +88,7 @@ export const chatConfig = {
     /** Pesan per menit untuk satu sesi/IP. */
     messagesPerMinute: envInt('CHAT_RL_MESSAGES_PER_MINUTE', 6),
     /** Jumlah sesi baru yang boleh dibuat satu IP per hari (anti-refresh abuse). */
-    sessionsPerIpPerDay: envInt('CHAT_RL_SESSIONS_PER_IP_PER_DAY', 2),
+    sessionsPerIpPerDay: envInt('CHAT_RL_SESSIONS_PER_IP_PER_DAY', 5),
     /** Batas turn per IP per hari — mencegah satu pihak menghabiskan anggaran. */
     messagesPerIpPerDay: envInt('CHAT_RL_MESSAGES_PER_IP_PER_DAY', 25),
     /** Pengaman kasar global: total turn seluruh situs per hari. */

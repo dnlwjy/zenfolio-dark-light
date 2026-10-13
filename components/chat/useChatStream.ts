@@ -18,11 +18,12 @@ const INITIAL_STATE: ChatState = { bubbles: [], streaming: false, showEscalation
 export type UseChatStreamArgs = {
   route: string
   sessionId: string
-  recaptchaToken?: string
+  /** Pengambil token reCAPTCHA v3; dipanggil per pesan karena token sekali pakai. */
+  getToken?: () => Promise<string>
   onEvent?: (event: StreamEvent) => void
 }
 
-export function useChatStream({ route, sessionId, recaptchaToken, onEvent }: UseChatStreamArgs) {
+export function useChatStream({ route, sessionId, getToken, onEvent }: UseChatStreamArgs) {
   const [state, setState] = useState<ChatState>(INITIAL_STATE)
   const abortRef = useRef<AbortController | null>(null)
   const historyRef = useRef<HistoryMessage[]>([])
@@ -43,6 +44,8 @@ export function useChatStream({ route, sessionId, recaptchaToken, onEvent }: Use
       abortRef.current = controller
       let answer = ''
 
+      const recaptchaToken = getToken ? await getToken().catch(() => '') : ''
+
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -53,7 +56,7 @@ export function useChatStream({ route, sessionId, recaptchaToken, onEvent }: Use
             sessionId,
             turnCount: turnRef.current,
             history: historyRef.current,
-            recaptchaToken: recaptchaToken ?? '',
+            recaptchaToken,
           }),
           signal: controller.signal,
         })
@@ -108,7 +111,7 @@ export function useChatStream({ route, sessionId, recaptchaToken, onEvent }: Use
         abortRef.current = null
       }
     },
-    [route, sessionId, recaptchaToken, onEvent],
+    [route, sessionId, getToken, onEvent],
   )
 
   return { state, send, stop }

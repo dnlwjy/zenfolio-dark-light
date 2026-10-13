@@ -121,6 +121,8 @@ export default async function RootLayout({
                 content={chatbotCopy}
                 whatsappNumber={whatsappNumber}
                 contactPath={chatConfig.escalation.contactPath}
+                recaptchaSiteKey={process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY ?? ''}
+                recaptchaAction={chatConfig.recaptcha.action}
               />
               <main>
                 {children}

@@ -15,11 +15,11 @@ describe('buildSystemPrompt', () => {
     expect(buildSystemPrompt('/builds')).toContain('About Daniel Wijaya')
   })
 
-  it('menghormati batas jumlah entri', () => {
-    const one = buildSystemPrompt('/builds', 1)
-    const many = buildSystemPrompt('/builds', 6)
+  it('menaruh entri halaman aktif lebih dulu, lalu seluruh korpus', () => {
+    const prompt = buildSystemPrompt('/builds', 1)
 
-    expect(one.length).toBeLessThan(many.length)
+    expect(prompt.indexOf('Builds')).toBeLessThan(prompt.indexOf('About Daniel Wijaya'))
+    expect(prompt).toContain('Animated Framer Website')
   })
 
   it('menyertakan FAQ saat diberikan', () => {
