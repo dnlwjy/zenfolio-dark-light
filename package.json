@@ -12,7 +12,8 @@
     "knowledge:build": "node scripts/build-knowledge.mts",
     "knowledge:build:force": "node scripts/build-knowledge.mts --force",
     "test:unit": "vitest run --project unit",
-    "chatbot:seed": "node scripts/build-chatbot-seed.mts"
+    "chatbot:seed": "node scripts/build-chatbot-seed.mts",
+    "eval:chat": "bun scripts/eval-chat.mts"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.7",
