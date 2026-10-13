@@ -1,0 +1,122 @@
+{
+  "_id": "chatbot",
+  "_type": "chatbot",
+  "greetings": [
+    {
+      "_key": "greeting-root",
+      "route": "/",
+      "text": "Hi! I'm Daniel's portfolio assistant. Ask me anything about his work, projects, or how he can help."
+    },
+    {
+      "_key": "greeting-about",
+      "route": "/about",
+      "text": "This is Daniel's story — the work, the tools, and how he thinks. Feel free to ask me anything."
+    },
+    {
+      "_key": "greeting-case-study",
+      "route": "/case-study",
+      "text": "These are Daniel's case studies. Feel free to ask me anything about them."
+    },
+    {
+      "_key": "greeting-builds",
+      "route": "/builds",
+      "text": "These are the tools and products Daniel builds. Ask me about any of them."
+    },
+    {
+      "_key": "greeting-root",
+      "route": "*",
+      "text": "Feel free to ask me anything about Daniel's work."
+    }
+  ],
+  "suggestedQuestions": [
+    {
+      "_key": "questions-root",
+      "route": "/",
+      "questions": [
+        "What does Daniel do best?",
+        "Which project is closest to mine?",
+        "How can I work with Daniel?"
+      ]
+    },
+    {
+      "_key": "questions-about",
+      "route": "/about",
+      "questions": [
+        "Which tools does Daniel use daily?",
+        "What is his experience?",
+        "What kind of projects does he take on?"
+      ]
+    },
+    {
+      "_key": "questions-case-study",
+      "route": "/case-study",
+      "questions": [
+        "Which case study fits a booking system?",
+        "What was the hardest problem he solved?",
+        "Which project used AI?"
+      ]
+    },
+    {
+      "_key": "questions-builds",
+      "route": "/builds",
+      "questions": [
+        "What is the most recent build?",
+        "Does he publish free templates?",
+        "Where can I buy his work?"
+      ]
+    },
+    {
+      "_key": "questions-contact",
+      "route": "/contact",
+      "questions": [
+        "How do I start a project with Daniel?",
+        "Is he available for new projects?",
+        "How soon can he start?"
+      ]
+    },
+    {
+      "_key": "questions-root",
+      "route": "*",
+      "questions": [
+        "What does Daniel do?",
+        "Which project is most relevant to me?",
+        "How can I contact him?"
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "_key": "faq-1",
+      "question": "Is Daniel available for new projects?",
+      "answer": "Availability is kept current on the contact page. The quickest way to confirm timing for a specific project is to message him directly."
+    },
+    {
+      "_key": "faq-2",
+      "question": "How does Daniel usually work with a client?",
+      "answer": "He works as a designer-developer: design in Figma, build in Framer or React, then hand over with documentation, SEO, and AI-discoverability handled."
+    },
+    {
+      "_key": "faq-3",
+      "question": "Where can I see live examples of his work?",
+      "answer": "The case studies page lists shipped work with the problem and the result, and the builds page lists products and templates with marketplace links."
+    }
+  ],
+  "escalation": {
+    "triggers": [
+      "hire",
+      "hiring",
+      "project",
+      "quote",
+      "rate",
+      "budget",
+      "available",
+      "availability",
+      "collaborate",
+      "freelance",
+      "contract"
+    ],
+    "message": "Would you like me to connect you directly with Daniel on WhatsApp?",
+    "waMessageTemplate": "Hi Daniel, I'm on your portfolio ({page}) and would like to discuss a project."
+  },
+  "availability": ""
+}
