@@ -26,14 +26,18 @@ import { resolveChatbotContent } from '@/lib/chat/content'
 import { runCompletion } from '@/lib/chat/complete'
 import { buildMessages, type ChatMessage, type HistoryMessage } from '@/lib/chat/prompt'
 import { checkMessageLimits, checkSessionLimit, createMemoryRateLimitStore } from '@/lib/chat/rate-limit'
+import { createPostgresRateLimitStore } from '@/lib/chat/rate-limit-store-postgres'
+import { dailyBudgetStatus } from '@/lib/chat/cost-meter'
+import { persistTurn } from '@/lib/chat/persist'
 import { verifyRecaptcha } from '@/lib/chat/recaptcha'
 import { prepareTurn } from '@/lib/chat/turn'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Store dibuat sekali di scope modul supaya bertahan antar permintaan pada instance yang sama.
-const rateLimitStore = createMemoryRateLimitStore()
+// Store dipilih dari konfigurasi: `db` untuk produksi (lintas instance), `memory` untuk lokal.
+const rateLimitStore =
+  chatConfig.rateLimit.store === 'db' ? createPostgresRateLimitStore() : createMemoryRateLimitStore()
 const encoder = new TextEncoder()
 
 function sseEvent(payload: unknown): Uint8Array {
@@ -92,6 +96,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: visitorMessages.slowDown }, { status: 429 })
   }
 
+  try {
+    const budget = await dailyBudgetStatus()
+    if (budget.exceeded) {
+      logEvent('warn', 'chat.budget_exceeded', { ipHash, spentUsd: budget.spentUsd, limitUsd: budget.limitUsd })
+      return NextResponse.json({ message: visitorMessages.temporarilyUnavailable }, { status: 429 })
+    }
+  } catch (error) {
+    // Meter biaya tidak boleh memblokir pengunjung; rate limit tetap menjadi pengaman.
+    logEvent('warn', 'chat.budget_check_failed', { message: error instanceof Error ? error.message : String(error) })
+  }
+
   let resolved: ResolvedModel
   try {
     resolved = resolveActiveModel()
@@ -122,6 +137,23 @@ export async function POST(request: Request) {
       }
 
       controller.close()
+
+      void persistTurn({
+        sessionId: turn.sessionId,
+        question: turn.question,
+        answer: answer.text,
+        pageUrl: turn.route,
+        provider: resolved.provider.id,
+        model: resolved.model.id,
+        kbVersion,
+        tokensIn: answer.done.usage.tokensIn,
+        cachedTokensIn: answer.done.usage.cachedTokensIn,
+        tokensOut: answer.done.usage.tokensOut,
+        costUsd: answer.done.costUsd,
+        latencyMs: Date.now() - startedAt,
+        escalated,
+        recaptchaScore: recaptcha.score,
+      }).catch((error) => logEvent('error', 'chat.persist_failed', { message: error instanceof Error ? error.message : String(error) }))
 
       logEvent('info', 'chat.turn_complete', {
         sessionId: turn.sessionId,
