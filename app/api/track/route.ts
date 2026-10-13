@@ -9,6 +9,9 @@ import { NextResponse } from 'next/server'
 
 import { z } from 'zod'
 
+import { getDb } from '@/db/client'
+import { chatEvent } from '@/db/schema'
+
 export const runtime = 'nodejs'
 
 const eventSchema = z.object({
@@ -30,6 +33,20 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ ok: false }, { status: 400 })
 
   console.info(JSON.stringify({ level: 'info', event: 'chat.track', ...parsed.data }))
+
+  try {
+    await getDb().insert(chatEvent).values({
+      sessionId: parsed.data.sessionId,
+      type: parsed.data.type,
+      pageUrl: parsed.data.pageUrl ?? null,
+      meta: parsed.data.meta ?? null,
+    })
+  } catch (error) {
+    // Analitik tidak boleh menggagalkan pengalaman pengunjung; kegagalan cukup dicatat.
+    console.warn(
+      JSON.stringify({ level: 'warn', event: 'chat.track_persist_failed', message: error instanceof Error ? error.message : String(error) }),
+    )
+  }
 
   return NextResponse.json({ ok: true })
 }
