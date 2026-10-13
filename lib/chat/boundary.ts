@@ -13,7 +13,6 @@ import { visitorMessages } from './messages'
 export const DEFAULT_HIRE_TRIGGERS = [
   'hire',
   'hiring',
-  'project',
   'quote',
   'rate',
   'budget',
@@ -22,6 +21,8 @@ export const DEFAULT_HIRE_TRIGGERS = [
   'collaborate',
   'freelance',
   'contract',
+  'work with you',
+  'work together',
 ] as const
 
 export type InputGuard = { ok: true; value: string } | { ok: false; message: string }

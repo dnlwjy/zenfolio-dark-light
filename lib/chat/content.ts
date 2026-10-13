@@ -61,7 +61,7 @@ export const DEFAULT_CHATBOT_CONTENT: ResolvedChatbotContent = {
   suggestedQuestions: { ...SUGGESTED_QUESTIONS },
   faqs: FAQS,
   escalation: {
-    triggers: ['hire', 'hiring', 'project', 'quote', 'rate', 'budget', 'available', 'availability', 'collaborate', 'freelance', 'contract'],
+    triggers: ['hire', 'hiring', 'quote', 'rate', 'budget', 'available', 'availability', 'collaborate', 'freelance', 'contract', 'work with you', 'work together'],
     message: 'Would you like me to connect you directly with Daniel on WhatsApp?',
     waMessageTemplate: "Hi Daniel, I'm on your portfolio ({page}) and would like to discuss a project.",
   },

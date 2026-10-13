@@ -28,6 +28,12 @@ describe('detectEscalationIntent', () => {
     expect(detectEscalationIntent('What is a case study?')).toBe(false)
   })
 
+  it('tidak menandai pertanyaan biasa yang memuat kata "project"', () => {
+    // Regresi dari smoke test: pertanyaan "Which project dealt with reservations?" sempat
+    // tercatat sebagai minat hiring karena pemicu "project" terlalu generik.
+    expect(detectEscalationIntent('Which project dealt with reservations?')).toBe(false)
+  })
+
   it('menghormati daftar pemicu dari CMS', () => {
     expect(detectEscalationIntent('bisa ngobrol soal kolaborasi?', ['kolaborasi'])).toBe(true)
     expect(detectEscalationIntent('bisa ngobrol soal kolaborasi?', ['hire'])).toBe(false)
