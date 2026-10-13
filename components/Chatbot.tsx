@@ -1,132 +1,207 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import Button from './Button'
-import { Chat, Close, Contact } from './IconLibrary'
 import { m } from 'framer-motion'
 
-const SUPPORT = "lg:h-14 lg:w-14 h-12 w-12"
+import Button from './Button'
+import { Chat, Close, Contact } from './IconLibrary'
+import { useChatStream } from './chat/useChatStream'
+import { resolveGreeting, resolveSuggestedQuestions, type ResolvedChatbotContent } from '@/lib/chat/content'
+import { trackEvent } from '@/lib/chat/events'
+import { visitorMessages } from '@/lib/chat/messages'
+
+const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
+const GREETING_DELAY_MS = 2500
+const SESSION_KEY = 'chat:session-id'
+
+function sessionIdFor(): string {
+  if (typeof window === 'undefined') return 'server'
+
+  try {
+    const existing = window.sessionStorage.getItem(SESSION_KEY)
+    if (existing) return existing
+
+    const created = crypto.randomUUID()
+    window.sessionStorage.setItem(SESSION_KEY, created)
+    return created
+  } catch {
+    return `fallback-${Date.now()}`
+  }
+}
 
 export interface ChatbotProps {
-  knowledgeBase?: unknown[]
-  welcomeMessage?: string
-  demoMode?: boolean
-  mountChatbot?: boolean
+  content: ResolvedChatbotContent
+  whatsappNumber: string
+  contactPath: string
   styles?: string
 }
 
-export default function Chatbot({
-  welcomeMessage = 'Hi there. This is static chatbot UI preview.',
-  knowledgeBase: _knowledgeBase,
-  demoMode: _demoMode,
-  mountChatbot: _mountChatbot,
-  styles = '',
-}: ChatbotProps) {
+export default function Chatbot({ content, whatsappNumber, contactPath, styles = '' }: ChatbotProps) {
+  const pathname = usePathname() ?? '/'
   const [open, setOpen] = useState(false)
   const [mount, setMount] = useState(false)
-  const handleToggleChatbot = () => {
-    if (!mount) {
-      setMount(true)
+  const [input, setInput] = useState('')
+  const [teaser, setTeaser] = useState('')
+  const sessionId = useMemo(sessionIdFor, [])
+  const { state, send, stop } = useChatStream({ route: pathname, sessionId })
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const greeting = resolveGreeting(pathname, content)
+  const questions = resolveSuggestedQuestions(pathname, content)
+
+  // Sapaan muncul sekali per halaman per sesi, tidak di halaman kontak, dan tidak otomatis membuka panel.
+  useEffect(() => {
+    if (pathname === contactPath || !greeting) return
+
+    const seenKey = `chat:greeted:${pathname}`
+    try {
+      if (window.sessionStorage.getItem(seenKey)) return
+    } catch {
+      /* sessionStorage dapat diblokir; sapaan tetap ditampilkan sekali per mount */
     }
-    setOpen((prev) => !prev)
+
+    const timer = window.setTimeout(() => {
+      setTeaser(greeting)
+      trackEvent('greeting_shown', sessionId, pathname)
+      try {
+        window.sessionStorage.setItem(seenKey, '1')
+      } catch {
+        /* diabaikan */
+      }
+    }, GREETING_DELAY_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [pathname, greeting, contactPath, sessionId])
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
+  }, [state.bubbles])
+
+  const handleToggleChatbot = () => {
+    if (!mount) setMount(true)
+    if (!open) trackEvent('chat_open', sessionId, pathname)
+    setTeaser('')
+    setOpen((previous) => !previous)
   }
 
-  const messages = [
-    {
-      id: 'bot-welcome',
-      role: 'assistant',
-      content: welcomeMessage,
-    },
-    {
-      id: 'user-question',
-      role: 'user',
-      content: 'Can you summarize your experience in frontend engineering?',
-    },
-    {
-      id: 'bot-answer',
-      role: 'assistant',
-      content:
-        'Sure. This UI-only mock shows where an assistant response appears. Connect your real chat logic here when ready.',
-    },
-    {
-      id: 'user-questionsss',
-      role: 'user',
-      content: 'Can you summarize your experience in frontend engineering?',
-    },
-  ]
+  const handleSend = async (text: string) => {
+    if (state.streaming || !text.trim()) return
+    setInput('')
+    trackEvent('message_sent', sessionId, pathname)
+    await send(text.trim())
+  }
+
+  const whatsappHref = useMemo(() => {
+    if (!whatsappNumber) return ''
+
+    const page = pathname === '/' ? 'home' : pathname.replace(/^\//, '')
+    const text = encodeURIComponent(content.escalation.waMessageTemplate.replace('{page}', page))
+    const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+
+    return isMobile
+      ? `https://wa.me/${whatsappNumber}?text=${text}`
+      : `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${text}`
+  }, [whatsappNumber, pathname, content.escalation.waMessageTemplate])
 
   return (
     <div className={`${SUPPORT} ${styles}`}>
+      {/* Teaser sapaan per halaman (bukan panel) */}
+      {teaser && !open && (
+        <button
+          type="button"
+          onClick={handleToggleChatbot}
+          className="absolute bottom-full right-0 mb-3 w-64 text-left text-[13px] leading-[140%] rounded-lg border border-(--white)/15 bg-(--black) px-3 py-2 text-(--white)"
+        >
+          {teaser}
+        </button>
+      )}
 
-      {/* Glow animation with pulse */}
-      <span className={`absolute inset-0  ${open ? '' : 'bg-(--white)/70 blur-lg animate-pulse [animation-duration:1s]'} rounded-full transition-all duration-800 pointer-events-none`} />
+      <span className={`absolute inset-0 ${open ? '' : 'bg-(--white)/70 blur-lg animate-pulse [animation-duration:1s]'} rounded-full transition-all duration-800 pointer-events-none`} />
 
       <Button
         styles={`${SUPPORT} z-50`}
         icon={open ? Close : Chat}
         afterClickedLogic={open}
-        aria-label="Toggle chat widget"
+        aria-label={open ? 'Close chat' : 'Open chat'}
         click={handleToggleChatbot}
       />
 
       {mount && (
         <m.div
           initial={{ opacity: 0, y: 24 }}
-          animate={{
-            opacity: open ? 1 : 0,
-            y: open ? 0 : 24
-          }}
+          animate={{ opacity: open ? 1 : 0, y: open ? 0 : 24 }}
+          aria-hidden={!open}
           className={`
-            absolute text-[14px] leading-[135%] rounded-tl-2xl bottom-full mb-3 right-0 flex flex-col overflow-hidden bg-(--black) border border-(--white)/10 w-[calc(100dvw-40px)] max-w-85 h-[calc(100dvh-170px)] max-h-140
+            absolute text-[14px] leading-[135%] rounded-tl-2xl bottom-full mb-3 right-0 flex flex-col overflow-hidden bg-(--black) border border-(--white)/10
+            w-[calc(100dvw-40px)] max-w-85 h-[calc(100dvh-170px)] max-h-140
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
+          <div className="flex-1 min-h-0 overflow-y-auto px-3 py-6 flex flex-col gap-5" aria-live="polite">
+            {state.bubbles.length === 0 && <p className="text-(--white)/70">{greeting}</p>}
 
-          {/* Messages */}
-          <div className="flex-1 min-h-0 overflow-y-auto px-3 py-6 flex flex-col gap-5">
-            {messages.map((e) => (
-              <div
-                key={e.id}
-                className={`flex items-start gap-3 ${e.role === 'user' ? 'self-end w-[88%]' : 'self-start w-full'}`}
-              >
-                {e.role !== 'user' && (
+            {state.bubbles.map((bubble) => (
+              <div key={bubble.id} className={`flex items-start gap-3 ${bubble.role === 'user' ? 'self-end w-[88%]' : 'self-start w-full'}`}>
+                {bubble.role !== 'user' && (
                   <div className="relative shrink-0 -top-1">
-                    <Image
-                      src="/favicon.png"
-                      alt="Chatbot profile"
-                      width={24}
-                      height={24}
-                      className="rounded-full border border-(--divider)"
-                    />
-                    <span className="absolute right-0 bottom-0 w-2 h-2 translate-x-1/5 translate-y-1/5 rounded-full border border-(--black) bg-(--white) animate-pulse [animation-duration:1s]" />
+                    <Image src="/favicon.png" alt="" width={24} height={24} className="rounded-full border border-(--divider)" />
                   </div>
                 )}
 
-                <p
-                  className={`p-3 py-2 rounded-lg wrap-break-word ${e.role === 'user'
-                    ? 'bg-(--white) text-(--black) rounded-tr-none!'
-                    : 'text-(--white) p-0!'
-                    }`}
-                >
-                  {e.content}
+                <p className={`p-3 py-2 rounded-lg wrap-break-word whitespace-pre-wrap ${bubble.role === 'user' ? 'bg-(--white) text-(--black) rounded-tr-none!' : 'text-(--white) p-0!'}`}>
+                  {bubble.text || (bubble.pending ? '…' : '')}
                 </p>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
+          {state.showEscalation && whatsappHref && (
+            <div className="px-3 pb-2 flex flex-col gap-2">
+              <p className="text-(--white)/80 text-[13px]">{content.escalation.message}</p>
+              <div className="flex flex-wrap gap-2">
+                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('whatsapp_open', sessionId, pathname)} className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px]">
+                  {visitorMessages.escalation.cta}
+                </a>
+                <a href={contactPath} className="rounded-md border border-(--white)/25 px-3 py-2 text-[13px]">
+                  {visitorMessages.escalation.secondary}
+                </a>
+              </div>
+            </div>
+          )}
 
-          {/* Input */}
+          {state.bubbles.length === 0 && questions.length > 0 && (
+            <div className="px-3 pb-2 flex flex-wrap gap-2">
+              {questions.map((question) => (
+                <button key={question} type="button" onClick={() => void handleSend(question)} className="rounded-full border border-(--white)/25 px-3 py-1 text-[12px]">
+                  {question}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="p-3 flex gap-3 items-end">
             <textarea
               className="flex-1"
-              placeholder="Type your message..."
+              placeholder="Ask about my work..."
               rows={1}
-              defaultValue=""
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                  event.preventDefault()
+                  void handleSend(input)
+                }
+              }}
             />
-            <Button icon={Contact} aria-label="Send message" type="button" styles="w-11 h-11" />
+
+            {state.streaming ? (
+              <Button icon={Close} aria-label="Stop response" type="button" styles="w-11 h-11" click={stop} />
+            ) : (
+              <Button icon={Contact} aria-label="Send question" type="button" styles="w-11 h-11" click={() => void handleSend(input)} />
+            )}
           </div>
         </m.div>
-      )
-      }
+      )}
     </div>
   )
 }

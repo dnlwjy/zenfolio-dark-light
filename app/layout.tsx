@@ -10,6 +10,13 @@ import ThemeProvider from "@/context/ThemeProvider"
 import { client } from '../sanity/lib/client'
 import type { About } from "@/types/sanity.types"
 import Chatbot from "@/components/Chatbot";
+import { chatbotContent } from '@/lib/knowledge'
+import { resolveChatbotContent } from '@/lib/chat/content'
+import { chatConfig } from '@/lib/config/chat'
+
+// Konten chatbot: default di kode, ditimpa isi doc `chatbot` di Sanity bila ada.
+const chatbotCopy = resolveChatbotContent(chatbotContent)
+const whatsappNumber = process.env.WHATSAPP_NUMBER?.trim() ?? ''
 
 // 1. const
 const SITE_NAME = "Daniel Wijaya"
@@ -109,7 +116,12 @@ export default async function RootLayout({
             >
               <Header styles="fixed top-6 inset-x-0 mx-auto z-50" />
               <ToggleTheme styles="fixed top-8 right-8 z-50 sm:flex hidden" />
-              <Chatbot styles="fixed lg:bottom-8 lg:right-8 bottom-5 right-5 z-50" />
+              <Chatbot
+                styles="fixed lg:bottom-8 lg:right-8 bottom-5 right-5 z-50"
+                content={chatbotCopy}
+                whatsappNumber={whatsappNumber}
+                contactPath={chatConfig.escalation.contactPath}
+              />
               <main>
                 {children}
               </main>
