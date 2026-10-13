@@ -8,10 +8,12 @@
  * yang bisa dibaca; setiap file diakhiri blok komentar ROLLBACK (lihat db/README).
  */
 
-import { bigserial, boolean, index, integer, jsonb, numeric, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { bigserial, boolean, index, integer, jsonb, numeric, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const chatSession = pgTable('chat_session', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  // id sesi datang dari klien (crypto.randomUUID) — disimpan sebagai text agar
+  // tidak memaksa validasi UUID di kontrak API.
+  id: text('id').primaryKey(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   firstPage: text('first_page'),
   referrer: text('referrer'),
@@ -24,7 +26,7 @@ export const chatMessage = pgTable(
   'chat_message',
   {
     id: bigserial('id', { mode: 'number' }).primaryKey(),
-    sessionId: uuid('session_id')
+    sessionId: text('session_id')
       .notNull()
       .references(() => chatSession.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

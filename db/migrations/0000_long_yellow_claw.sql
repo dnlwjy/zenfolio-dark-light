@@ -9,7 +9,7 @@ CREATE TABLE "chat_event" (
 --> statement-breakpoint
 CREATE TABLE "chat_message" (
 	"id" bigserial PRIMARY KEY NOT NULL,
-	"session_id" uuid NOT NULL,
+	"session_id" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"role" text NOT NULL,
 	"content" text NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE "chat_message" (
 );
 --> statement-breakpoint
 CREATE TABLE "chat_session" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"first_page" text,
 	"referrer" text,

@@ -1,5 +1,5 @@
 {
-  "id": "4e3b1698-9878-4f19-a672-4557f3be9895",
+  "id": "aad18ee5-583e-4493-8339-ff2a417ec76c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -88,7 +88,7 @@
         },
         "session_id": {
           "name": "session_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -235,10 +235,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",

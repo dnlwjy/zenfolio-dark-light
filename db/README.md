@@ -32,6 +32,15 @@ DATABASE_URL_MIGRATE="$(grep '^DATABASE_URL_MIGRATE=' .env | cut -d= -f2-)" npx 
   `-- ROLLBACK:` berisi SQL pengembalian manual.
 - Free tier Supabase tidak punya PITR → dump sebelum migrasi berisiko.
 
+## Pelajaran penting
+
+**Jangan pernah mengubah file migrasi yang sudah diterapkan.** drizzle-kit menyimpan
+hash tiap file; begitu isinya berubah, `migrate` menolak jalan (dan pesan errornya
+tidak selalu jelas). Pernah terjadi di proyek ini: blok RLS ditambahkan ke `0000` setelah
+diterapkan → riwayat jadi tidak konsisten → diselesaikan dengan squash satu migrasi bersih
+(tabel masih kosong saat itu). Aturan: RLS/perubahan SQL lain masuk ke file migrasi
+**sebelum** dijalankan, atau dibuat sebagai migrasi baru.
+
 ## Pengerasan opsional (belum diaktifkan)
 
 Role aplikasi terbatas supaya runtime tidak memakai `postgres` (owner):
