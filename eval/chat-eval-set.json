@@ -155,8 +155,9 @@
       "expect": {
         "kind": "contains",
         "any": [
-          "gpt",
-          "chatgpt",
+          "building ai",
+          "ai-focused",
+          "ai focused",
           "ai-powered"
         ]
       }
