@@ -69,14 +69,26 @@ describe('checkMessageLimits', () => {
 })
 
 describe('checkSessionLimit', () => {
-  it('membatasi jumlah sesi baru per IP per hari', async () => {
+  it('membatasi jumlah SESI BARU per IP per hari', async () => {
     const s = store()
 
-    expect(await checkSessionLimit({ store: s, ipHash: 'ip1', limits, now: 1_000 })).toEqual({ allowed: true })
-    expect(await checkSessionLimit({ store: s, ipHash: 'ip1', limits, now: 2_000 })).toEqual({
+    expect(await checkSessionLimit({ store: s, ipHash: 'ip1', sessionId: 's1', limits, now: 1_000 })).toEqual({ allowed: true })
+    expect(await checkSessionLimit({ store: s, ipHash: 'ip1', sessionId: 's2', limits, now: 2_000 })).toEqual({
       allowed: false,
       reason: 'per-ip-sessions',
       message: visitorMessages.slowDown,
     })
+  })
+
+  it('tidak menghabiskan jatah sesi untuk percakapan panjang dalam sesi yang sama', async () => {
+    const s = store()
+
+    // Regresi: sebelumnya setiap permintaan dihitung sebagai sesi baru sehingga
+    // pengunjung terblokir di tengah percakapan.
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      expect(await checkSessionLimit({ store: s, ipHash: 'ip1', sessionId: 'same-session', limits, now: 1_000 + attempt })).toEqual({
+        allowed: true,
+      })
+    }
   })
 })

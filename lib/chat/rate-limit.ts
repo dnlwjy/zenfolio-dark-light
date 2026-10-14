@@ -58,6 +58,7 @@ export type LimitInput = {
 export type SessionLimitInput = {
   store: RateLimitStore
   ipHash: string
+  sessionId: string
   now?: number
   limits?: typeof defaultLimits
 }
@@ -90,6 +91,12 @@ export async function checkMessageLimits(input: LimitInput): Promise<LimitDecisi
 export async function checkSessionLimit(input: SessionLimitInput): Promise<LimitDecision> {
   const now = input.now ?? Date.now()
   const limits = input.limits ?? defaultLimits
+
+  // Hitung SESI BARU per IP, bukan setiap permintaan: percakapan panjang dalam satu sesi
+  // tidak boleh ikut menghabiskan jatah. Penanda per sesi dipakai agar tetap benar
+  // walau permintaan datang ke instance serverless berbeda.
+  const seen = await input.store.incr(`sessionseen:${input.sessionId}`, DAY_MS, now)
+  if (seen > 1) return { allowed: true }
 
   const sessions = await input.store.incr(`ipsessions:${input.ipHash}:${dayKey(now)}`, DAY_MS, now)
   if (sessions > limits.sessionsPerIpPerDay) {

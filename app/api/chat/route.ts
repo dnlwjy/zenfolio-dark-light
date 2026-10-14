@@ -11,8 +11,6 @@
  *   { "type": "error",  "message": "<pesan manusia yang tenang>" }
  */
 
-import { createHash } from 'node:crypto'
-
 import { NextResponse } from 'next/server'
 
 import { classifyProviderFailure, visitorMessageForFailure } from '@/lib/ai/errors'
@@ -25,8 +23,9 @@ import { visitorMessages } from '@/lib/chat/messages'
 import { resolveChatbotContent } from '@/lib/chat/content'
 import { runCompletion } from '@/lib/chat/complete'
 import { buildMessages, type ChatMessage, type HistoryMessage } from '@/lib/chat/prompt'
-import { checkMessageLimits, checkSessionLimit, createMemoryRateLimitStore } from '@/lib/chat/rate-limit'
-import { createPostgresRateLimitStore } from '@/lib/chat/rate-limit-store-postgres'
+import { checkMessageLimits, checkSessionLimit } from '@/lib/chat/rate-limit'
+import { getRateLimitStore } from '@/lib/chat/rate-limit-factory'
+import { clientIp, hashIp } from '@/lib/chat/request-ip'
 import { dailyBudgetStatus } from '@/lib/chat/cost-meter'
 import { persistTurn } from '@/lib/chat/persist'
 import { verifyRecaptcha } from '@/lib/chat/recaptcha'
@@ -35,24 +34,11 @@ import { prepareTurn } from '@/lib/chat/turn'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Store dipilih dari konfigurasi: `db` untuk produksi (lintas instance), `memory` untuk lokal.
-const rateLimitStore =
-  chatConfig.rateLimit.store === 'db' ? createPostgresRateLimitStore() : createMemoryRateLimitStore()
+const rateLimitStore = getRateLimitStore()
 const encoder = new TextEncoder()
 
 function sseEvent(payload: unknown): Uint8Array {
   return encoder.encode(`data: ${JSON.stringify(payload)}\n\n`)
-}
-
-function clientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for')
-  const first = forwarded?.split(',')[0]?.trim()
-  return first || request.headers.get('x-real-ip')?.trim() || 'unknown'
-}
-
-function hashIp(ip: string): string {
-  const salt = process.env.CHAT_IP_SALT ?? ''
-  return createHash('sha256').update(`${ip}:${salt}`).digest('hex').slice(0, 16)
 }
 
 function logEvent(level: 'info' | 'warn' | 'error', event: string, context: Record<string, unknown>) {
@@ -75,7 +61,7 @@ export async function POST(request: Request) {
 
   const ipHash = hashIp(clientIp(request))
 
-  const sessionLimit = await checkSessionLimit({ store: rateLimitStore, ipHash })
+  const sessionLimit = await checkSessionLimit({ store: rateLimitStore, ipHash, sessionId: turn.sessionId })
   if (!sessionLimit.allowed) {
     logEvent('warn', 'chat.session_limited', { ipHash, reason: sessionLimit.reason })
     return NextResponse.json({ message: sessionLimit.message }, { status: 429 })

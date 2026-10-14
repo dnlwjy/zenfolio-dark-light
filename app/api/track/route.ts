@@ -11,6 +11,9 @@ import { z } from 'zod'
 
 import { getDb } from '@/db/client'
 import { chatEvent } from '@/db/schema'
+import { chatConfig } from '@/lib/config/chat'
+import { getRateLimitStore } from '@/lib/chat/rate-limit-factory'
+import { clientIp, hashIp } from '@/lib/chat/request-ip'
 
 export const runtime = 'nodejs'
 
@@ -31,6 +34,14 @@ export async function POST(request: Request) {
 
   const parsed = eventSchema.safeParse(payload)
   if (!parsed.success) return NextResponse.json({ ok: false }, { status: 400 })
+
+  // Guard abuse: endpoint ini menulis ke database, jadi dibatasi per IP per menit.
+  const store = getRateLimitStore()
+  const events = await store.incr(`track:${hashIp(clientIp(request))}`, 60_000, Date.now())
+  if (events > chatConfig.rateLimit.eventsPerMinute) {
+    console.warn(JSON.stringify({ level: 'warn', event: 'chat.track_limited', count: events }))
+    return NextResponse.json({ ok: false }, { status: 429 })
+  }
 
   console.info(JSON.stringify({ level: 'info', event: 'chat.track', ...parsed.data }))
 

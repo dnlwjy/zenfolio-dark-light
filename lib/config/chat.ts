@@ -93,6 +93,8 @@ export const chatConfig = {
     messagesPerIpPerDay: envInt('CHAT_RL_MESSAGES_PER_IP_PER_DAY', 25),
     /** Pengaman kasar global: total turn seluruh situs per hari. */
     dailyTurnCap: envInt('CHAT_DAILY_TURN_CAP', 80),
+    /** Batas event analitik per IP per menit (endpoint /api/track). */
+    eventsPerMinute: envInt('CHAT_RL_EVENTS_PER_MINUTE', 60),
   },
 
   /**
