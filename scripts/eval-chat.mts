@@ -72,10 +72,21 @@ for (const testCase of set.cases) {
   const usage = { tokensIn: 0, cachedTokensIn: 0, tokensOut: 0 }
   const caseStart = Date.now()
 
-  try {
+  // Meniru perilaku produksi: provider kadang mengembalikan jawaban kosong sekali,
+  // jadi runner juga mencoba ulang sekali sebelum menilai.
+  const runOnce = async () => {
+    answer = ''
     for await (const event of streamChat({ resolved, messages, maxOutputTokens: 400 })) {
       if (event.type === 'delta') answer += event.text
       if (event.type === 'usage') Object.assign(usage, event.usage)
+    }
+  }
+
+  try {
+    await runOnce()
+    if (!answer.trim()) {
+      console.info(`RETRY ${testCase.id.padEnd(12)} jawaban kosong — dicoba ulang`)
+      await runOnce()
     }
   } catch (error) {
     failures.push(`${testCase.id} (error: ${error instanceof Error ? error.message : String(error)})`)
