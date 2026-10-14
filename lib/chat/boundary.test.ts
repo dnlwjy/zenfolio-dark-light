@@ -65,6 +65,10 @@ describe('answerOffersContact', () => {
     ).toBe(true)
   })
 
+  it('true walau model memakai apostrof tipografis (kasus OpenAI)', () => {
+    expect(answerOffersContact('I don\u2019t have that detail about Daniel\u2019s portfolio.')).toBe(true)
+  })
+
   it('true untuk template penolakan (teksnya menyuruh menghubungi lewat halaman kontak)', () => {
     expect(answerOffersContact(visitorMessages.outOfScope)).toBe(true)
   })

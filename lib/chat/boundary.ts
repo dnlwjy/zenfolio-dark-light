@@ -9,6 +9,7 @@
  */
 
 import { visitorMessages } from './messages'
+import { normalizeForMatch } from './text'
 
 /**
  * Pemicu untuk menampilkan dua jalur kontak (WhatsApp + halaman kontak):
@@ -72,7 +73,7 @@ export function finalizeAnswer(raw: string): string {
  * Dipakai server untuk menampilkan tombol kontak meski pertanyaan pengunjung tidak memicu intent.
  */
 export function answerOffersContact(answer: string): boolean {
-  const text = answer.toLowerCase()
+  const text = normalizeForMatch(answer)
 
   return [
     'would you like me to connect',

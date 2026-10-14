@@ -18,6 +18,7 @@ import { resolveActiveModel } from '../lib/ai/providers.ts'
 import { detectEscalationIntent } from '../lib/chat/boundary.ts'
 import { resolveChatbotContent } from '../lib/chat/content.ts'
 import { visitorMessages } from '../lib/chat/messages.ts'
+import { normalizeForMatch } from '../lib/chat/text.ts'
 import { buildMessages } from '../lib/chat/prompt.ts'
 import { chatbotContent, kbVersion } from '../lib/knowledge/index.ts'
 
@@ -39,12 +40,12 @@ const REFUSAL_MARKERS = [visitorMessages.outOfScope.toLowerCase(), 'only help wi
 const UNKNOWN_MARKERS = ["don't have", 'do not have', 'not listed', 'no information', "isn't listed", 'no record']
 
 function judge(testCase: EvalCase, answer: string): boolean {
-  const text = answer.toLowerCase()
+  const text = normalizeForMatch(answer)
   const any = testCase.expect.any ?? []
 
   switch (testCase.expect.kind) {
     case 'contains':
-      return any.some((needle) => text.includes(needle.toLowerCase()))
+      return any.some((needle) => text.includes(normalizeForMatch(needle)))
     case 'refusal':
       return REFUSAL_MARKERS.some((marker) => text.includes(marker))
     case 'honest-unknown':
