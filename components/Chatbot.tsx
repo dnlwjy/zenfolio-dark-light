@@ -90,6 +90,11 @@ export default function Chatbot({
     messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
   }, [state.bubbles])
 
+  // Tercatat sekali per kemunculan agar funnel (chat → eskalasi → WhatsApp) terukur.
+  useEffect(() => {
+    if (state.showEscalation) trackEvent('escalation_offered', sessionId, pathname)
+  }, [state.showEscalation, sessionId, pathname])
+
   const handleToggleChatbot = () => {
     if (!mount) setMount(true)
     if (!open) trackEvent('chat_open', sessionId, pathname)
@@ -174,7 +179,11 @@ export default function Chatbot({
                 <a href={whatsappHref} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('whatsapp_open', sessionId, pathname)} className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px]">
                   {visitorMessages.escalation.cta}
                 </a>
-                <a href={contactPath} className="rounded-md border border-(--white)/25 px-3 py-2 text-[13px]">
+                <a
+                  href={contactPath}
+                  onClick={() => trackEvent('contact_link_click', sessionId, pathname)}
+                  className="rounded-md border border-(--white)/25 px-3 py-2 text-[13px]"
+                >
                   {visitorMessages.escalation.secondary}
                 </a>
               </div>
