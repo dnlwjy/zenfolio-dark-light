@@ -28,6 +28,14 @@ type EvalCase = {
 }
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+// tsx tidak memuat .env otomatis (bun memuatnya); di CI/Vercel variabel sudah disuntik runtime.
+try {
+  process.loadEnvFile(path.resolve(dirname, '../.env'))
+} catch {
+  /* tidak ada .env — pakai env proses */
+}
+
 const set = JSON.parse(await readFile(path.resolve(dirname, '../eval/chat-eval-set.json'), 'utf8')) as { cases: EvalCase[] }
 const faqs = resolveChatbotContent(chatbotContent).faqs
 const resolved = resolveActiveModel()
