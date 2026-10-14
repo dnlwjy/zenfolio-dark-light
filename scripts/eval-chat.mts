@@ -24,7 +24,7 @@ type EvalCase = {
   group: string
   route: string
   question: string
-  expect: { kind: 'contains' | 'escalation' | 'no-escalation' | 'refusal' | 'honest-unknown'; any?: string[] }
+  expect: { kind: 'contains' | 'escalation' | 'no-escalation' | 'refusal' | 'honest-unknown' | 'refusal-or-unknown'; any?: string[]; note?: string }
 }
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -46,6 +46,12 @@ function judge(testCase: EvalCase, answer: string): boolean {
       return REFUSAL_MARKERS.some((marker) => text.includes(marker))
     case 'honest-unknown':
       return UNKNOWN_MARKERS.some((marker) => text.includes(marker))
+    case 'refusal-or-unknown':
+      // Pertanyaan di luar portfolio kadang ditolak dengan template tetap, kadang dijawab
+      // "tidak ada detailnya" — keduanya benar, tombol kontak ikut tampil pada keduanya.
+      return (
+        REFUSAL_MARKERS.some((marker) => text.includes(marker)) || UNKNOWN_MARKERS.some((marker) => text.includes(marker))
+      )
     case 'escalation':
       return detectEscalationIntent(testCase.question)
     case 'no-escalation':

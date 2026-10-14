@@ -81,5 +81,8 @@ export function answerOffersContact(answer: string): boolean {
     "don't have any information",
     'no information about',
     'connect you with daniel',
+    // Penolakan di luar topik menyuruh pengunjung menghubungi lewat halaman kontak,
+    // jadi tombol kontak harus ikut tampil.
+    visitorMessages.outOfScope.toLowerCase(),
   ].some((marker) => text.includes(marker))
 }

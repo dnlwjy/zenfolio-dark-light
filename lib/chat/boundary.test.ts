@@ -65,6 +65,10 @@ describe('answerOffersContact', () => {
     ).toBe(true)
   })
 
+  it('true untuk template penolakan (teksnya menyuruh menghubungi lewat halaman kontak)', () => {
+    expect(answerOffersContact(visitorMessages.outOfScope)).toBe(true)
+  })
+
   it('false untuk jawaban biasa yang bersumber dari portfolio', () => {
     expect(answerOffersContact('According to the Builds page, Daniel built Foosball and Zuss.')).toBe(false)
   })
