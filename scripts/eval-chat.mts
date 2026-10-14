@@ -38,7 +38,7 @@ try {
 
 const set = JSON.parse(await readFile(path.resolve(dirname, '../eval/chat-eval-set.json'), 'utf8')) as { cases: EvalCase[] }
 const faqs = resolveChatbotContent(chatbotContent).faqs
-const resolved = resolveActiveModel()
+let resolved = resolveActiveModel()
 
 const REFUSAL_MARKERS = [visitorMessages.outOfScope.toLowerCase(), 'only help with questions about', "i can't help with"]
 const UNKNOWN_MARKERS = ["don't have", 'do not have', 'not listed', 'no information', "isn't listed", 'no record']
@@ -99,8 +99,17 @@ for (const testCase of set.cases) {
   try {
     await runOnce()
     if (!answer.trim()) {
+      // Paritas produksi: coba ulang, lalu jatuh ke model cadangan bila masih kosong.
       console.info(`RETRY ${testCase.id.padEnd(12)} jawaban kosong — dicoba ulang`)
       await runOnce()
+    }
+
+    if (!answer.trim() && resolved.fallback) {
+      console.info(`RETRY ${testCase.id.padEnd(12)} masih kosong — memakai model cadangan`)
+      const previous = resolved.model
+      resolved = { ...resolved, model: resolved.fallback.model, fallback: null } as typeof resolved
+      await runOnce()
+      resolved = { ...resolved, model: previous, fallback: { model: previous, apiKey: resolved.apiKey, endpoint: resolved.endpoint } } as typeof resolved
     }
   } catch (error) {
     failures.push(`${testCase.id} (error: ${error instanceof Error ? error.message : String(error)})`)
