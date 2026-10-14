@@ -110,6 +110,9 @@ export type ResolvedModel = {
   fallback: { model: ModelProfile; apiKey: string; endpoint: string } | null
 }
 
+/** Referensi model cadangan; boleh berasal dari provider berbeda. */
+export type FallbackRef = { providerId: string; modelId: string }
+
 function profileFor(provider: ProviderEntry, modelId: string): ModelProfile {
   const model = provider.models[modelId]
   if (!model) {
@@ -126,27 +129,54 @@ function apiKeyFor(provider: ProviderEntry): string {
 }
 
 /** Bentuk resolved model dari pasangan provider+model eksplisit (dipakai uji live & eval). */
-export function resolveModelById(providerId: string, modelId: string, fallbackModelId?: string): ResolvedModel {
+function providerOf(providerId: string): ProviderEntry {
   const provider = providers[providerId]
   if (!provider) {
     throw new Error(`Provider "${providerId}" tidak dikenal. Pilihan: ${Object.keys(providers).join(', ')}`)
   }
+  return provider
+}
 
-  const apiKey = apiKeyFor(provider)
+export function resolveModelById(providerId: string, modelId: string, fallback?: FallbackRef): ResolvedModel {
+  const provider = providerOf(providerId)
+
+  let fallbackEntry: ResolvedModel['fallback'] = null
+  if (fallback) {
+    const fallbackProvider = providerOf(fallback.providerId)
+    fallbackEntry = {
+      model: profileFor(fallbackProvider, fallback.modelId),
+      apiKey: apiKeyFor(fallbackProvider),
+      endpoint: `${fallbackProvider.baseUrl}${fallbackProvider.chatPath}`,
+    }
+  }
+
   return {
     provider,
     model: profileFor(provider, modelId),
-    apiKey,
+    apiKey: apiKeyFor(provider),
     endpoint: `${provider.baseUrl}${provider.chatPath}`,
-    fallback: fallbackModelId ? { model: profileFor(provider, fallbackModelId), apiKey, endpoint: `${provider.baseUrl}${provider.chatPath}` } : null,
+    fallback: fallbackEntry,
   }
+}
+
+/**
+ * Cadangan boleh dari provider lain (mis. utama OpenAI, cadangan OpenCode):
+ *   LLM_FALLBACK_MODEL=opencode/glm-5.3-flash      (bentuk provider/model)
+ *   LLM_FALLBACK_PROVIDER=opencode + LLM_FALLBACK_MODEL=glm-5.3-flash
+ */
+function fallbackRef(primaryProviderId: string): FallbackRef | undefined {
+  const raw = process.env.LLM_FALLBACK_MODEL?.trim()
+  if (!raw) return undefined
+
+  const [maybeProvider, maybeModel] = raw.split('/')
+  if (maybeModel) return { providerId: maybeProvider, modelId: maybeModel }
+
+  return { providerId: process.env.LLM_FALLBACK_PROVIDER?.trim() || primaryProviderId, modelId: raw }
 }
 
 /** Model aktif aplikasi: `LLM_PROVIDER` + `LLM_MODEL` (+ `LLM_FALLBACK_MODEL` opsional). */
 export function resolveActiveModel(): ResolvedModel {
-  return resolveModelById(
-    process.env.LLM_PROVIDER?.trim() || 'opencode',
-    process.env.LLM_MODEL?.trim() || 'glm-5.3-flash',
-    process.env.LLM_FALLBACK_MODEL?.trim() || 'deepseek-v4.1-flash',
-  )
+  const providerId = process.env.LLM_PROVIDER?.trim() || 'opencode'
+
+  return resolveModelById(providerId, process.env.LLM_MODEL?.trim() || 'glm-5.3-flash', fallbackRef(providerId))
 }
