@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { detectEscalationIntent, finalizeAnswer, guardInput } from './boundary'
+import { answerOffersContact, detectEscalationIntent, finalizeAnswer, guardInput } from './boundary'
 import { visitorMessages } from './messages'
 
 describe('guardInput', () => {
@@ -28,6 +28,12 @@ describe('detectEscalationIntent', () => {
     expect(detectEscalationIntent('What is a case study?')).toBe(false)
   })
 
+  it('menandai pertanyaan tentang cara menghubungi Daniel', () => {
+    expect(detectEscalationIntent('How can I contact Daniel?')).toBe(true)
+    expect(detectEscalationIntent('Can I talk to Daniel on WhatsApp?')).toBe(true)
+    expect(detectEscalationIntent('what is your email address?')).toBe(true)
+  })
+
   it('tidak menandai pertanyaan biasa yang memuat kata "project"', () => {
     // Regresi dari smoke test: pertanyaan "Which project dealt with reservations?" sempat
     // tercatat sebagai minat hiring karena pemicu "project" terlalu generik.
@@ -47,5 +53,19 @@ describe('finalizeAnswer', () => {
 
   it('memakai pesan ramah saat jawaban kosong', () => {
     expect(finalizeAnswer('   ')).toBe(visitorMessages.emptyAnswer)
+  })
+})
+
+describe('answerOffersContact', () => {
+  it('true saat jawaban menawarkan koneksi ke Daniel', () => {
+    expect(
+      answerOffersContact(
+        "I don't have that detail in Daniel's portfolio. Would you like me to connect you with Daniel directly?",
+      ),
+    ).toBe(true)
+  })
+
+  it('false untuk jawaban biasa yang bersumber dari portfolio', () => {
+    expect(answerOffersContact('According to the Builds page, Daniel built Foosball and Zuss.')).toBe(false)
   })
 })

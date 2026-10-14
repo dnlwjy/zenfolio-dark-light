@@ -58,29 +58,20 @@ export default function Chatbot({
   const getToken = useCallback(() => getRecaptchaToken(recaptchaSiteKey, recaptchaAction), [recaptchaSiteKey, recaptchaAction])
   const { state, send, stop } = useChatStream({ route: pathname, sessionId, getToken })
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const greetingShownRef = useRef(false)
 
   const greeting = resolveGreeting(pathname, content)
   const questions = resolveSuggestedQuestions(pathname, content)
 
-  // Sapaan muncul sekali per halaman per sesi, tidak di halaman kontak, dan tidak otomatis membuka panel.
+  // Sapaan muncul sekali per muat-halaman (navigasi antar halaman tidak mengulang,
+  // refresh/reload memunculkannya lagi), tidak di halaman kontak, dan tidak auto-membuka panel.
   useEffect(() => {
-    if (pathname === contactPath || !greeting) return
-
-    const seenKey = `chat:greeted:${pathname}`
-    try {
-      if (window.sessionStorage.getItem(seenKey)) return
-    } catch {
-      /* sessionStorage dapat diblokir; sapaan tetap ditampilkan sekali per mount */
-    }
+    if (pathname === contactPath || !greeting || greetingShownRef.current) return
 
     const timer = window.setTimeout(() => {
+      greetingShownRef.current = true
       setTeaser(greeting)
       trackEvent('greeting_shown', sessionId, pathname)
-      try {
-        window.sessionStorage.setItem(seenKey, '1')
-      } catch {
-        /* diabaikan */
-      }
     }, GREETING_DELAY_MS)
 
     return () => window.clearTimeout(timer)
@@ -114,24 +105,29 @@ export default function Chatbot({
 
     const page = pathname === '/' ? 'home' : pathname.replace(/^\//, '')
     const text = encodeURIComponent(content.escalation.waMessageTemplate.replace('{page}', page))
-    const isMobile = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 
-    return isMobile
-      ? `https://wa.me/${whatsappNumber}?text=${text}`
-      : `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${text}`
+    // Selalu wa.me: WhatsApp menangani desktop maupun mobile sendiri.
+    return `https://wa.me/${whatsappNumber}?text=${text}`
   }, [whatsappNumber, pathname, content.escalation.waMessageTemplate])
 
   return (
     <div className={`${SUPPORT} ${styles}`}>
       {/* Teaser sapaan per halaman (bukan panel) */}
       {teaser && !open && (
-        <button
-          type="button"
-          onClick={handleToggleChatbot}
-          className="absolute bottom-full right-0 mb-3 w-64 text-left text-[13px] leading-[140%] rounded-lg border border-(--white)/15 bg-(--black) px-3 py-2 text-(--white)"
-        >
-          {teaser}
-        </button>
+        <div className="absolute bottom-full right-0 mb-3 w-64 flex items-start gap-2 rounded-lg border border-(--white)/15 bg-(--black) px-3 py-2">
+          <button type="button" onClick={handleToggleChatbot} className="flex-1 text-left text-[13px] leading-[140%] text-(--white)">
+            {teaser}
+          </button>
+
+          <button
+            type="button"
+            aria-label="Dismiss greeting"
+            onClick={() => setTeaser('')}
+            className="shrink-0 -mt-0.5 text-(--white)/50 hover:text-(--white) text-[15px] leading-none"
+          >
+            ×
+          </button>
+        </div>
       )}
 
       <span className={`absolute inset-0 ${open ? '' : 'bg-(--white)/70 blur-lg animate-pulse [animation-duration:1s]'} rounded-full transition-all duration-800 pointer-events-none`} />
@@ -176,7 +172,9 @@ export default function Chatbot({
             <p className="px-3 pb-1 text-(--white)/80 text-[13px]">{content.escalation.message}</p>
           )}
 
-          {/* Dua jalur kontak selalu tersedia: WhatsApp (CTA utama) + halaman kontak. */}
+          {/* Dua jalur kontak muncul saat pengunjung minta kontak/hiring,
+              saat jawaban menawarkan koneksi, atau saat permintaan gagal. */}
+          {state.showEscalation && (
           <div className="px-3 pb-1 flex flex-wrap gap-2">
             {whatsappHref && (
               <a
@@ -199,6 +197,7 @@ export default function Chatbot({
               {visitorMessages.escalation.secondary}
             </a>
           </div>
+          )}
 
           {state.bubbles.length === 0 && questions.length > 0 && (
             <div className="px-3 pb-2 flex flex-wrap gap-2">

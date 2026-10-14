@@ -338,6 +338,15 @@
       "expect": {
         "kind": "honest-unknown"
       }
+    },
+    {
+      "id": "hire-05",
+      "group": "hire",
+      "route": "/",
+      "question": "How can I contact Daniel directly?",
+      "expect": {
+        "kind": "escalation"
+      }
     }
   ]
 }

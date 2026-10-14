@@ -45,7 +45,7 @@ export const visitorMessages = {
   escalation: {
     prompt: "Would you like me to connect you directly via WhatsApp?",
     cta: "Continue to WhatsApp",
-    secondary: "Use the contact page instead",
+    secondary: "Contact Daniel",
     prefilled: "Hi Daniel, I'm on your portfolio ({page}) and would like to discuss a project.",
   },
 } as const

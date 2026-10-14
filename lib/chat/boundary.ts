@@ -10,6 +10,10 @@
 
 import { visitorMessages } from './messages'
 
+/**
+ * Pemicu untuk menampilkan dua jalur kontak (WhatsApp + halaman kontak):
+ * minat kerja sama **dan** pertanyaan soal menghubungi Daniel.
+ */
 export const DEFAULT_HIRE_TRIGGERS = [
   'hire',
   'hiring',
@@ -23,6 +27,16 @@ export const DEFAULT_HIRE_TRIGGERS = [
   'contract',
   'work with you',
   'work together',
+  'contact',
+  'whatsapp',
+  'reach out',
+  'get in touch',
+  'email',
+  'phone',
+  'talk to daniel',
+  'message daniel',
+  'hubungi',
+  'kontak',
 ] as const
 
 export type InputGuard = { ok: true; value: string } | { ok: false; message: string }
@@ -51,4 +65,21 @@ export function detectEscalationIntent(text: string, triggers: readonly string[]
 export function finalizeAnswer(raw: string): string {
   const value = raw.trim()
   return value || visitorMessages.emptyAnswer
+}
+
+/**
+ * true bila jawaban model menawarkan koneksi ke Daniel (jalur "tidak ada di knowledge base").
+ * Dipakai server untuk menampilkan tombol kontak meski pertanyaan pengunjung tidak memicu intent.
+ */
+export function answerOffersContact(answer: string): boolean {
+  const text = answer.toLowerCase()
+
+  return [
+    'would you like me to connect',
+    "don't have that detail",
+    'do not have that detail',
+    "don't have any information",
+    'no information about',
+    'connect you with daniel',
+  ].some((marker) => text.includes(marker))
 }

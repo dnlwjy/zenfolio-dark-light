@@ -77,9 +77,9 @@ npm run storybook
 
 The assistant answers **only** from this portfolio's content (Sanity is the source of truth) and never invents facts:
 
-- per-page greeting (once per route per session) and suggested questions, editable in Sanity,
+- per-page greeting shown once per page load (dismissible with an ×, returns after a reload) plus suggested questions, both editable in Sanity,
 - grounded answers that cite the page they came from, streamed into the widget with a Stop control,
-- two always-visible contact paths: a **WhatsApp CTA** with a prefilled message and a link to the contact page,
+- two contact paths (a **WhatsApp CTA** with a prefilled `https://wa.me/...` message and a **Contact Daniel** link) offered when the visitor asks to get in touch, when the assistant does not know the answer, or when a request fails,
 - abuse and cost guards: reCAPTCHA v3 per message, layered rate limits, input/output caps,
 - a daily budget circuit breaker — when it trips, visitors see a calm message plus the WhatsApp hand-off,
 - chat sessions, events and cost per message stored in Postgres (Supabase) with an `insight_daily` rollup view.

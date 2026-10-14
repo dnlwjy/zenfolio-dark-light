@@ -17,7 +17,7 @@ import { classifyProviderFailure, visitorMessageForFailure } from '@/lib/ai/erro
 import { computeCost } from '@/lib/ai/pricing'
 import { resolveActiveModel, type ResolvedModel } from '@/lib/ai/providers'
 import { chatConfig } from '@/lib/config/chat'
-import { detectEscalationIntent } from '@/lib/chat/boundary'
+import { answerOffersContact, detectEscalationIntent } from '@/lib/chat/boundary'
 import { kbVersion, chatbotContent } from '@/lib/knowledge'
 import { visitorMessages } from '@/lib/chat/messages'
 import { resolveChatbotContent } from '@/lib/chat/content'
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
     faqs: resolveChatbotContent(chatbotContent).faqs,
   })
 
-  const escalated = detectEscalationIntent(turn.question)
+  const triggers = resolveChatbotContent(chatbotContent).escalation.triggers
   const startedAt = Date.now()
 
   const stream = new ReadableStream<Uint8Array>({
@@ -116,10 +116,15 @@ export async function POST(request: Request) {
       const send = (payload: unknown) => controller.enqueue(sseEvent(payload))
       const answer = await runCompletion({ resolved, messages, send })
 
+      // Dua jalur kontak muncul bila: pengunjung minta kontak/hiring, ATAU jawaban
+      // model menawarkan koneksi (jalur "tidak ada di knowledge base"), ATAU permintaan gagal.
+      const escalated =
+        detectEscalationIntent(turn.question, triggers) || (answer.text ? answerOffersContact(answer.text) : true)
+
       if (!answer.text) {
         send({ type: 'error', message: answer.failureMessage ?? visitorMessages.emptyAnswer })
       } else {
-        send({ type: 'done', ...answer.done })
+        send({ type: 'done', ...answer.done, escalated })
       }
 
       controller.close()
