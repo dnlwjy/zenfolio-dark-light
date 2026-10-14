@@ -49,7 +49,7 @@ const MODEL_DEFAULTS: Omit<ModelProfile, 'id' | 'label'> = {
 export const providers: Record<string, ProviderEntry> = {
   opencode: {
     id: 'opencode',
-    label: 'OpenCode Console (pay-as-you-go)',
+    label: 'OpenCode Zen (pay-as-you-go)',
     baseUrl: 'https://opencode.ai/inference/v1',
     chatPath: '/chat/completions',
     apiKeyEnv: 'OPENCODE_API_KEY',
