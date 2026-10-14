@@ -19,12 +19,14 @@
       "id": "page-02",
       "group": "page",
       "route": "/case-study/animated-framer-website",
-      "question": "Which client was that Framer site for?",
+      "question": "Who was the client on the Animated Framer Website project?",
       "expect": {
         "kind": "contains",
         "any": [
+          "metropolis",
           "podroll"
-        ]
+        ],
+        "note": "CMS: client=Metropolis Visual, produk=PodRoll — keduanya benar"
       }
     },
     {

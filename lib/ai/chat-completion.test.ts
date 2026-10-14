@@ -11,6 +11,7 @@ const model: ModelProfile = {
   emitsReasoning: false,
   neverSendThinkingParam: true,
   streamUsageRequiresFlag: true,
+  maxTokensParam: 'max_tokens',
   liveVerified: '2026-10-13',
 }
 
@@ -31,6 +32,17 @@ describe('buildRequestBody', () => {
     expect(body).toMatchObject({ model: 'glm-5.3-flash', max_tokens: 500, stream: true })
     expect(body.stream_options).toEqual({ include_usage: true })
     expect('thinking' in body).toBe(false)
+  })
+
+  it('memakai max_completion_tokens untuk model OpenAI terbaru', () => {
+    const body = buildRequestBody({
+      model: { ...model, id: 'gpt-6-luna', maxTokensParam: 'max_completion_tokens' },
+      messages,
+      maxOutputTokens: 321,
+    })
+
+    expect(body.max_completion_tokens).toBe(321)
+    expect('max_tokens' in body).toBe(false)
   })
 
   it('mengirim thinking disabled hanya untuk model yang mengizinkan', () => {

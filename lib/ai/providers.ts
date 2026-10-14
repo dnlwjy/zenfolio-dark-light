@@ -25,6 +25,8 @@ export type ModelProfile = {
   neverSendThinkingParam: boolean
   /** Saat streaming, usage hanya dilaporkan bila `stream_options.include_usage` dikirim. */
   streamUsageRequiresFlag: boolean
+  /** Nama parameter batas output: model OpenAI terbaru menolak `max_tokens`. */
+  maxTokensParam: 'max_tokens' | 'max_completion_tokens'
   /** Tanggal uji live dari repo ini (null = belum diuji, hanya berdasarkan dokumentasi). */
   liveVerified: string | null
 }
@@ -43,6 +45,7 @@ const MODEL_DEFAULTS: Omit<ModelProfile, 'id' | 'label'> = {
   emitsReasoning: false,
   neverSendThinkingParam: true,
   streamUsageRequiresFlag: true,
+  maxTokensParam: 'max_tokens',
   liveVerified: null,
 }
 
@@ -95,8 +98,8 @@ export const providers: Record<string, ProviderEntry> = {
     chatPath: '/chat/completions',
     apiKeyEnv: 'OPENAI_API_KEY',
     models: {
-      'gpt-5-nano': { ...MODEL_DEFAULTS, label: 'GPT-5 nano', emitsReasoning: true },
-      'gpt-6-luna': { ...MODEL_DEFAULTS, label: 'GPT-6 Luna' },
+      'gpt-5-nano': { ...MODEL_DEFAULTS, label: 'GPT-5 nano', emitsReasoning: true, maxTokensParam: 'max_completion_tokens' },
+      'gpt-6-luna': { ...MODEL_DEFAULTS, label: 'GPT-6 Luna', maxTokensParam: 'max_completion_tokens' },
     },
   },
 }

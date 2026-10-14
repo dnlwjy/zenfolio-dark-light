@@ -6,6 +6,8 @@
  * Grup "hire" tidak memanggil model — hanya menguji deteksi intent (cepat & gratis).
  */
 
+import './load-env.mts' // WAJIB paling atas: memuat .env sebelum modul lib dievaluasi
+
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -28,13 +30,6 @@ type EvalCase = {
 }
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// tsx tidak memuat .env otomatis (bun memuatnya); di CI/Vercel variabel sudah disuntik runtime.
-try {
-  process.loadEnvFile(path.resolve(dirname, '../.env'))
-} catch {
-  /* tidak ada .env — pakai env proses */
-}
 
 const set = JSON.parse(await readFile(path.resolve(dirname, '../eval/chat-eval-set.json'), 'utf8')) as { cases: EvalCase[] }
 const faqs = resolveChatbotContent(chatbotContent).faqs

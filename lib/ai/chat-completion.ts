@@ -39,7 +39,7 @@ export function buildRequestBody({
   const body: Record<string, unknown> = {
     model: model.id,
     messages,
-    max_tokens: maxOutputTokens,
+    [model.maxTokensParam]: maxOutputTokens,
     stream: true,
   }
 

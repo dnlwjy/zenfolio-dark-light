@@ -11,6 +11,7 @@ const model: ModelProfile = {
   emitsReasoning: false,
   neverSendThinkingParam: true,
   streamUsageRequiresFlag: true,
+  maxTokensParam: 'max_tokens',
   liveVerified: '2026-10-13',
 }
 

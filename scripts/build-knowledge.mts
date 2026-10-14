@@ -10,6 +10,8 @@
  *   node --env-file-if-exists=.env scripts/build-knowledge.mts --force   # paksa regenerate
  */
 
+import './load-env.mts' // WAJIB paling atas: memuat .env sebelum modul lib dievaluasi
+
 import { createClient } from '@sanity/client'
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -21,14 +23,6 @@ import { toPlainText } from '../lib/knowledge/portable-text.ts'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUTPUT = path.resolve(dirname, '../lib/knowledge/knowledge.generated.json')
 const FORCE = process.argv.includes('--force')
-
-// Di lokal, muat .env agar project/dataset mengikuti konfigurasi repo.
-// Di Vercel file ini tidak ada — variabel sudah disuntik runtime, jadi kegagalan diabaikan.
-try {
-  process.loadEnvFile(path.resolve(dirname, '../.env'))
-} catch {
-  /* tidak ada .env — pakai env proses */
-}
 
 // Fallback aman: nilai ini juga tertulis di sanity/sanity.cli.ts (bukan rahasia).
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'irfb1i5g'
