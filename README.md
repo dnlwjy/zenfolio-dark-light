@@ -16,6 +16,8 @@ The website is fully **static** enabling the best load time and a strong SEO. Th
 - **Framer Motion**: smooth animations using optimized version { m }
 - **Storybook**: Design system and documentation
 - **Google Analytics 4**: tracks anonymous visitors to gather insights
+- **Chatbot assistant**: page-aware assistant that answers only from this portfolio's content, streams replies and offers a WhatsApp hand-off when a visitor wants to reach out
+- **Insight-ready analytics**: chat sessions, interaction events, cost per message, and a daily budget circuit breaker (stored in Postgres/Supabase with a rollup view)
 
 ##
 
@@ -36,7 +38,9 @@ This project includes Google Analytics 4 integration for educational and learnin
 This project is licensed under the [MIT License](./LICENSE) — it grants anyone the freedom to view, learn from, and build upon the code, as long as the original copyright notice is retained. That said, please respect the spirit of open source.
 
 ## Get Started
-To start:
+
+Copy `.env.example` to `.env` and fill the required values first — see [Environment variables](#environment-variables) —
+then:
 ```bash
 npm install && npm run dev
 ```
@@ -67,6 +71,100 @@ To run Storybook:
 
 ```bash
 npm run storybook
+```
+
+## Chatbot assistant
+
+The assistant answers **only** from this portfolio's content (Sanity is the source of truth) and never invents facts:
+
+- per-page greeting (once per route per session) and suggested questions, editable in Sanity,
+- grounded answers that cite the page they came from, streamed into the widget with a Stop control,
+- two always-visible contact paths: a **WhatsApp CTA** with a prefilled message and a link to the contact page,
+- abuse and cost guards: reCAPTCHA v3 per message, layered rate limits, input/output caps,
+- a daily budget circuit breaker — when it trips, visitors see a calm message plus the WhatsApp hand-off,
+- chat sessions, events and cost per message stored in Postgres (Supabase) with an `insight_daily` rollup view.
+
+Key files: `app/api/chat/route.ts` (SSE endpoint) · `lib/chat/*` (prompt, boundary, limits, persistence) ·
+`lib/ai/*` (provider registry, pricing, error taxonomy) · `components/Chatbot.tsx` and `components/chat/useChatStream.ts` (widget) ·
+`scripts/build-knowledge.mts` (build-time knowledge bundle) · `db/*` (schema and migrations) · `eval/chat-eval-set.json` (30-case eval set).
+
+<br />
+
+### Knowledge bundle
+
+`npm run dev` and `npm run build` regenerate `lib/knowledge/knowledge.generated.json` from Sanity
+(`npm run knowledge:build:force` forces a refresh). The chatbot therefore sees exactly what visitors see, with no runtime CMS requests.
+
+### Chatbot content (Sanity)
+
+```bash
+cd sanity && npm run deploy      # deploy the studio, including the `chatbot` document schema
+```
+
+Create the **Chatbot** document (a singleton) in the studio and import `sanity/seed/chatbot.json` as a starting point.
+It controls greetings per route, suggested questions, FAQs, availability and the WhatsApp escalation copy.
+Until it is deployed, the English defaults in `lib/chat/content.ts` are used.
+
+Point a Sanity webhook at a Vercel Deploy Hook so publishing content triggers a rebuild (< 5 minutes) and the chatbot picks up the change.
+
+<br />
+
+## Environment variables
+
+Copy `.env.example` to `.env` locally, or fill the same names in the Vercel project settings for production.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET` | yes | Sanity content source |
+| `OPENCODE_API_KEY` | yes | LLM provider key (OpenCode Zen, pay-as-you-go) |
+| `LLM_PROVIDER`, `LLM_MODEL`, `LLM_FALLBACK_MODEL` | recommended | Which model answers (defaults: `opencode`, `glm-5.3-flash`, `deepseek-v4.1-flash`) |
+| `DATABASE_URL`, `DATABASE_URL_MIGRATE` | yes | Postgres (Supabase): runtime uses the transaction pooler (port 6543), migrations use session mode (5432) |
+| `NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY`, `RECAPTCHA_V3_SECRET_KEY` | yes | reCAPTCHA v3 for chat — a separate key pair from the contact form's v2 key |
+| `WHATSAPP_NUMBER` | yes | WhatsApp CTA target (international format, digits only) |
+| `CRON_SECRET` | production | Protects `/api/cron/keepalive`; Vercel sends it automatically on cron calls |
+| `CHAT_*`, `RATE_LIMIT_STORE` | optional | Every limit, budget and abuse knob (defaults live in `lib/config/chat.ts`) |
+
+## LLM provider
+
+Providers are configuration, not code: `lib/ai/providers.ts` holds the registry and `lib/ai/pricing.ts`
+the price table used for cost logging. Swapping models is an environment change:
+
+```bash
+LLM_PROVIDER=opencode
+LLM_MODEL=glm-5.3-flash              # model id on the provider
+LLM_FALLBACK_MODEL=deepseek-v4.1-flash
+```
+
+Each registry entry records quirks verified in live testing (for example `glm-5.3-flash` emits no
+reasoning tokens, while `deepseek-v4.1-flash` always reasons), so reasoning tokens are never forwarded
+to visitors and the request body stays valid per provider. Re-run the eval set after switching models.
+
+## Database (Supabase)
+
+```bash
+npx drizzle-kit generate                                      # after editing db/schema.ts
+DATABASE_URL_MIGRATE="<session-pooler-url>" npx drizzle-kit migrate
+```
+
+Migrations live in `db/migrations/*.sql` and are committed for review; each file ends with a `-- ROLLBACK` block.
+Row Level Security is enabled on every chat table **without policies** (deny-all) because the app talks to
+Postgres directly and never uses the Data API. Full runbook: `db/README.md`.
+
+## Deploy to Vercel
+
+1. Import the repository and set every variable from the table above (Production and Preview).
+2. Keep the build command as `npm run build` — it regenerates the knowledge bundle from Sanity before `next build`.
+3. Run the database migration against the production database before the first request.
+4. `vercel.json` registers a daily cron for `/api/cron/keepalive` (keeps a free-tier Supabase project from pausing).
+5. Deploy the Sanity studio, create the chatbot document, and connect the content webhook to a deploy hook.
+6. Smoke test: ask one question in the widget, then look for `chat.turn_complete` in the logs
+   (provider, model, tokens, `costUsd`, `recaptchaScore`) and watch for `chat.budget_exceeded`.
+
+## Testing
+
+```bash
+npm run test:unit     # unit tests: prompt, boundary, rate limits, reCAPTCHA, reducer, cron guard, retry
+npm run eval:chat     # 30-case eval set against the real prompt pipeline (~2 min, ~$0.02)
 ```
 
 </div>
