@@ -36,11 +36,13 @@ const Button = ({
     click,
     icon: Icon,
     styles,
+    ...rest
 }: ButtonProps) => {
     const [buttonHover, setButtonHover] = useState(false)
 
     return (
         <button
+            {...rest}
             onClick={click}
             disabled={variant === "disabled"}
             onMouseEnter={() => setButtonHover(true)}

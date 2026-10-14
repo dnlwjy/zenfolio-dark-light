@@ -172,23 +172,33 @@ export default function Chatbot({
             ))}
             <div ref={messagesEndRef} />
           </div>
-          {state.showEscalation && whatsappHref && (
-            <div className="px-3 pb-2 flex flex-col gap-2">
-              <p className="text-(--white)/80 text-[13px]">{content.escalation.message}</p>
-              <div className="flex flex-wrap gap-2">
-                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('whatsapp_open', sessionId, pathname)} className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px]">
-                  {visitorMessages.escalation.cta}
-                </a>
-                <a
-                  href={contactPath}
-                  onClick={() => trackEvent('contact_link_click', sessionId, pathname)}
-                  className="rounded-md border border-(--white)/25 px-3 py-2 text-[13px]"
-                >
-                  {visitorMessages.escalation.secondary}
-                </a>
-              </div>
-            </div>
+          {state.showEscalation && (
+            <p className="px-3 pb-1 text-(--white)/80 text-[13px]">{content.escalation.message}</p>
           )}
+
+          {/* Dua jalur kontak selalu tersedia: WhatsApp (CTA utama) + halaman kontak. */}
+          <div className="px-3 pb-1 flex flex-wrap gap-2">
+            {whatsappHref && (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('whatsapp_open', sessionId, pathname)}
+                className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px] font-medium flex items-center gap-2"
+              >
+                <Contact size={16} styles="text-(--black) mix-blend-normal" />
+                {visitorMessages.escalation.cta}
+              </a>
+            )}
+
+            <a
+              href={contactPath}
+              onClick={() => trackEvent('contact_link_click', sessionId, pathname)}
+              className="rounded-md border border-(--white)/25 px-3 py-2 text-[13px]"
+            >
+              {visitorMessages.escalation.secondary}
+            </a>
+          </div>
 
           {state.bubbles.length === 0 && questions.length > 0 && (
             <div className="px-3 pb-2 flex flex-wrap gap-2">
