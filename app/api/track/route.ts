@@ -1,8 +1,8 @@
 /**
  * Ingest event analitik first-party (page view, greeting, klik WhatsApp).
  *
- * Sink saat ini hanya log terstruktur — Plan B menggantinya dengan tabel Postgres
- * tanpa mengubah kontrak dari sisi klien.
+ * Event disimpan ke tabel `chat_event`; event consent (`consent_update`) masuk
+ * lewat endpoint yang sama sebagai catatan akuntabilitas.
  */
 
 import { NextResponse } from 'next/server'
@@ -18,7 +18,7 @@ import { clientIp, hashIp } from '@/lib/chat/request-ip'
 export const runtime = 'nodejs'
 
 const eventSchema = z.object({
-  type: z.enum(['page_view', 'greeting_shown', 'chat_open', 'message_sent', 'escalation_offered', 'whatsapp_open', 'contact_link_click', 'rate_limited', 'no_answer']),
+  type: z.enum(['page_view', 'greeting_shown', 'chat_open', 'message_sent', 'escalation_offered', 'whatsapp_open', 'contact_link_click', 'rate_limited', 'no_answer', 'consent_update']),
   sessionId: z.string().min(4).max(64),
   pageUrl: z.string().max(300).optional(),
   meta: z.record(z.string(), z.unknown()).optional(),

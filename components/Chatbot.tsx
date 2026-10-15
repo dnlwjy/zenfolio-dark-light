@@ -11,26 +11,11 @@ import { useChatStream } from './chat/useChatStream'
 import { resolveGreeting, resolveSuggestedQuestions, type ResolvedChatbotContent } from '@/lib/chat/content'
 import { trackEvent } from '@/lib/chat/events'
 import { getRecaptchaToken } from '@/lib/chat/recaptcha-client'
+import { getOrCreateSessionId } from '@/lib/chat/session'
 import { visitorMessages } from '@/lib/chat/messages'
 
 const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
 const GREETING_DELAY_MS = 2500
-const SESSION_KEY = 'chat:session-id'
-
-function sessionIdFor(): string {
-  if (typeof window === 'undefined') return 'server'
-
-  try {
-    const existing = window.sessionStorage.getItem(SESSION_KEY)
-    if (existing) return existing
-
-    const created = crypto.randomUUID()
-    window.sessionStorage.setItem(SESSION_KEY, created)
-    return created
-  } catch {
-    return `fallback-${Date.now()}`
-  }
-}
 
 export interface ChatbotProps {
   content: ResolvedChatbotContent
@@ -54,7 +39,7 @@ export default function Chatbot({
   const [mount, setMount] = useState(false)
   const [input, setInput] = useState('')
   const [teaser, setTeaser] = useState('')
-  const sessionId = useMemo(sessionIdFor, [])
+  const sessionId = useMemo(() => getOrCreateSessionId(), [])
   const getToken = useCallback(() => getRecaptchaToken(recaptchaSiteKey, recaptchaAction), [recaptchaSiteKey, recaptchaAction])
   const { state, send, stop } = useChatStream({ route: pathname, sessionId, getToken })
   const messagesEndRef = useRef<HTMLDivElement>(null)

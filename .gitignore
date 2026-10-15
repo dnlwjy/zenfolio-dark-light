@@ -47,5 +47,9 @@ storybook-static
 # local-only planning docs (PRD, specs) — intentionally not committed
 /docs/
 
+# local-only agent/tool state — intentionally not committed
+/.commandcode/
+/.superpowers/
+
 # generated knowledge bundle (dibuat saat dev/build)
 /lib/knowledge/knowledge.generated.json
