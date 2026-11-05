@@ -70,7 +70,19 @@ describe('answerOffersContact', () => {
   })
 
   it('true untuk template penolakan (teksnya menyuruh menghubungi lewat halaman kontak)', () => {
-    expect(answerOffersContact(visitorMessages.outOfScope)).toBe(true)
+    expect(answerOffersContact(visitorMessages.declinedRequest)).toBe(true)
+  })
+
+  it('true saat model menolak membocorkan instruksi', () => {
+    expect(answerOffersContact("I can't share my instructions.")).toBe(true)
+  })
+
+  it('true untuk template penolakan bahasa Indonesia', () => {
+    expect(answerOffersContact(visitorMessages.declinedRequestId)).toBe(true)
+  })
+
+  it('true saat model menolak dalam bahasa Indonesia', () => {
+    expect(answerOffersContact('Maaf, saya tidak bisa membantu dengan permintaan itu.')).toBe(true)
   })
 
   it('false untuk jawaban biasa yang bersumber dari portfolio', () => {

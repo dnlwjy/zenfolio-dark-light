@@ -11,9 +11,13 @@
  */
 
 export const visitorMessages = {
-  /** Di luar topik portfolio. */
-  outOfScope:
-    "I can only help with questions about Daniel's work and portfolio. For anything else, feel free to reach out through the contact page.",
+  /** Permintaan yang memang tidak bisa dibantu (berbahaya, ilegal, atau di luar batas chat). */
+  declinedRequest:
+    "I can't help with that here. I'm Daniel's AI assistant, so I'm best for questions about his work and portfolio — or you can reach Daniel through the contact page.",
+
+  /** Versi bahasa Indonesia dari `declinedRequest`; dipilih model sesuai bahasa pengunjung. */
+  declinedRequestId:
+    'Maaf, saya tidak bisa membantu untuk hal itu di sini. Saya asisten AI Daniel, jadi saya paling tepat membantu pertanyaan seputar karya dan portofolionya — atau Anda bisa menghubungi Daniel lewat halaman kontak.',
 
   /** Jawaban tidak ada di knowledge base. */
   noAnswer:

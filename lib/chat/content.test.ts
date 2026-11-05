@@ -40,6 +40,14 @@ describe('resolveChatbotContent', () => {
     expect(content.faqs.length).toBeGreaterThan(1)
   })
 
+  it('menyertakan FAQ identitas dan kapabilitas default', () => {
+    const questions = resolveChatbotContent(null).faqs.map((faq) => faq.question)
+
+    expect(questions).toContain('Who are you?')
+    expect(questions).toContain('What can you do?')
+    expect(questions).toContain('Are you Daniel?')
+  })
+
   it('membatasi pertanyaan saran maksimal tiga', () => {
     const content = resolveChatbotContent({ suggestedQuestions: [{ route: '/', questions: ['a', 'b', 'c', 'd'] }] })
 

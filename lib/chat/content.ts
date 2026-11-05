@@ -46,6 +46,25 @@ const FAQS: Array<{ question: string; answer: string }> = [
     answer:
       'The case studies page lists shipped work with the problem and the result, and the builds page lists products and templates with marketplace links.',
   },
+  {
+    question: 'Who are you?',
+    answer:
+      "I'm Daniel's AI assistant, not Daniel himself. I help visitors understand his work, case studies, and builds, and I can point you to the right page or to his contact details.",
+  },
+  {
+    question: 'What can you do?',
+    answer:
+      "I can answer questions about Daniel's work, skills, projects, and process, and help you find the right page. I can also handle short general questions, but Daniel's portfolio is my main focus.",
+  },
+  {
+    question: 'Are you Daniel?',
+    answer:
+      "No — I'm an AI assistant for Daniel's portfolio. Daniel replies personally through the contact page or WhatsApp.",
+  },
+  {
+    question: 'What language do you speak?',
+    answer: 'I answer in the language you use, including English and Indonesian.',
+  },
 ]
 
 export type ResolvedChatbotContent = {
