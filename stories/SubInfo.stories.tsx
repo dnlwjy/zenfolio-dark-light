@@ -22,9 +22,9 @@ type AllVariantsArgs = {
 
 export const Default: StoryObj<typeof SubInfo> = {
   render: (args) => (
-    <div className="flex flex-col gap-8 p-8 w-full max-w-125">
+    <dl className="flex flex-col gap-8 p-8 w-full max-w-125">
       <SubInfo title={args.title} subtitle={args.subtitle} />
-    </div>
+    </dl>
   ),
   args: {
     title: "Full Name", subtitle: "Daniel Wijaya",
@@ -46,10 +46,10 @@ export const Group: StoryObj<AllVariantsArgs> = {
     subtitle3: { control: "text", name: "Subtitle", table: { category: "Item 3" } },
   },
   render: (args) => (
-    <div className="flex flex-col gap-8 p-8 w-full max-w-125">
+    <dl className="flex flex-col gap-8 p-8 w-full max-w-125">
       <SubInfo title={args.title1} subtitle={args.subtitle1} />
       <SubInfo title={args.title2} subtitle={args.subtitle2} />
       <SubInfo title={args.title3} subtitle={args.subtitle3} />
-    </div>
+    </dl>
   ),
 };
