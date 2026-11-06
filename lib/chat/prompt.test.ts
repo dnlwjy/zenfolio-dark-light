@@ -25,6 +25,17 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain("decline briefly in the visitor's language")
   })
 
+  it('memberitahu model halaman yang sedang dibuka pengunjung', () => {
+    const prompt = buildSystemPrompt('/builds')
+
+    expect(prompt).toContain('CURRENT PAGE:')
+    expect(prompt).toContain('currently viewing /builds (Builds)')
+  })
+
+  it('tetap menyebut route walau halaman tidak ada di knowledge base', () => {
+    expect(buildSystemPrompt('/privacy')).toContain('currently viewing /privacy')
+  })
+
   it('memuat konteks umum (about) untuk route mana pun', () => {
     expect(buildSystemPrompt('/builds')).toContain('About Daniel Wijaya')
   })

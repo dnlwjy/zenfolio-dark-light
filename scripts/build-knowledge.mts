@@ -48,7 +48,7 @@ const QUERIES = {
     funFacts[]{title, description}
   }`,
   projects: `*[_type == "projects"] | order(orderRank asc){
-    title, "slug": slug.current, role, year, client, website, description, content, _updatedAt
+    title, "slug": slug.current, role, year, client, website, description, content, featured, _updatedAt
   }`,
   builds: `*[_type == "shop"] | order(year desc, orderRank asc){
     title, "slug": slug.current, description, marketplaceName, marketplaceURL, preview, year, _updatedAt
@@ -93,6 +93,7 @@ type ProjectDoc = {
   website?: string
   description?: string
   content?: unknown
+  featured?: boolean
   _updatedAt?: string
 }
 
@@ -125,10 +126,12 @@ function paragraphs(...values: Array<string | undefined | null>): string {
 function buildEntries(about: AboutDoc | null, projects: ProjectDoc[], builds: BuildDoc[], bot: ChatbotDoc | null): Entry[] {
   const entries: Entry[] = []
 
+  // Peta situs berlaku di semua halaman, jadi route-nya `*` — bukan `/`.
+  // Kalau memakai `/`, halaman Home dianggap "Site map" oleh prompt.
   entries.push({
     id: 'site:index',
     type: 'route',
-    route: '/',
+    route: '*',
     title: 'Site map',
     summary: 'Daftar halaman yang tersedia di situs.',
     body: [
@@ -141,6 +144,27 @@ function buildEntries(about: AboutDoc | null, projects: ProjectDoc[], builds: Bu
     ]
       .filter(Boolean)
       .join('\n'),
+  })
+
+  const featured = projects.filter((project) => project.featured && project.slug && project.title).slice(0, 3)
+  entries.push({
+    id: 'route:/',
+    type: 'route',
+    route: '/',
+    title: 'Home',
+    summary: 'Hero, bio singkat, dan studi kasus unggulan.',
+    body: paragraphs(
+      `The home page opens with the hero: "I'm Daniel — Frontend Engineer", with links to Contact and About.`,
+      featured.length
+        ? `Below the hero it shows these featured case studies:\n${featured
+            .map(
+              (project) =>
+                `- ${project.title} (${project.year ?? ''}) — ${project.description ?? ''} → /case-study/${project.slug}`,
+            )
+            .join('\n')}`
+        : 'Below the hero it shows selected case studies.',
+      'A short about section follows the featured case studies.',
+    ),
   })
 
   if (about) {
