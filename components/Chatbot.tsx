@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { m } from 'framer-motion'
-
 import Button from './Button'
 import { Chat, Close, Contact } from './IconLibrary'
 import { useChatStream } from './chat/useChatStream'
@@ -13,9 +12,10 @@ import { trackEvent } from '@/lib/chat/events'
 import { getRecaptchaToken } from '@/lib/chat/recaptcha-client'
 import { getOrCreateSessionId } from '@/lib/chat/session'
 import { visitorMessages } from '@/lib/chat/messages'
+import Tooltip from './Tooltip'
 
 const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
-const GREETING_DELAY_MS = 2500
+const GREETING_DELAY_MS = 600
 
 export interface ChatbotProps {
   content: ResolvedChatbotContent
@@ -99,20 +99,17 @@ export default function Chatbot({
     <div className={`${SUPPORT} ${styles}`}>
       {/* Teaser sapaan per halaman (bukan panel) */}
       {teaser && !open && (
-        <div className="absolute bottom-full right-0 mb-3 w-64 flex items-start gap-2 rounded-lg border border-(--white)/15 bg-(--black) px-3 py-2">
-          <button type="button" onClick={handleToggleChatbot} className="flex-1 text-left text-[13px] leading-[140%] text-(--white)">
-            {teaser}
-          </button>
-
+        <Tooltip variant="bottomright" styles="flex flex-row absolute bottom-full right-0 mb-2 w-60">
+          {teaser}
           <button
             type="button"
             aria-label="Dismiss greeting"
             onClick={() => setTeaser('')}
-            className="shrink-0 -mt-0.5 text-(--white)/50 hover:text-(--white) text-[15px] leading-none"
+            className="group text-(--gray)"
           >
-            ×
+            <Close size={12} styles="group-hover:text-(--white) transition-colors duration-300"/>
           </button>
-        </div>
+        </Tooltip>
       )}
 
       <span className={`absolute inset-0 ${open ? '' : 'bg-(--white)/70 blur-lg animate-pulse [animation-duration:1s]'} rounded-full transition-all duration-800 pointer-events-none`} />
@@ -131,7 +128,7 @@ export default function Chatbot({
           animate={{ opacity: open ? 1 : 0, y: open ? 0 : 24 }}
           aria-hidden={!open}
           className={`
-            absolute text-[14px] leading-[135%] rounded-tl-2xl bottom-full mb-3 right-0 flex flex-col overflow-hidden bg-(--black) border border-(--white)/10
+            absolute text-[14px] leading-[135%] rounded-tl-2xl bottom-full mb-3 right-0 flex flex-col overflow-hidden bg-(--black) border border-(--white)/15
             w-[calc(100dvw-40px)] max-w-85 h-[calc(100dvh-170px)] max-h-140
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >

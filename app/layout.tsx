@@ -10,7 +10,7 @@ import ConsentProvider from "@/context/ConsentProvider"
 import { client } from '../sanity/lib/client'
 import type { About } from "@/types/sanity.types"
 import Chatbot from "@/components/Chatbot";
-import ConsentBanner from "@/components/ConsentBanner";
+import CookieBanner from "@/components/CookieBanner";
 import AnalyticsConsentGate from "@/components/AnalyticsConsentGate";
 import { chatbotContent } from '@/lib/knowledge'
 import { resolveChatbotContent } from '@/lib/chat/content'
@@ -134,7 +134,7 @@ export default async function RootLayout({
               </MotionConfig>
             </LazyMotion>
           </ThemeProvider>
-          <ConsentBanner />
+          <CookieBanner styles="fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] max-w-[360px]"/>
           <AnalyticsConsentGate gaId={envPublic.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         </ConsentProvider>
       </body>

@@ -16,7 +16,7 @@ const SubInfo = ({
     if (!subtitle) return null;
 
     return (
-        <div className={`flex flex-col gap-2 sm:items-start items-center flex-1 border-b border-(--white)/10 pb-6 ${styles}`}>
+        <div className={`flex flex-col gap-2 sm:items-start items-center flex-1 border-b border-(--white)/15 pb-6 ${styles}`}>
             <dt className="tag text-(--gray)">{title}</dt>
 
             {isExternal ? (
