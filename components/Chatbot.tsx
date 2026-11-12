@@ -13,6 +13,7 @@ import { getRecaptchaToken } from '@/lib/chat/recaptcha-client'
 import { getOrCreateSessionId } from '@/lib/chat/session'
 import { visitorMessages } from '@/lib/chat/messages'
 import Tooltip from './Tooltip'
+import { useConsent } from '@/context/ConsentProvider'
 
 const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
 const GREETING_DELAY_MS = 600
@@ -35,6 +36,7 @@ export default function Chatbot({
   styles = '',
 }: ChatbotProps) {
   const pathname = usePathname() ?? '/'
+  const { bannerOpen } = useConsent()
   const [open, setOpen] = useState(false)
   const [mount, setMount] = useState(false)
   const [input, setInput] = useState('')
@@ -96,7 +98,7 @@ export default function Chatbot({
   }, [whatsappNumber, pathname, content.escalation.waMessageTemplate])
 
   return (
-    <div className={`${SUPPORT} ${styles}`}>
+    <div className={`${SUPPORT} ${styles} ${bannerOpen ? 'max-sm:hidden' : ''}`}>
       {/* Teaser sapaan per halaman (bukan panel) */}
       {teaser && !open && (
         <Tooltip variant="bottomright" styles="flex flex-row absolute bottom-full right-0 mb-2 w-60">
