@@ -48,7 +48,7 @@ const Header = ({ styles = "" }: { styles?: string }) => {
     }, [router])
 
     return (
-        <header className={`flex gap-3 w-fit p-2 rounded-full bg-(--white)/3 border-t border-l border-(--white)/10 backdrop-blur-lg ${styles}`}>
+        <header className={`flex gap-3 w-fit p-2 rounded-full bg-(--white)/3 border-t border-l border-(--white)/15 backdrop-blur-lg ${styles}`}>
 
             {/* highlight */}
             {active && (

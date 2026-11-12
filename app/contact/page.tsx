@@ -17,7 +17,6 @@ export const SUPPORT = "flex md:flex-row flex-col min-[1280px]:gap-40 gap-24 w-f
 // 3. metadata
 export const metadata: Metadata = {
     title: "Contact",
-    description: "Have a project in mind? Let's talk — I'm open to freelance, collaboration, and full-time opportunities.",
     alternates: {
         canonical: "/contact",
     },

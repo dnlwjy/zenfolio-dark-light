@@ -35,7 +35,7 @@ const Button = ({
     afterClickedLogic,
     click,
     icon: Icon,
-    styles,
+    styles
 }: ButtonProps) => {
     const [buttonHover, setButtonHover] = useState(false)
 

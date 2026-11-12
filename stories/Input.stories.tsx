@@ -19,6 +19,7 @@ export const SingleInput = {
         aria-label="Full Name"
         aria-required="true"
         autoComplete="name"
+        autoFocus
         className={peerInput}
       />
       <label
@@ -42,6 +43,7 @@ export const AreaInput = {
         aria-label="Your message"
         aria-required="true"
         autoComplete="off"
+        autoFocus
         className={peerInput}
       />
       <label

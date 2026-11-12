@@ -32,7 +32,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="flex gap-3 w-fit p-2 rounded-full bg-(--white)/3 border-t border-l border-(--white)/10 backdrop-blur-lg relative">
+    <header className="flex gap-3 w-fit p-2 rounded-full bg-(--white)/3 border-t border-l border-(--white)/15 backdrop-blur-lg relative">
       {active && (
         <div
           className="absolute bg-(--white) rounded-full h-10 w-10 opacity-10 transition-all duration-300"

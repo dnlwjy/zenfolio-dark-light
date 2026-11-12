@@ -7,6 +7,7 @@
 ##
 The website is fully **static** enabling the best load time and a strong SEO. The important data are delivered via Sanity, not hard-coded, in which they all are prepared during build time resulting in zero CMS requests at runtime. Here are some the key features:
 
+- **Chatbot**: AI assistant that has knowledge from Sanity, equipped with WhatsApp hand-off
 - **Keyboard Navigation**: use hotkeys ( Q / W / E / R ) to navigate between pages
 - **Moon / Sun transition**: transition between icons using [Flubber](https://github.com/veltman/flubber) (SVG morphing)
 - **TypeScript + Zod**: build-time type checking and runtime validation

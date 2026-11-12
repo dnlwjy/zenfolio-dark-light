@@ -1,0 +1,173 @@
+/**
+ * Endpoint chat: satu-satunya jalur server untuk widget.
+ *
+ * Alur satu permintaan:
+ *   validasi payload → rate limit → reCAPTCHA → susun prompt → panggil provider (streaming)
+ *   → saring token penalaran → kirim event SSE ke widget.
+ *
+ * Kontrak event SSE (protokol internal, bukan format provider):
+ *   { "type": "delta",  "text": "..." }
+ *   { "type": "done",   "usage": {...}, "costUsd": 0.0004, "escalated": false }
+ *   { "type": "error",  "message": "<pesan manusia yang tenang>" }
+ */
+
+import { NextResponse } from 'next/server'
+
+import { classifyProviderFailure, visitorMessageForFailure } from '@/lib/ai/errors'
+import { computeCost } from '@/lib/ai/pricing'
+import { resolveActiveModel, type ResolvedModel } from '@/lib/ai/providers'
+import { chatConfig } from '@/lib/config/chat'
+import { answerOffersContact, detectEscalationIntent } from '@/lib/chat/boundary'
+import { kbVersion, chatbotContent } from '@/lib/knowledge'
+import { visitorMessages } from '@/lib/chat/messages'
+import { resolveChatbotContent } from '@/lib/chat/content'
+import { runCompletion } from '@/lib/chat/complete'
+import { buildMessages, type ChatMessage, type HistoryMessage } from '@/lib/chat/prompt'
+import { checkMessageLimits, checkSessionLimit } from '@/lib/chat/rate-limit'
+import { getRateLimitStore } from '@/lib/chat/rate-limit-factory'
+import { clientIp, hashIp } from '@/lib/chat/request-ip'
+import { dailyBudgetStatus } from '@/lib/chat/cost-meter'
+import { persistTurn } from '@/lib/chat/persist'
+import { verifyRecaptcha } from '@/lib/chat/recaptcha'
+import { prepareTurn } from '@/lib/chat/turn'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+const rateLimitStore = getRateLimitStore()
+const encoder = new TextEncoder()
+
+function sseEvent(payload: unknown): Uint8Array {
+  return encoder.encode(`data: ${JSON.stringify(payload)}\n\n`)
+}
+
+function logEvent(level: 'info' | 'warn' | 'error', event: string, context: Record<string, unknown>) {
+  const line = JSON.stringify({ level, event, ...context })
+  if (level === 'error') console.error(line)
+  else if (level === 'warn') console.warn(line)
+  else console.info(line)
+}
+
+export async function POST(request: Request) {
+  let payload: unknown
+  try {
+    payload = await request.json()
+  } catch {
+    return NextResponse.json({ message: visitorMessages.temporarilyUnavailable }, { status: 400 })
+  }
+
+  const turn = prepareTurn(payload)
+  if (!turn.ok) return NextResponse.json({ message: turn.message }, { status: turn.status })
+
+  const ipHash = hashIp(clientIp(request))
+
+  const sessionLimit = await checkSessionLimit({ store: rateLimitStore, ipHash, sessionId: turn.sessionId })
+  if (!sessionLimit.allowed) {
+    logEvent('warn', 'chat.session_limited', { ipHash, reason: sessionLimit.reason })
+    return NextResponse.json({ message: sessionLimit.message }, { status: 429 })
+  }
+
+  const messageLimit = await checkMessageLimits({ store: rateLimitStore, sessionId: turn.sessionId, ipHash, turnCount: turn.turnCount })
+  if (!messageLimit.allowed) {
+    logEvent('warn', 'chat.message_limited', { ipHash, sessionId: turn.sessionId, reason: messageLimit.reason })
+    return NextResponse.json({ message: messageLimit.message }, { status: 429 })
+  }
+
+  const recaptcha = await verifyRecaptcha({
+    token: turn.recaptchaToken,
+    remoteIp: clientIp(request),
+  })
+  if (!recaptcha.ok) {
+    logEvent('warn', 'chat.recaptcha_rejected', { ipHash, reason: recaptcha.reason })
+    return NextResponse.json({ message: visitorMessages.slowDown }, { status: 429 })
+  }
+
+  try {
+    const budget = await dailyBudgetStatus()
+    if (budget.exceeded) {
+      logEvent('warn', 'chat.budget_exceeded', { ipHash, spentUsd: budget.spentUsd, limitUsd: budget.limitUsd })
+      return NextResponse.json({ message: visitorMessages.temporarilyUnavailable }, { status: 429 })
+    }
+  } catch (error) {
+    // Meter biaya tidak boleh memblokir pengunjung; rate limit tetap menjadi pengaman.
+    logEvent('warn', 'chat.budget_check_failed', { message: error instanceof Error ? error.message : String(error) })
+  }
+
+  let resolved: ResolvedModel
+  try {
+    resolved = resolveActiveModel()
+  } catch (error) {
+    logEvent('error', 'chat.provider_config_invalid', { message: error instanceof Error ? error.message : String(error) })
+    return NextResponse.json({ message: visitorMessages.temporarilyUnavailable }, { status: 500 })
+  }
+
+  const messages = buildMessages({
+    route: turn.route,
+    history: turn.history as HistoryMessage[],
+    question: turn.question,
+    faqs: resolveChatbotContent(chatbotContent).faqs,
+  })
+
+  const triggers = resolveChatbotContent(chatbotContent).escalation.triggers
+  const startedAt = Date.now()
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (payload: unknown) => controller.enqueue(sseEvent(payload))
+      const answer = await runCompletion({ resolved, messages, send })
+
+      // Dua jalur kontak muncul bila: pengunjung minta kontak/hiring, ATAU jawaban
+      // model menawarkan koneksi (jalur "tidak ada di knowledge base"), ATAU permintaan gagal.
+      const escalated =
+        detectEscalationIntent(turn.question, triggers) || (answer.text ? answerOffersContact(answer.text) : true)
+
+      if (!answer.text) {
+        send({ type: 'error', message: answer.failureMessage ?? visitorMessages.emptyAnswer })
+      } else {
+        send({ type: 'done', ...answer.done, escalated })
+      }
+
+      controller.close()
+
+      void persistTurn({
+        sessionId: turn.sessionId,
+        question: turn.question,
+        answer: answer.text,
+        pageUrl: turn.route,
+        provider: resolved.provider.id,
+        model: resolved.model.id,
+        kbVersion,
+        tokensIn: answer.done.usage.tokensIn,
+        cachedTokensIn: answer.done.usage.cachedTokensIn,
+        tokensOut: answer.done.usage.tokensOut,
+        costUsd: answer.done.costUsd,
+        latencyMs: Date.now() - startedAt,
+        escalated,
+        recaptchaScore: recaptcha.score,
+      }).catch((error) => logEvent('error', 'chat.persist_failed', { message: error instanceof Error ? error.message : String(error) }))
+
+      logEvent('info', 'chat.turn_complete', {
+        sessionId: turn.sessionId,
+        ipHash,
+        route: turn.route,
+        provider: resolved.provider.id,
+        model: resolved.model.id,
+        kbVersion,
+        latencyMs: Date.now() - startedAt,
+        escalated,
+        recaptchaScore: recaptcha.score,
+        ...answer.done.usage,
+        costUsd: answer.done.costUsd,
+        usedFallback: answer.usedFallback,
+      })
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  })
+}

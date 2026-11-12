@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { GoogleAnalytics } from '@next/third-parties/google'
 import { envPublic } from '@/lib/env.public'
 import "./globals.css";
 import { LazyMotion, domAnimation, MotionConfig } from "framer-motion"
@@ -7,9 +6,19 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import ToggleTheme from '@/components/ToggleTheme'
 import ThemeProvider from "@/context/ThemeProvider"
+import ConsentProvider from "@/context/ConsentProvider"
 import { client } from '../sanity/lib/client'
 import type { About } from "@/types/sanity.types"
 import Chatbot from "@/components/Chatbot";
+import CookieBanner from "@/components/CookieBanner";
+import AnalyticsConsentGate from "@/components/AnalyticsConsentGate";
+import { chatbotContent } from '@/lib/knowledge'
+import { resolveChatbotContent } from '@/lib/chat/content'
+import { chatConfig } from '@/lib/config/chat'
+
+// Konten chatbot: default di kode, ditimpa isi doc `chatbot` di Sanity bila ada.
+const chatbotCopy = resolveChatbotContent(chatbotContent)
+const whatsappNumber = process.env.WHATSAPP_NUMBER?.trim() ?? ''
 
 // 1. const
 const SITE_NAME = "Daniel Wijaya"
@@ -102,23 +111,33 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <ThemeProvider>
-          <LazyMotion features={domAnimation} strict>
-            <MotionConfig
-              transition={{ type: "spring", stiffness: 500, damping: 50 }}
-            >
-              <Header styles="fixed top-6 inset-x-0 mx-auto z-50" />
-              <ToggleTheme styles="fixed top-8 right-8 z-50 sm:flex hidden" />
-              <Chatbot styles="fixed lg:bottom-8 lg:right-8 bottom-5 right-5 z-50" />
-              <main>
-                {children}
-              </main>
-              <Footer />
-            </MotionConfig>
-          </LazyMotion>
-        </ThemeProvider>
+        <ConsentProvider>
+          <ThemeProvider>
+            <LazyMotion features={domAnimation} strict>
+              <MotionConfig
+                transition={{ type: "spring", stiffness: 500, damping: 50 }}
+              >
+                <Header styles="fixed top-6 inset-x-0 mx-auto z-50" />
+                <ToggleTheme styles="fixed top-8 right-8 z-50 sm:flex hidden" />
+                <Chatbot
+                  styles="fixed lg:bottom-8 lg:right-8 bottom-5 right-5 z-50"
+                  content={chatbotCopy}
+                  whatsappNumber={whatsappNumber}
+                  contactPath={chatConfig.escalation.contactPath}
+                  recaptchaSiteKey={process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY ?? ''}
+                  recaptchaAction={chatConfig.recaptcha.action}
+                />
+                <main>
+                  {children}
+                </main>
+                <Footer />
+              </MotionConfig>
+            </LazyMotion>
+          </ThemeProvider>
+          <CookieBanner styles="fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] max-w-[360px]"/>
+          <AnalyticsConsentGate gaId={envPublic.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        </ConsentProvider>
       </body>
-      <GoogleAnalytics gaId={envPublic.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
     </html>
   );
 }
