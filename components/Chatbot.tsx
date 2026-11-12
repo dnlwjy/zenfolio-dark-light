@@ -105,9 +105,9 @@ export default function Chatbot({
             type="button"
             aria-label="Dismiss greeting"
             onClick={() => setTeaser('')}
-            className="group text-(--gray)"
+            className="group text-(--gray) cursor-pointer"
           >
-            <Close size={12} styles="group-hover:text-(--white) transition-colors duration-300"/>
+            <Close size={12} styles="group-hover:text-(--white) transition-colors duration-150"/>
           </button>
         </Tooltip>
       )}
