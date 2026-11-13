@@ -139,13 +139,13 @@ export default async function About() {
                 </MotionElement>
 
                 <MotionElement as="ul" variant="up" del={0.5} styles={UNORDERED_LIST_GRID}>
-                    {about.software.map((e) => (
+                    {about.software?.map((e) => (
                         <li key={e._key}><A title={e.title} link={e.link} /> — {e.description}</li>
                     ))}
                 </MotionElement>
 
                 <MotionElement as="ul" variant="up" del={0.5} styles={UNORDERED_LIST_GRID}>
-                    {about.hardware.map((e) => (
+                    {about.hardware?.map((e) => (
                         <li key={e._key}><A title={e.title} link={e.link} /> — {e.description}</li>
                     ))}
                 </MotionElement>
@@ -160,7 +160,7 @@ export default async function About() {
                 </MotionElement>
 
                 <MotionElement as="ul" variant="up" del={0.5} styles="flex flex-col gap-12 w-full items-center">
-                    {about.funFacts.map((fact) => (
+                    {about.funFacts?.map((fact) => (
                         <li key={fact._key} className="flex flex-col gap-2 items-center max-w-225">
                             <span className="text-(--white) text-center">{fact.title}</span>
                             <PortableText value={fact.description} components={SERIALIZERS_TEXT_CENTER} />
