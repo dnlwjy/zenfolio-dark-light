@@ -83,8 +83,6 @@ describe('checkSessionLimit', () => {
   it('tidak menghabiskan jatah sesi untuk percakapan panjang dalam sesi yang sama', async () => {
     const s = store()
 
-    // Regresi: sebelumnya setiap permintaan dihitung sebagai sesi baru sehingga
-    // pengunjung terblokir di tengah percakapan.
     for (let attempt = 0; attempt < 6; attempt += 1) {
       expect(await checkSessionLimit({ store: s, ipHash: 'ip1', sessionId: 'same-session', limits, now: 1_000 + attempt })).toEqual({
         allowed: true,

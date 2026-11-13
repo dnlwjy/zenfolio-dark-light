@@ -1,18 +1,7 @@
-/**
- * Rate limit berlapis: per menit (anti-spam), per sesi (batas turn), per IP per hari (anti-abuse).
- *
- * Store bersifat pluggable supaya perilaku yang sama bisa dijalankan tanpa database
- * (memory, untuk lokal/preview) maupun dengan Postgres (Plan B, untuk produksi).
- *
- * Catatan: store memory bersifat per-instance dan hilang saat instance mati — jangan
- * dijadikan satu-satunya pelindung di produksi serverless.
- */
-
 import { chatConfig } from '../config/chat'
 import { visitorMessages } from './messages'
 
 export type RateLimitStore = {
-  /** Menambah counter pada window dan mengembalikan nilai setelah penambahan. */
   incr(key: string, windowMs: number, now: number): Promise<number>
 }
 
@@ -92,9 +81,6 @@ export async function checkSessionLimit(input: SessionLimitInput): Promise<Limit
   const now = input.now ?? Date.now()
   const limits = input.limits ?? defaultLimits
 
-  // Hitung SESI BARU per IP, bukan setiap permintaan: percakapan panjang dalam satu sesi
-  // tidak boleh ikut menghabiskan jatah. Penanda per sesi dipakai agar tetap benar
-  // walau permintaan datang ke instance serverless berbeda.
   const seen = await input.store.incr(`sessionseen:${input.sessionId}`, DAY_MS, now)
   if (seen > 1) return { allowed: true }
 

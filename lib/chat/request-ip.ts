@@ -1,9 +1,3 @@
-/**
- * Identitas klien untuk rate limit: IP mentah untuk upstream, hash untuk penyimpanan.
- *
- * IP mentah tidak pernah disimpan (hanya hash bersalt) supaya tidak menyimpan data
- * pribadi yang tidak perlu.
- */
 
 import { createHash } from 'node:crypto'
 

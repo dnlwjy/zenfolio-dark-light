@@ -3,6 +3,8 @@ import { Resend } from 'resend'
 import { buildOwnerEmailTemplate, buildVisitorAutoReplyTemplate } from '@/lib/contact/email-template'
 import { checkRateLimit, getClientIp } from '@/lib/contact/rate-limit'
 import { contactFormSchema, type ContactApiResponse } from '@/lib/contact/schema'
+import { chatConfig } from '@/lib/config/chat'
+import { verifyRecaptcha } from '@/lib/chat/recaptcha'
 import { envServer } from '@/lib/env.server'
 
 const resend = new Resend(envServer.RESEND_API_KEY)
@@ -65,39 +67,39 @@ export async function POST(request: Request) {
 
   const { name, email, message, recaptcha } = parsedPayload.data
 
-  try {
-    const verify = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      body: new URLSearchParams({
-        secret: envServer.RECAPTCHA_SECRET_KEY,
-        response: recaptcha,
-      }),
-    })
+  const verification = await verifyRecaptcha({
+    token: recaptcha,
+    remoteIp: clientIp,
+    secret: envServer.RECAPTCHA_V3_SECRET_KEY,
+    failOpen: false,
+    config: {
+      enabled: true,
+      minScore: chatConfig.recaptcha.minScore,
+      action: 'contact',
+    },
+  })
 
-    const verifyResult = (await verify.json()) as { success?: boolean }
-    if (!verifyResult.success) {
-      logEvent('info', 'contact.bot_check_failed', { clientIp })
+  if (!verification.ok) {
+    if (verification.reason === 'unavailable') {
+      logEvent('error', 'contact.bot_check_error', { clientIp })
       return jsonResponse(
         {
           success: false,
           code: 'BOT_CHECK_FAILED',
-          message: 'Security verification failed. Please retry reCAPTCHA and try again.',
+          message: 'Security verification is temporarily unavailable. Please try again shortly.',
         },
-        400,
+        500,
       )
     }
-  } catch (error) {
-    logEvent('error', 'contact.bot_check_error', {
-      clientIp,
-      message: error instanceof Error ? error.message : 'unknown',
-    })
+
+    logEvent('info', 'contact.bot_check_failed', { clientIp, reason: verification.reason })
     return jsonResponse(
       {
         success: false,
         code: 'BOT_CHECK_FAILED',
-        message: 'Security verification is temporarily unavailable. Please try again shortly.',
+        message: 'Security verification failed. Please try again.',
       },
-      500,
+      400,
     )
   }
 

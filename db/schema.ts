@@ -1,18 +1,6 @@
-/**
- * Tabel chatbot di Supabase Postgres.
- *
- * Akses hanya dari server lewat koneksi Postgres langsung (bukan Data API),
- * dan RLS diaktifkan tanpa policy = deny-all untuk anon/authenticated.
- *
- * Konvensi: migrasi dihasilkan `drizzle-kit generate` lalu di-commit sebagai SQL
- * yang bisa dibaca; setiap file diakhiri blok komentar ROLLBACK (lihat db/README).
- */
-
 import { bigserial, boolean, index, integer, jsonb, numeric, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const chatSession = pgTable('chat_session', {
-  // id sesi datang dari klien (crypto.randomUUID) — disimpan sebagai text agar
-  // tidak memaksa validasi UUID di kontrak API.
   id: text('id').primaryKey(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   firstPage: text('first_page'),

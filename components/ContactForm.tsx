@@ -1,18 +1,16 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { useTheme } from "@/context/ThemeProvider"
+import { useState } from 'react'
 import Button from './Button'
-import ReCAPTCHA from 'react-google-recaptcha'
 import { Contact } from './IconLibrary'
-import { contactFormSchema, type ContactApiResponse } from '@/lib/contact/schema'
+import { getRecaptchaToken } from '@/lib/chat/recaptcha-client'
+import { contactFormFieldsSchema, contactFormSchema, type ContactApiResponse } from '@/lib/contact/schema'
 import { envPublic } from '@/lib/env.public'
 
 type FormState = {
     name: string;
     email: string;
     message: string;
-    recaptcha: string;
 }
 
 type StatusType = 'idle' | 'sending' | 'success' | 'error'
@@ -24,7 +22,8 @@ function logicSubmitButton(a: StatusType) {
     return 'Send Message'
 }
 
-const RECAPTCHA_SITE_KEY = envPublic.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+const RECAPTCHA_SITE_KEY = envPublic.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY
+const RECAPTCHA_ACTION = 'contact'
 
 const peerInput = "peer pt-8.5 pb-3.5 placeholder-transparent"
 const peerLabel = `absolute left-3 top-9 text-(--divider) transition-all duration-300 pointer-events-none
@@ -32,34 +31,34 @@ const peerLabel = `absolute left-3 top-9 text-(--divider) transition-all duratio
                    peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-(--gray)`
 
 const ContactForm = ({ styles = "" }: { styles?: string }) => {
-    const [form, setForm] = useState<FormState>({ name: '', email: '', message: '', recaptcha: '' })
+    const [form, setForm] = useState<FormState>({ name: '', email: '', message: '' })
     const [status, setStatus] = useState<StatusType>('idle')
     const [feedback, setFeedback] = useState<string>('')
-    const recaptchaRef = useRef<ReCAPTCHA>(null)
-    const { theme } = useTheme()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value })
-    }
-
-    const handleRecaptcha = (token: string | null) => {
-        setForm((prev) => ({ ...prev, recaptcha: token || '' }))
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setStatus('sending')
 
-        const parsed = contactFormSchema.safeParse(form)
-        if (!parsed.success) {
+        const parsedFields = contactFormFieldsSchema.safeParse(form)
+        if (!parsedFields.success) {
             setStatus('error')
-            setFeedback(parsed.error.issues[0]?.message ?? 'Invalid input.')
+            setFeedback(parsedFields.error.issues[0]?.message ?? 'Invalid input.')
             return
         }
 
-        setStatus('sending')
-
         try {
+            const recaptcha = await getRecaptchaToken(RECAPTCHA_SITE_KEY, RECAPTCHA_ACTION)
+            const parsed = contactFormSchema.safeParse({ ...parsedFields.data, recaptcha })
+            if (!parsed.success) {
+                setStatus('error')
+                setFeedback(parsed.error.issues[0]?.message ?? 'Security verification failed. Please try again.')
+                return
+            }
+
             const res = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -75,8 +74,7 @@ const ContactForm = ({ styles = "" }: { styles?: string }) => {
 
             setStatus('success')
             setFeedback(data.message)
-            setForm({ name: '', email: '', message: '', recaptcha: '' })
-            recaptchaRef.current?.reset()
+            setForm({ name: '', email: '', message: '' })
         } catch {
             setStatus('error')
             setFeedback('Connection issue detected. Please try again shortly.')
@@ -154,16 +152,6 @@ const ContactForm = ({ styles = "" }: { styles?: string }) => {
                 >
                     Your Message
                 </label>
-            </div>
-            {/* --- reCAPTCHA --- */}
-            <div className="flex justify-start mt-4">
-                <ReCAPTCHA
-                    key={theme}
-                    ref={recaptchaRef}
-                    sitekey={RECAPTCHA_SITE_KEY}
-                    theme={theme}
-                    onChange={handleRecaptcha}
-                />
             </div>
             {feedback ? (
                 <small aria-live="polite" className="text-(--white)">

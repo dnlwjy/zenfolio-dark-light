@@ -25,14 +25,12 @@ describe('GET /api/cron/keepalive', () => {
 
   it('menerima panggilan dengan bearer yang benar', async () => {
     process.env.CRON_SECRET = 'rahasia-uji'
-    // Tanpa DATABASE_URL, ping mengembalikan false — perilakunya tetap 200 (bukan 401).
     delete process.env.DATABASE_URL
 
     const response = await GET(
       new Request('http://localhost/api/cron/keepalive', { headers: { authorization: 'Bearer rahasia-uji' } }),
     )
 
-    // Tanpa DATABASE_URL di lingkungan uji, ping mengembalikan false — yang penting bukan 401.
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ ok: false })
   })

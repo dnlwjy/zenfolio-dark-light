@@ -1,10 +1,3 @@
-/**
- * Satu turn percakapan: validasi payload + urutan keputusan yang tidak butuh I/O.
- *
- * Fungsi ini sengaja sinkron dan murni supaya perilakunya bisa diuji tanpa server:
- * validasi bentuk payload, lalu guard input pengunjung. Rate limit, reCAPTCHA, dan
- * pemanggilan provider tetap di route karena semuanya butuh jaringan/database.
- */
 
 import { z } from 'zod'
 
@@ -19,7 +12,6 @@ const historyMessageSchema = z.object({
 })
 
 export const chatRequestSchema = z.object({
-  // Batas panjang ditangani guardInput supaya pesannya konsisten (bukan error zod).
   message: z.string(),
   route: z.string().min(1).max(200),
   sessionId: z.string().min(8).max(64),
@@ -37,7 +29,6 @@ export type PreparedTurn =
 export function prepareTurn(payload: unknown, maxInputChars?: number): PreparedTurn {
   const parsed = chatRequestSchema.safeParse(payload)
   if (!parsed.success) {
-    // Payload cacat = bug klien, bukan kesalahan pengunjung: tetap pakai pesan tenang.
     return { ok: false, status: 400, message: visitorMessages.temporarilyUnavailable }
   }
 

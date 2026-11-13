@@ -1,14 +1,5 @@
-/**
- * Consent cookie first-party (kategori: necessary + analytics).
- *
- * Nilai disimpan sebagai JSON ter-encode di cookie `consent_v1`. Versi ikut di nama
- * cookie supaya menaikkan `CONSENT_VERSION` otomatis meminta persetujuan ulang.
- * Cookie sengaja client-readable (bukan httpOnly) karena gating GA dilakukan di klien.
- */
-
 export const CONSENT_COOKIE = 'consent_v1'
 export const CONSENT_VERSION = 1
-/** 180 hari. */
 export const CONSENT_MAX_AGE_SECONDS = 15_552_000
 
 export interface ConsentState {
@@ -43,7 +34,6 @@ function secureSuffix(): string {
   return typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : ''
 }
 
-/** Domain induk untuk menghapus cookie GA yang diset sebagai domain-cookie; null untuk localhost/IP. */
 function deletionDomain(): string | null {
   if (typeof window === 'undefined') return null
 
@@ -56,7 +46,6 @@ function deletionDomain(): string | null {
   return `.${parts.slice(-2).join('.')}`
 }
 
-/** Nilai mentah cookie consent (null bila absen) — dipakai sebagai kunci cache snapshot. */
 export function readConsentRawCookie(): string | null {
   if (typeof document === 'undefined') return null
 
@@ -79,7 +68,6 @@ export function hasAnalyticsConsent(): boolean {
   return readConsentCookie()?.analytics === true
 }
 
-/** Menghapus cookie Google Analytics (`_ga`, `_ga_*`) — dipakai saat consent analytics dicabut. */
 export function clearAnalyticsCookies(): void {
   if (typeof document === 'undefined') return
 
@@ -89,7 +77,6 @@ export function clearAnalyticsCookies(): void {
     const name = row.split('=')[0]
     if (name !== '_ga' && !name.startsWith('_ga_')) continue
 
-    // GA4 bisa menyetel host-only atau domain-cookie; hapus keduanya agar benar-benar bersih.
     document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax${secureSuffix()}`
     if (domain) document.cookie = `${name}=; Domain=${domain}; Path=/; Max-Age=0; SameSite=Lax${secureSuffix()}`
   }

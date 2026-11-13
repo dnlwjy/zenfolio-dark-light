@@ -16,9 +16,7 @@ import { getOrCreateSessionId } from '@/lib/chat/session'
 type ConsentSource = 'banner' | 'settings'
 
 interface ConsentContextValue {
-  /** null = pengunjung belum memilih — analytics dianggap OFF. */
   consent: ConsentState | null
-  /** true hanya setelah hydration; banner tidak pernah dirender dari HTML server. */
   mounted: boolean
   bannerOpen: boolean
   saveConsent: (choice: { analytics: boolean }, source: ConsentSource) => void
@@ -26,11 +24,6 @@ interface ConsentContextValue {
 }
 
 const ConsentContext = createContext<ConsentContextValue | null>(null)
-
-// ── Store kecil di atas cookie ────────────────────────────────────────────────
-// Dibaca lewat useSyncExternalStore supaya SSR-aman (server snapshot = null),
-// bebas hydration mismatch, dan tanpa setState di dalam effect. Cache menjaga
-// referensi snapshot stabil (wajib bagi useSyncExternalStore).
 
 const listeners = new Set<() => void>()
 let cachedRaw: string | null | undefined
@@ -83,15 +76,12 @@ export default function ConsentProvider({
     emitConsentChange()
     setPreferencesOpen(false)
 
-    // Catatan akuntabilitas: selalu dikirim (tidak digating), berisi pilihan + versi kebijakan.
     sendEvent('consent_update', getOrCreateSessionId(), undefined, {
       version: next.version,
       analytics: next.analytics,
       source,
     })
 
-    // Analytics dimatikan setelah sebelumnya aktif → hapus cookie GA lalu muat ulang,
-    // supaya script GA benar-benar berhenti di halaman ini.
     if (previous?.analytics === true && !next.analytics) {
       clearAnalyticsCookies()
       window.location.reload()

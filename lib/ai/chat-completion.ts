@@ -1,11 +1,3 @@
-/**
- * Klien chat provider (format OpenAI `/chat/completions`).
- *
- * Dua tanggung jawab saja: menyusun request body sesuai profil model, dan
- * mem-parsing stream menjadi event yang dipahami aplikasi. Token penalaran
- * (`delta.reasoning_content`) dibuang di sini supaya tidak pernah sampai ke pengunjung.
- */
-
 import type { ChatMessage } from '../chat/prompt'
 import type { UsageTokens } from './pricing'
 import type { ModelProfile, ResolvedModel } from './providers'

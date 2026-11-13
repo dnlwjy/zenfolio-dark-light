@@ -1,10 +1,3 @@
-/**
- * Ingest event analitik first-party (page view, greeting, klik WhatsApp).
- *
- * Event disimpan ke tabel `chat_event`; event consent (`consent_update`) masuk
- * lewat endpoint yang sama sebagai catatan akuntabilitas.
- */
-
 import { NextResponse } from 'next/server'
 
 import { z } from 'zod'
@@ -35,7 +28,6 @@ export async function POST(request: Request) {
   const parsed = eventSchema.safeParse(payload)
   if (!parsed.success) return NextResponse.json({ ok: false }, { status: 400 })
 
-  // Guard abuse: endpoint ini menulis ke database, jadi dibatasi per IP per menit.
   const store = getRateLimitStore()
   const events = await store.incr(`track:${hashIp(clientIp(request))}`, 60_000, Date.now())
   if (events > chatConfig.rateLimit.eventsPerMinute) {
@@ -53,7 +45,6 @@ export async function POST(request: Request) {
       meta: parsed.data.meta ?? null,
     })
   } catch (error) {
-    // Analitik tidak boleh menggagalkan pengalaman pengunjung; kegagalan cukup dicatat.
     console.warn(
       JSON.stringify({ level: 'warn', event: 'chat.track_persist_failed', message: error instanceof Error ? error.message : String(error) }),
     )

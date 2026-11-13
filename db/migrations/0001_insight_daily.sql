@@ -10,8 +10,6 @@ CREATE VIEW "insight_daily" AS
     count(*) filter (where e.type = 'whatsapp_open') as whatsapp_opens
   from chat_event e
   group by 1;--> statement-breakpoint
--- View tidak boleh bocor lewat Data API: cabut grant + jalankan dengan hak pemanggil
--- sehingga RLS tabel dasar tetap berlaku.
 ALTER VIEW "insight_daily" SET (security_invoker = true);--> statement-breakpoint
 REVOKE ALL ON "insight_daily" FROM anon, authenticated;
 

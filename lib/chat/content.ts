@@ -1,24 +1,11 @@
-/**
- * Konten chatbot default (bahasa Inggris, sesuai bahasa situs) + penggabungan dengan CMS.
- *
- * Default ada di kode supaya chatbot tetap berguna sebelum doc `chatbot` di Sanity
- * di-deploy — dan supaya build tidak pernah bergantung pada isi CMS. Nilai dari CMS
- * selalu menimpa default per field, bukan menggantikan seluruh konten.
- *
- * `scripts/build-chatbot-seed.mts` mengubah default ini menjadi berkas seed siap
- * di-import ke Sanity, jadi konten di CMS tetap bisa disunting tanpa deploy ulang.
- */
-
-import type { ChatbotContent } from '../knowledge'
 
 const GREETINGS: Record<string, string> = {
-  '/': "Hi! I'm Daniel's portfolio assistant. Ask me anything about his work, projects, or how he can help.",
-  '/about': "This is Daniel's story — the work, the tools, and how he thinks. Feel free to ask me anything.",
-  '/case-study': "These are Daniel's case studies. Feel free to ask me anything about them.",
-  '/builds': "These are the tools and products Daniel builds. Ask me about any of them.",
-  // Halaman kontak tidak diberi sapaan supaya tidak mengganggu form.
-  '/contact': '',
-  '*': "Feel free to ask me anything about Daniel's work.",
+  '/': "Welcome to my portfolio website! Feel free to ask me anything =D",
+  '/about': "This is about page where you can learn more about me.",
+  '/case-study': "This is my case study. Feel free to ask me anything =D",
+  '/builds': "This is what I've built in the past. Feel free to ask me anything =D",
+  '/contact': "Yoohooo, let's discuss something!",
+  '*': "Feel free to ask me anything about my works =D",
 }
 
 const SUGGESTED_QUESTIONS: Record<string, string[]> = {
@@ -67,70 +54,34 @@ const FAQS: Array<{ question: string; answer: string }> = [
   },
 ]
 
-export type ResolvedChatbotContent = {
+export type ChatbotContent = {
   greetings: Record<string, string>
   suggestedQuestions: Record<string, string[]>
   faqs: Array<{ question: string; answer: string }>
   escalation: { triggers: string[]; message: string; waMessageTemplate: string }
-  availability: string
 }
 
-export const DEFAULT_CHATBOT_CONTENT: ResolvedChatbotContent = {
-  greetings: { ...GREETINGS },
-  suggestedQuestions: { ...SUGGESTED_QUESTIONS },
+export const CHATBOT_CONTENT: ChatbotContent = {
+  greetings: GREETINGS,
+  suggestedQuestions: SUGGESTED_QUESTIONS,
   faqs: FAQS,
   escalation: {
     triggers: ['hire', 'hiring', 'quote', 'rate', 'budget', 'available', 'availability', 'collaborate', 'freelance', 'contract', 'work with you', 'work together', 'contact', 'whatsapp', 'reach out', 'get in touch', 'email', 'phone', 'talk to daniel', 'message daniel', 'hubungi', 'kontak'],
     message: 'Would you like me to connect you directly with Daniel on WhatsApp?',
     waMessageTemplate: "Hi Daniel, I'm on your portfolio ({page}) and would like to discuss a project.",
   },
-  availability: '',
 }
 
-/** Urutan pencarian: route persis, lalu index studi kasus, lalu sapaan bintang. */
 function pickForRoute<T>(map: Record<string, T>, route: string): T | undefined {
   if (route in map) return map[route]
   if (route.startsWith('/case-study/') && '/case-study' in map) return map['/case-study']
   return map['*']
 }
 
-export function resolveGreeting(route: string, content: ResolvedChatbotContent): string {
-  return pickForRoute(content.greetings, route) ?? ''
+export function resolveGreeting(route: string): string {
+  return pickForRoute(CHATBOT_CONTENT.greetings, route) ?? ''
 }
 
-export function resolveSuggestedQuestions(route: string, content: ResolvedChatbotContent): string[] {
-  return (pickForRoute(content.suggestedQuestions, route) ?? []).slice(0, 3)
-}
-
-/** Gabungkan konten CMS di atas default: per field, bukan menggantikan seluruh konten. */
-export function resolveChatbotContent(cms: ChatbotContent): ResolvedChatbotContent {
-  const greetings: Record<string, string> = { ...DEFAULT_CHATBOT_CONTENT.greetings }
-  for (const entry of cms?.greetings ?? []) {
-    if (entry.route) greetings[entry.route] = (entry.text ?? '').trim()
-  }
-
-  const suggestedQuestions: Record<string, string[]> = { ...DEFAULT_CHATBOT_CONTENT.suggestedQuestions }
-  for (const entry of cms?.suggestedQuestions ?? []) {
-    if (entry.route) suggestedQuestions[entry.route] = (entry.questions ?? []).filter(Boolean).slice(0, 3)
-  }
-
-  const cmsFaqs = (cms?.faqs ?? [])
-    .filter((faq) => faq.question && faq.answer)
-    .map((faq) => ({ question: faq.question as string, answer: faq.answer as string }))
-
-  const escalation = {
-    triggers: (cms?.escalation?.triggers ?? []).filter(Boolean).length
-      ? (cms?.escalation?.triggers ?? []).filter(Boolean)
-      : DEFAULT_CHATBOT_CONTENT.escalation.triggers,
-    message: cms?.escalation?.message?.trim() || DEFAULT_CHATBOT_CONTENT.escalation.message,
-    waMessageTemplate: cms?.escalation?.waMessageTemplate?.trim() || DEFAULT_CHATBOT_CONTENT.escalation.waMessageTemplate,
-  }
-
-  return {
-    greetings,
-    suggestedQuestions,
-    faqs: [...cmsFaqs, ...DEFAULT_CHATBOT_CONTENT.faqs],
-    escalation,
-    availability: (cms?.availability ?? '').trim(),
-  }
+export function resolveSuggestedQuestions(route: string): string[] {
+  return (pickForRoute(CHATBOT_CONTENT.suggestedQuestions, route) ?? []).slice(0, 3)
 }

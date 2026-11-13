@@ -10,7 +10,7 @@
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
     "start": "sanity start",
-    "typegen": "sanity schema extract && sanity typegen generate"
+    "typegen": "sanity schema extract --enforce-required-fields && sanity typegen generate"
   },
   "keywords": [
     "sanity"
@@ -18,7 +18,7 @@
   "dependencies": {
     "@sanity/orderable-document-list": "^1.5.1",
     "@sanity/ui": "^3.1.14",
-    "@sanity/vision": "^5.31.1",
+    "@sanity/vision": "^5.31.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "sanity": "^5.31.1",

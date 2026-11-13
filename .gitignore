@@ -50,6 +50,3 @@ storybook-static
 # local-only agent/tool state — intentionally not committed
 /.commandcode/
 /.superpowers/
-
-# generated knowledge bundle (dibuat saat dev/build)
-/lib/knowledge/knowledge.generated.json

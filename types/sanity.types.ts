@@ -59,31 +59,36 @@ export type About = {
     _key: string;
   }>;
   experiences?: Array<{
-    company: string;
+    company?: string;
     url?: string;
-    role: string;
-    year: string;
+    role?: string;
+    year?: string;
     _key: string;
   }>;
   stacks?: Array<string>;
+  contact?: Array<{
+    title: string;
+    subtitle: string;
+    _key: string;
+  }>;
   clients?: Array<{
     name?: string;
     svg?: string;
     _key: string;
   }>;
-  software: Array<{
+  software?: Array<{
     title: string;
     link?: string;
     description: string;
     _key: string;
   }>;
-  hardware: Array<{
+  hardware?: Array<{
     title: string;
     link?: string;
     description: string;
     _key: string;
   }>;
-  funFacts: Array<{
+  funFacts?: Array<{
     title: string;
     description: Array<{
       children?: Array<{
@@ -121,14 +126,14 @@ export type Projects = {
   _updatedAt: string;
   _rev: string;
   orderRank?: string;
-  title?: string;
+  title: string;
   slug?: Slug;
   featured?: boolean;
-  role?: string;
-  year?: number;
-  client?: string;
+  role: string;
+  year: number;
+  client: string;
   website?: string;
-  description?: string;
+  description: string;
   coverImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -136,40 +141,24 @@ export type Projects = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  content?: Array<
-    | {
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?:
-      | "normal"
-      | "h1"
-      | "h2"
-      | "h3"
-      | "h4"
-      | "h5"
-      | "h6"
-      | "blockquote";
-      listItem?: "bullet" | "number";
-      markDefs?: Array<{
-        href?: string;
-        _type: "link";
-        _key: string;
-      }>;
-      level?: number;
-      _type: "block";
-      _key: string;
-    }
-    | {
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
       text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
       href?: string;
       _type: "link";
       _key: string;
-    }
-  >;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
   documentation?: Array<{
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -182,23 +171,23 @@ export type Projects = {
 
 export type SanityImageCrop = {
   _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
 };
 
 export type SanityImageHotspot = {
   _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
+  x: number;
+  y: number;
+  height: number;
+  width: number;
 };
 
 export type Slug = {
   _type: "slug";
-  current?: string;
+  current: string;
   source?: string;
 };
 
@@ -209,17 +198,17 @@ export type Shop = {
   _updatedAt: string;
   _rev: string;
   orderRank?: string;
-  title?: string;
+  title: string;
   slug?: Slug;
-  coverImage?: {
+  coverImage: {
     asset?: SanityImageAssetReference;
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
   };
-  description?: string;
-  year?: number;
+  description: string;
+  year: number;
   preview?: string;
   marketplaceURL?: string;
   marketplaceName?: string;
@@ -247,9 +236,9 @@ export type SanityImagePalette = {
 
 export type SanityImageDimensions = {
   _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
+  height: number;
+  width: number;
+  aspectRatio: number;
 };
 
 export type SanityImageMetadata = {
@@ -275,14 +264,14 @@ export type SanityFileAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
+  sha1hash: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+  assetId: string;
   uploadId?: string;
-  path?: string;
-  url?: string;
+  path: string;
+  url: string;
   source?: SanityAssetSourceData;
 };
 
@@ -304,14 +293,14 @@ export type SanityImageAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
+  sha1hash: string;
+  extension: string;
+  mimeType: string;
+  size: number;
+  assetId: string;
   uploadId?: string;
-  path?: string;
-  url?: string;
+  path: string;
+  url: string;
   metadata?: SanityImageMetadata;
   source?: SanityAssetSourceData;
 };

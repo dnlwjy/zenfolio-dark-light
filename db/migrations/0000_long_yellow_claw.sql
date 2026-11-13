@@ -48,8 +48,6 @@ CREATE INDEX "chat_event_type_idx" ON "chat_event" USING btree ("type","created_
 CREATE INDEX "chat_message_session_idx" ON "chat_message" USING btree ("session_id","created_at");
 
 --> statement-breakpoint
--- RLS tanpa policy = deny-all untuk anon/authenticated: aplikasi hanya mengakses
--- lewat koneksi Postgres langsung dari server (PRD 12.1).
 ALTER TABLE "chat_session" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 ALTER TABLE "chat_message" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 ALTER TABLE "chat_event" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint

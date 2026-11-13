@@ -103,35 +103,37 @@ export default async function Builds() {
                     ))}
 
                     {/* SKELETON PLACEHOLDERS */}
-                    <div className={WRAPPER}>
-                        <Divider styles={DIVIDER} title="Coming Soon" />
+                    {Array.from({ length: 2 }, (_, index) => (
+                        <div key={index} className={WRAPPER}>
+                            <Divider styles={DIVIDER} title="Coming Soon" />
 
-                        <div className={SUPPORT}>
+                            <div className={SUPPORT}>
 
-                            {/* IMAGE */}
-                            <div className={IMAGE}>
-                                <div className="w-[80%] aspect-square flex items-center justify-center">
-                                    <div className="aspect-square h-[80%] bg-(--divider) rounded-sm" />
-                                </div>
-                            </div>
-
-                            {/* TITLE CARD */}
-                            <div className={TITLECARD}>
-                                <div className={TITLECARD_CONTENT}>
-                                    <div className={`${SKELETON_BAR} w-3/4`} />
-                                    <div className="flex flex-col gap-2">
-                                        <div className={`${SKELETON_BAR} w-full`} />
-                                        <div className={`${SKELETON_BAR} w-5/6`} />
-                                        <div className={`${SKELETON_BAR} w-4/6`} />
+                                {/* IMAGE */}
+                                <div className={IMAGE}>
+                                    <div className="w-[80%] aspect-square flex items-center justify-center">
+                                        <div className="aspect-square h-[80%] bg-(--divider) rounded-sm" />
                                     </div>
                                 </div>
-                                <div className={LINKBUTTONS}>
-                                    <div className={`${SKELETON_BAR} w-16`} />
-                                    <div className={`${SKELETON_BAR} w-36`} />
+
+                                {/* TITLE CARD */}
+                                <div className={TITLECARD}>
+                                    <div className={TITLECARD_CONTENT}>
+                                        <div className={`${SKELETON_BAR} w-3/4`} />
+                                        <div className="flex flex-col gap-2">
+                                            <div className={`${SKELETON_BAR} w-full`} />
+                                            <div className={`${SKELETON_BAR} w-5/6`} />
+                                            <div className={`${SKELETON_BAR} w-4/6`} />
+                                        </div>
+                                    </div>
+                                    <div className={LINKBUTTONS}>
+                                        <div className={`${SKELETON_BAR} w-16`} />
+                                        <div className={`${SKELETON_BAR} w-36`} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
                 </MotionElement>
 
                 {/* FEATURED CARD */}

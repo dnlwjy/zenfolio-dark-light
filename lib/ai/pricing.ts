@@ -1,11 +1,7 @@
 /**
- * Tabel harga + kalkulasi biaya per pesan.
  *
- * Semua angka USD per 1 juta token, disalin dari halaman harga resmi
  * (OpenCode Console 2026-10-13, DeepSeek 2026-10-13, OpenAI 2026-10-13).
  *
- * Kunci tabel: `providerId:modelId`. Model yang tidak ada di tabel dihitung
- * sebagai 0 dengan penanda eksplisit, supaya cost logging tidak pernah diam-diam salah.
  */
 
 export type Price = {
@@ -24,19 +20,14 @@ export const priceTable: Record<string, Price> = {
 }
 
 export type UsageTokens = {
-  /** Total token input yang dilaporkan provider (termasuk bagian yang ter-cache). */
   tokensIn: number
-  /** Subset dari tokensIn yang dibaca dari cache (harga lebih murah). */
   cachedTokensIn: number
-  /** Total token output, termasuk token penalaran bila model mengeluarkannya. */
   tokensOut: number
 }
 
 export type CostBreakdown = {
   price: Price | null
-  /** Biaya USD; 0 bila model tidak ada di tabel harga. */
   usd: number
-  /** Bagian input yang ditagih harga penuh (tokensIn − cachedTokensIn). */
   billableInputTokens: number
 }
 

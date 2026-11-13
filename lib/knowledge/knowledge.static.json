@@ -1,0 +1,190 @@
+{
+ "kbVersion": "2026-11-13T11:12:11Z+4e18cffe",
+ "generatedAt": "2026-11-13T11:12:11.077Z",
+ "site": {
+  "routes": [
+   {
+    "route": "/",
+    "title": "Home",
+    "summary": "Hero, bio singkat, dan studi kasus unggulan."
+   },
+   {
+    "route": "/about",
+    "title": "About",
+    "summary": "Biografi, pengalaman, stacks, klien, software & hardware, fun facts."
+   },
+   {
+    "route": "/case-study",
+    "title": "Case Studies",
+    "summary": "Daftar seluruh studi kasus beserta ringkasannya."
+   },
+   {
+    "route": "/builds",
+    "title": "Builds",
+    "summary": "Produk dan tema yang pernah dibangun lalu dipasarkan."
+   },
+   {
+    "route": "/contact",
+    "title": "Contact",
+    "summary": "Form kontak untuk menghubungi Daniel."
+   }
+  ]
+ },
+ "entries": [
+  {
+   "id": "site:index",
+   "type": "route",
+   "route": "*",
+   "title": "Site map",
+   "summary": "Daftar halaman yang tersedia di situs.",
+   "body": "- / — Home: Hero, bio singkat, dan studi kasus unggulan.\n- /about — About: Biografi, pengalaman, stacks, klien, software & hardware, fun facts.\n- /case-study — Case Studies: Daftar seluruh studi kasus beserta ringkasannya.\n- /builds — Builds: Produk dan tema yang pernah dibangun lalu dipasarkan.\n- /contact — Contact: Form kontak untuk menghubungi Daniel.\n\nCase studies tersedia:\n- /case-study/building-ai-saas-product-from-concept-to-launch — Building AI SaaS Product From Concept to Launch: Responsible for designing UI, creating prototypes, and working with a development team to help integrate AI to the product.\n- /case-study/turning-manual-reservations-into-a-real-time-booking — Turning Manual Reservations into a Real-Time Booking: Designed a 20-screen web app, created user flows, worked with product manager, and collaborated with frontend and backend developers.\n- /case-study/getting-5000-participants-in-just-two-days — Getting 5,000 Participants in Just Two Days: Developed a dashboard in React.js, authentication, point reward system, and after 2 days we saw 5,000 users were already registered in Supabase.\n- /case-study/from-concept-to-a-1-ranked-saas-website — From Concept to a #1 Ranked SaaS Website: This project involved designing SaaS marketing website in Figma and developing it in Framer.\n- /case-study/building-ai-powered-app-for-busy-parents — Building AI-Powered App for Busy Parents: Designed 15-screen mobile app in Figma, covering both UI and UX of the app, with the goal to reduce the mental load of busy parents.\n- /case-study/browsebeats-logo-design — BrowseBeats Logo Design: Designed a logo and a brand guideline in 5 days using Illustrator and Figma for a music marketplace.\n- /case-study/animated-framer-website — Animated Framer Website: Designed in Figma, built in Framer, and optimized for SEO and AI-discoverability for ChatGPT, Claude, Perplexity, and more."
+  },
+  {
+   "id": "route:/",
+   "type": "route",
+   "route": "/",
+   "title": "Home",
+   "summary": "Hero, bio singkat, dan studi kasus unggulan.",
+   "body": "The home page opens with the hero: \"I'm Daniel — Frontend Engineer\", with links to Contact and About.\n\nBelow the hero it shows these featured case studies:\n- Building AI SaaS Product From Concept to Launch (2024) — Responsible for designing UI, creating prototypes, and working with a development team to help integrate AI to the product. → /case-study/building-ai-saas-product-from-concept-to-launch\n- Turning Manual Reservations into a Real-Time Booking (2023) — Designed a 20-screen web app, created user flows, worked with product manager, and collaborated with frontend and backend developers. → /case-study/turning-manual-reservations-into-a-real-time-booking\n- Getting 5,000 Participants in Just Two Days (2025) — Developed a dashboard in React.js, authentication, point reward system, and after 2 days we saw 5,000 users were already registered in Supabase. → /case-study/getting-5000-participants-in-just-two-days\n\nA short about section follows the featured case studies."
+  },
+  {
+   "id": "about:daniel",
+   "type": "about",
+   "route": "/about",
+   "title": "About Daniel Wijaya",
+   "summary": "I’m Daniel Wijaya, a Frontend Engineer with a UI/UX design background, bridging design and development to build scalable, maintainable systems. I live at the intersection of users, business, and technology.",
+   "body": "I’m Daniel Wijaya, a Frontend Engineer with a UI/UX design background, bridging design and development to build scalable, maintainable systems. I live at the intersection of users, business, and technology.\n\nWith a solid background in UI/UX design, I bridge the gap between design and development while understanding business context, user-centric thinking, scalable systems, and AI-powered solutions. In my spare time, I'm busy tinkering with side projects (/builds) and hitting the gym.\n\nI’m Daniel, currently based in Jakarta working remotely as a web developer at Told (https://toldmarketing.com/). Outside of work, I am busy tinkering with my builds (/builds) to experiment and learn new things. Previously I studied visual design with particular interest in UI/UX design, but later discovered my passion in software engineering’s world. With a mixed background in design and engineering, I am able to work end-to-end with designers and developers.\n\nIn my spare time, I enjoy hitting the gym, playing video games, and making piano music (https://www.youtube.com/@danielwijaya). I’m always down for new opportunities, so feel free to drop me a line (/contact).\n\nContact details:\n- Email: wijayadaniel19@gmail.com\n- Location: Jakarta, Indonesia\n- WhatsApp: +628111388895\n- test: testestest\n\nExperience:\n- Frontend Engineer, Web Developer @ Told (Jul 2024 - Present) — https://toldmarketing.com/\n- Framer Developer @ APEX Consulting (Jan 2025 - Present) — https://apex-consulting.ai/\n- UI/UX Designer, Graphic Designer @ Prestige Corp (Mar 2022 - Jun 2023) — https://prestigecorp.co.id/\n- UI/UX Designer @ Arsi.ai (Jul 2020 - Aug 2021) — https://www.arsi.ai/\n\nStacks: HTML, CSS, JavaScript, TypeScript, React, Next.js, Motion, TanStack, Zod, Zustand\n\nClients: AGR Studio, APEX Consulting, Prestige, Nabati, Framer, Mindcrate\n\nSoftware used:\n- VSCode: my primary IDE for coding and AI-assisted development, though I use it interchangeably with Antigravity, Cursor, and other IDEs. — https://code.visualstudio.com/\n- Figma: my favorite design tool since 2021 and still my go-to for brainstorming, designing, prototyping in which I can turn amazing ideas into real life. — https://www.figma.com/\n- Framer: my favorite tool alongside Figma for publishing beautiful websites quickly. It has UI similar to Figma's making it easy to learn for Figma users. — https://www.framer.com/\n- Webflow: my go-to no-code tool for building advanced websites with more robust interactions and CMS capabilities. — https://webflow.com/\n- Docker: I've been using Docker to simplify local development and keep project environments consistent, especially when working with databases, APIs, and AI-related tools. — https://www.docker.com/\n- ChatGPT: my daily AI assistant for brainstorming, research, coding, copywriting, and image generation. — https://chatgpt.com/\n- Photopea: a free Photoshop alternative that I use for quick photo edits without needing an Adobe subscription. — https://www.photopea.com/\n\nHardware used:\n- Minisforum UM870: My main machine runs on AMD Ryzen 7 8745HS with Radeon 780M graphics. It has compact size that fits perfectly on my desk. — https://www.minisforum.com/products/minisforum-um870-slim\n- BenQ GW2790Q: My 27-inch QHD monitor for productivity, gaming, and general use. It has eye-care feature and calibrated colors for design works. — https://www.benq.com/en-us/monitor/home/gw2790q.html\n- Keychron B1 Pro: half the price of the MX Keys Mini, yet delivers a surprisingly similar typing experience. — https://www.keychron.com/products/keychron-b1-pro-ultra-slim-wireless-keyboard\n- Logitech G305: after trying many different mouses, this is still the best value-for-money mouse. — https://www.logitechg.com/en-us/shop/p/g305-lightspeed-wireless-gaming-mouse\n- EMEET C950: an affordable 1080p webcam I use for daily meetings, client calls, and online interviews. — https://www.amazon.com/EMEET-1080P-Webcam-Microphone-Noise-Canceling/dp/B0CP6BTQKR\n- Kanata Desk: an electric height-adjustable desk that lets me switch between sitting and standing throughout the day. — https://kanataindonesia.com/\n\nFun facts:\n- Used to be a classical piano student: I used to be a classically trained pianist with the ambition of becoming a musician. I have completed ABRSM Grade 8 and I won a piano competition (https://drive.google.com/file/d/1QBd2ZOOCJA7Ck96l9AyS52M8pzmMW329/view?usp=sharing) in 2015. Since then, I also published several original piano music on Spotify (https://open.spotify.com/artist/0VyiZOjAOfYc0gV7EbT4v0) in the new-age genre.\n- Already used AI assistants before ChatGPT: I've been using AI assistants long before ChatGPT was released. My first experience was with GOSU.AI in 2018, an AI-powered coach for Dota 2 that analyzed my gameplay, highlighted mistakes, and suggested ways to improve.\n- Not from computer science background: I came from a Visual Communication background, not Computer Science. However, driven by curiosity, I started exploring the world of software engineering on my own right after graduating in 2020. During the COVID-19 pandemic, I was laid off, which gave me plenty of time to learn software engineering from free courses on YouTube.",
+   "meta": {
+    "stacks": 10,
+    "experiences": 4
+   }
+  },
+  {
+   "id": "caseStudy:index",
+   "type": "caseStudyIndex",
+   "route": "/case-study",
+   "title": "Case Studies",
+   "summary": "7 studi kasus.",
+   "body": "- Building AI SaaS Product From Concept to Launch (2024) — Responsible for designing UI, creating prototypes, and working with a development team to help integrate AI to the product. → /case-study/building-ai-saas-product-from-concept-to-launch\n- Turning Manual Reservations into a Real-Time Booking (2023) — Designed a 20-screen web app, created user flows, worked with product manager, and collaborated with frontend and backend developers. → /case-study/turning-manual-reservations-into-a-real-time-booking\n- Getting 5,000 Participants in Just Two Days (2025) — Developed a dashboard in React.js, authentication, point reward system, and after 2 days we saw 5,000 users were already registered in Supabase. → /case-study/getting-5000-participants-in-just-two-days\n- From Concept to a #1 Ranked SaaS Website (2024) — This project involved designing SaaS marketing website in Figma and developing it in Framer. → /case-study/from-concept-to-a-1-ranked-saas-website\n- Building AI-Powered App for Busy Parents (2023) — Designed 15-screen mobile app in Figma, covering both UI and UX of the app, with the goal to reduce the mental load of busy parents. → /case-study/building-ai-powered-app-for-busy-parents\n- BrowseBeats Logo Design (2025) — Designed a logo and a brand guideline in 5 days using Illustrator and Figma for a music marketplace. → /case-study/browsebeats-logo-design\n- Animated Framer Website (2025) — Designed in Figma, built in Framer, and optimized for SEO and AI-discoverability for ChatGPT, Claude, Perplexity, and more. → /case-study/animated-framer-website"
+  },
+  {
+   "id": "caseStudy:building-ai-saas-product-from-concept-to-launch",
+   "type": "caseStudy",
+   "route": "/case-study/building-ai-saas-product-from-concept-to-launch",
+   "title": "Building AI SaaS Product From Concept to Launch",
+   "summary": "Responsible for designing UI, creating prototypes, and working with a development team to help integrate AI to the product.",
+   "body": "Responsible for designing UI, creating prototypes, and working with a development team to help integrate AI to the product.\n\nSince the launch of ChatGPT in late 2022, companies worldwide have rapidly adopted AI, integrating it into their products, services, and businesses. This marked a turning point for Mindcrate (https://www.mindcrate.io/), a platform similar to Jasper (https://www.jasper.ai/) and Copy.ai (https://www.copy.ai/), prompting the team to explore AI’s possibilities and how it could be integrated with the main product. Throughout 2023, the internal team focused on learning how to integrate AI, exploring possibilities, validating ideas, and building early prototypes.\n\nUntil in early 2024, the team began building the next iteration of the product. The goal of this iteration was to integrate AI into the product through a more user-friendly approach. I worked as a UI/UX Designer, working closely with the founder (https://www.linkedin.com/in/t1mperry/) alongside with the development team, Bauart Software (https://bauart.software/). My role involved translating the wireframe into Figma, making the prototypes, before finally collaborating with developers to bring them to life.\n\nFour or five months later, as we progressed, I also contributed to the Framer marketing site as seen in this case study (/case-study/from-concept-to-a-1-ranked-saas-website). Having already been familiar with the product's design feel, I was trusted to take ownership of the website from initial concepts through final implementation.\n\nBy the end of 2024, the project successfully launched with marketing team. The product performed well across the web app. The product performed well across the web application, attracting new users to the platform and converting many of them into paying customers. This was a solid outcome for a distributed team that built and shipped the entire product from the ground up.\n\nRole: UI/UX Designer, Frontend Engineer | Year: 2024 | Client: Mindcrate | Website: https://www.mindcrate.io/",
+   "meta": {
+    "role": "UI/UX Designer, Frontend Engineer",
+    "year": 2024,
+    "client": "Mindcrate",
+    "updatedAt": "2026-07-01T02:57:52Z"
+   }
+  },
+  {
+   "id": "caseStudy:turning-manual-reservations-into-a-real-time-booking",
+   "type": "caseStudy",
+   "route": "/case-study/turning-manual-reservations-into-a-real-time-booking",
+   "title": "Turning Manual Reservations into a Real-Time Booking",
+   "summary": "Designed a 20-screen web app, created user flows, worked with product manager, and collaborated with frontend and backend developers.",
+   "body": "Designed a 20-screen web app, created user flows, worked with product manager, and collaborated with frontend and backend developers.\n\nPhantom was one of Jakarta's most anticipated nightlife destinations, located in the prestigious district area in North Jakarta, PIK 2 (https://www.pik2.com/). The nightclub was owned by two famous Indonesian celebrities Rudy Salim (https://www.instagram.com/_rudysalim/) and Raffi Ahmad (https://www.instagram.com/raffinagita1717/). Every week they consistently featured world-class DJs such as Calvin Harris, Inquisitive, and Steve Aoki, and more. In a single event only, there were almost 1,000+ audience come to the show, making Phantom one of the city's most sought-after nightlife venues.\n\nAs Phantom continued to grow in popularity, the business became increasingly complex. The reservation was no longer just a straight-forward process, but it had evolved into a sophisticated system — premium table reservations, minimum spend management, VIPs, live events, First Drink Charge (FDC), real-time table bidding, loyalty programs, and more — timing was everything. As a result, traditional reservation methods booking through WhatsApp and phone calls became non-sense to the complexity of the business.\n\nTo solve this problem, we tried to build an interactive mobile web-app. Since most of the audience were Gen Z around 18-27, then we conducted a user research by asking some of our friends who were into nightclub about their behavior, expectations, mindsets, and apps they use. Through these conversations, we got so many insights and knew how to design the web-app easily.\n\nOver three months, we were working together building 20+ screens based on the insights we had. The work covered everything from table selection, First Drink Charge (FDC) flow, real-time table bidding, and everything related to complex process all had been brought to life through thoughful design and with animation. I also built a design system to enable efficient implementation and consistent UX throughout the web-app.\n\nBy the time the platform was ready, so was Phantom. The booking experience went live ahead of the grand opening at PIK 2, giving guests a polished, self-serve way to reserve tables and participate in live bidding without any back-and-forth. The opening was a success, marking a significant step forward for how nightlife venues in Jakarta approach the digital guest experience.\n\nRole: UI/UX Designer | Year: 2023 | Client: Prestige Corp | Website: https://phantomclub.id/",
+   "meta": {
+    "role": "UI/UX Designer",
+    "year": 2023,
+    "client": "Prestige Corp",
+    "updatedAt": "2026-06-20T16:22:34Z"
+   }
+  },
+  {
+   "id": "caseStudy:getting-5000-participants-in-just-two-days",
+   "type": "caseStudy",
+   "route": "/case-study/getting-5000-participants-in-just-two-days",
+   "title": "Getting 5,000 Participants in Just Two Days",
+   "summary": "Developed a dashboard in React.js, authentication, point reward system, and after 2 days we saw 5,000 users were already registered in Supabase.",
+   "body": "Developed a dashboard in React.js, authentication, point reward system, and after 2 days we saw 5,000 users were already registered in Supabase.\n\nIn early 2025, many Web3 projects were emerging to the surface. Someone purchased my Web3 website templates, from Framer marketplace (https://www.framer.com/marketplace/templates/doubledice/). He then turned to be my client through Framer Expert panel (https://www.framer.com/community/members/experts/) and worked on a project, Solnite, a Web3 battle royale game built on Solana.\n\nThe project had already established a long strong community base through Telegram, Youtube, Facebook, and more. They had been regularly hosting events and competitions with $NITE tokens as the rewards. As the community continued to grow, the team needed a platform to better customize the business needs, to build a more robust participant management, and fairer reward distribution.\n\nTo begin with, we started with the landing page from Framer template he’d already purchased. And then we built a custom dashboard in React.js. I worked alongside with a backend developer (https://www.linkedin.com/in/akbar-affaruk-khuzaimi-ahmadani/) to build the authentication, point reward system, and user database in Supabase. Aside from that, I was in touch to report issues and bugs that I found within the dashboard.\n\nAfter the official announcement, it was exciting to see more than 5,000 participants successfully register within just two days. As the user base expanded, we finally upgraded our Supabase to implement an automated email system with onboarding and auto-reply flows to support communications, maintain engagement, and ensure a smooth experience for every participant.\n\nRole: Frontend Engineer | Year: 2025 | Client: Solnite | Website: https://partner.solnite.com/",
+   "meta": {
+    "role": "Frontend Engineer",
+    "year": 2025,
+    "client": "Solnite",
+    "updatedAt": "2026-06-26T14:02:54Z"
+   }
+  },
+  {
+   "id": "caseStudy:from-concept-to-a-1-ranked-saas-website",
+   "type": "caseStudy",
+   "route": "/case-study/from-concept-to-a-1-ranked-saas-website",
+   "title": "From Concept to a #1 Ranked SaaS Website",
+   "summary": "This project involved designing SaaS marketing website in Figma and developing it in Framer.",
+   "body": "This project involved designing SaaS marketing website in Figma and developing it in Framer.\n\nMindcrate is an AI-powered SaaS platform similar to Jasper (https://www.jasper.ai/) and Copy.ai (https://www.copy.ai/), designed to help agencies, small businesses, and freelancers create business documents, workflows, and tasks more efficiently. Following the rise of ChatGPT in late 2022, the company began experimenting with AI-powered features, exploring how AI models could be integrated with the product.\n\nWhile I was working on the main project (/case-study/building-ai-saas-product-from-concept-to-launch) building the main product, I was assigned to build a marketing landing page in Framer (https://www.framer.com/). The product manager had prepared the wireframe, copywriting, and design references. He then put them in Figma so we can review together before turned them into high-fidelilty design. After the design was completed then I started building in Framer.\n\nAt the time, in early 2024, Framer was not as mature as it is today. Features such as cookies, form submissions, analytics were not yet available so I had to implement custom code to support the business requirements. The project took 2 weeks to complete from design to implementation in Framer.\n\nThe website launched successfully and delivered strong measurable results. It achieved an A rating on GTmetrix, ranked #1 on Google for the \"Mindcrate\" search query, and showed steady organic growth through Google Analytics.\n\nRole: Web Developer | Year: 2024 | Client: Mindcrate | Website: https://www.mindcrate.io/",
+   "meta": {
+    "role": "Web Developer",
+    "year": 2024,
+    "client": "Mindcrate",
+    "updatedAt": "2026-06-22T14:35:25Z"
+   }
+  },
+  {
+   "id": "caseStudy:building-ai-powered-app-for-busy-parents",
+   "type": "caseStudy",
+   "route": "/case-study/building-ai-powered-app-for-busy-parents",
+   "title": "Building AI-Powered App for Busy Parents",
+   "summary": "Designed 15-screen mobile app in Figma, covering both UI and UX of the app, with the goal to reduce the mental load of busy parents.",
+   "body": "Designed 15-screen mobile app in Figma, covering both UI and UX of the app, with the goal to reduce the mental load of busy parents.\n\nSince the rise of ChatGPT and generative AI in 2023, companies have increasingly looked for ways to integrate AI into their products to reduce users' mental load, especially for those with busy lifestyles. Around this time, I was invited to work as a UI/UX designer on a project aimed at helping busy parents in Hong Kong and Singapore, many of whom struggle to balance demanding careers with household responsibilities. While several apps had already attempted to address this problem, most lacked meaningful AI integration, making household management more time-consuming and less intuitive for users.\n\nTo address this, we designed an AI-powered family management platform that transformed how households organize daily life. Instead of manually configuring tasks, schedules, and routines, parents could simply provide information about their household through a conversational AI onboarding experience. By understanding family members, helpers, pets, preferences, and routines, the system automatically personalized task assignments, recommendations, and household workflows while keeping parents in full control.\n\nWe created a collaborative platform where every household member could participate in managing daily tasks through a shared digital space. The experience began with a streamlined onboarding flow, where the AI gathered key information about household composition, members, helpers, pets, and preferences — giving it the context needed to intelligently delegate tasks while keeping parents in full control. The system also generated diverse weekly meal plans based on ethnic background and household size, eliminating decision fatigue while still allowing families to customize or accept suggestions as they saw fit.\n\nRole: UI/UX Designer | Year: 2023 | Client: Anthony Chen",
+   "meta": {
+    "role": "UI/UX Designer",
+    "year": 2023,
+    "client": "Anthony Chen",
+    "updatedAt": "2026-06-19T20:01:32Z"
+   }
+  },
+  {
+   "id": "caseStudy:browsebeats-logo-design",
+   "type": "caseStudy",
+   "route": "/case-study/browsebeats-logo-design",
+   "title": "BrowseBeats Logo Design",
+   "summary": "Designed a logo and a brand guideline in 5 days using Illustrator and Figma for a music marketplace.",
+   "body": "Designed a logo and a brand guideline in 5 days using Illustrator and Figma for a music marketplace.\n\nBrowsebeats.com is a modern online platform designed for music creators and producers seeking high-quality beats and music samples. The platfrom was meant for artists to explore, discover, and license music through a seamless, intuitive experience. The goal was to design a gender-neutral logo that resonates with both US and UK audiences.\n\nThe process spanned 5 days, with daily Google Meet sessions to interate design process. I started by gathering logo references that felt universal and straightforward, then developed multiple concepts, iterated twice to explore the full range of possibilities, and refined the strongest direction in the next 2 days. The final deliverable included a complete brand guideline covering color palette, typography, logo usage rules, and real-world usage examples to ensure consistency across all platforms.\n\nWithin weeks of the logo being finalized, Browsebeats.com officially launched — and the platform quickly gained traction, attracting over 2,000 users shortly after going live, validating both the brand direction and the product itself.\n\nRole: Logo Designer | Year: 2025 | Client: Alex Cavendar | Website: https://browsebeats.com/",
+   "meta": {
+    "role": "Logo Designer",
+    "year": 2025,
+    "client": "Alex Cavendar",
+    "updatedAt": "2026-05-04T02:48:35Z"
+   }
+  },
+  {
+   "id": "caseStudy:animated-framer-website",
+   "type": "caseStudy",
+   "route": "/case-study/animated-framer-website",
+   "title": "Animated Framer Website",
+   "summary": "Designed in Figma, built in Framer, and optimized for SEO and AI-discoverability for ChatGPT, Claude, Perplexity, and more.",
+   "body": "Designed in Figma, built in Framer, and optimized for SEO and AI-discoverability for ChatGPT, Claude, Perplexity, and more.\n\nPodRoll (https://www.podroll.co.uk/) is a UK-based studio content service helping consultants, advisors, creatives, and business owners turn their expertise into trust-building short-form video clips.\n\nUnlike podcast production companies, PodRoll focuses exclusively on producing high-quality, short-form content designed for social media platforms such as LinkedIn, Instagram Reels, TikTok, and YouTube Shorts. Clients sit for one guided studio session and receive 20+ professionally recorded, edited, and captioned videos that can be used for thought leadership, authority positioning, and lead generation.\n\nRole: Web desiger, Web developer | Year: 2025 | Client: Metropolis Visual | Website: https://podroll.co.uk/",
+   "meta": {
+    "role": "Web desiger, Web developer",
+    "year": 2025,
+    "client": "Metropolis Visual",
+    "updatedAt": "2026-06-19T21:19:23Z"
+   }
+  },
+  {
+   "id": "builds:index",
+   "type": "builds",
+   "route": "/builds",
+   "title": "Builds",
+   "summary": "4 produk/tema.",
+   "body": "- Foosball (2026) — Foosball is a React component built as part of Framer hackathon 2026. | View Github — https://github.com/dnlwjy/foosball | preview: https://foosball.framer.website/\n- Zuss (2026) — Zuss is a Framer template designed for single-product brands, featuring 6 pages and 1 CMS. | Open Framer — https://www.framer.com/community/marketplace/templates/zuss/ | preview: https://zuss.framer.website/\n- DoubleDice (2025) — DoubleDice is a Framer template designed for Web3 projects, consisted of 9 pages. | Open Framer — https://www.framer.com/community/marketplace/templates/doubledice/ | preview: https://doubledice.framer.website/\n- Esteem (2024) — My first Framer template, since 2024 has been sold over 200 copies worldwide. | Open Framer — https://www.framer.com/community/marketplace/templates/esteem/ | preview: https://esteem.framer.website/"
+  },
+  {
+   "id": "route:contact",
+   "type": "route",
+   "route": "/contact",
+   "title": "Contact",
+   "summary": "Cara menghubungi Daniel.",
+   "body": "Visitors can reach Daniel through the contact form on /contact."
+  }
+ ],
+ "stats": {
+  "entries": 13,
+  "chars": 24037,
+  "approxTokens": 6009
+ }
+}

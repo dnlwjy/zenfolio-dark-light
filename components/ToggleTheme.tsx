@@ -71,7 +71,6 @@ const ToggleTheme = ({
     // Keyboard shortcut: T for toggle
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Hindari trigger saat user lagi ngetik di input/textarea
             const target = e.target as HTMLElement
             const isTyping =
                 target.tagName === "INPUT" ||

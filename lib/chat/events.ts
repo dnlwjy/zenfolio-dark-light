@@ -1,14 +1,3 @@
-/**
- * Pengirim event analitik dari sisi klien — fire-and-forget.
- *
- * Sengaja tidak pernah melempar error: kegagalan analitik tidak boleh mengganggu
- * pengalaman pengunjung.
- *
- * `trackEvent()` hanya mengirim bila pengunjung memberi consent analytics (cookie
- * `consent_v1`). `sendEvent()` sengaja tidak digating dan dipakai untuk catatan
- * akuntabilitas consent itu sendiri.
- */
-
 import { hasAnalyticsConsent } from '@/lib/consent/consent'
 
 export type ClientEventType =
@@ -34,7 +23,6 @@ export function sendEvent(type: ClientEventType, sessionId: string, pageUrl?: st
       keepalive: true,
     }).catch(() => undefined)
   } catch {
-    /* diabaikan */
   }
 }
 

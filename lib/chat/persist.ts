@@ -1,9 +1,3 @@
-/**
- * Menyimpan satu turn percakapan (pertanyaan + jawaban) beserta metadata biaya.
- *
- * Dipanggil setelah stream selesai; kegagalan penyimpanan tidak boleh menggagalkan
- * jawaban yang sudah diterima pengunjung, jadi pemanggil memakai fire-and-forget.
- */
 
 import { getDb } from '@/db/client'
 import { chatMessage, chatSession } from '@/db/schema'

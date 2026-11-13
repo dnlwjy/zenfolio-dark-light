@@ -49,4 +49,24 @@ describe('verifyRecaptcha', () => {
 
     expect(await verifyRecaptcha({ token: 'tok', secret, config, fetchImpl })).toEqual({ ok: true, score: null })
   })
+
+  it('fail-closed saat Google tidak terjangkau bila diminta', async () => {
+    const fetchImpl = vi.fn(async () => {
+      throw new Error('network down')
+    }) as unknown as typeof fetch
+
+    expect(await verifyRecaptcha({ token: 'tok', secret, config, fetchImpl, failOpen: false })).toEqual({
+      ok: false,
+      reason: 'unavailable',
+    })
+  })
+
+  it('menolak respons tanpa skor reCAPTCHA v3', async () => {
+    const fetchImpl = googleReply({ success: true, action: 'chat' })
+
+    expect(await verifyRecaptcha({ token: 'tok', secret, config, fetchImpl })).toEqual({
+      ok: false,
+      reason: 'missing-score',
+    })
+  })
 })

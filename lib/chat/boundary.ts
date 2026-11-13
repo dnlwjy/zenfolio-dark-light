@@ -1,20 +1,7 @@
-/**
- * Batas perilaku chatbot di sisi kode (deterministik, tanpa memanggil model):
- * - guard input pengunjung sebelum biaya dikeluarkan
- * - deteksi minat hiring untuk menawarkan jalur WhatsApp
- * - finalisasi jawaban supaya pengunjung tidak pernah melihat gelembung kosong
- *
- * Kontrak isi jawaban (hanya dari knowledge base) dipegang oleh prompt
- * dan diverifikasi oleh eval set, bukan di sini.
- */
 
 import { visitorMessages } from './messages'
 import { normalizeForMatch } from './text'
 
-/**
- * Pemicu untuk menampilkan dua jalur kontak (WhatsApp + halaman kontak):
- * minat kerja sama **dan** pertanyaan soal menghubungi Daniel.
- */
 export const DEFAULT_HIRE_TRIGGERS = [
   'hire',
   'hiring',
@@ -59,7 +46,6 @@ export function detectEscalationIntent(text: string, triggers: readonly string[]
 
   if (words.length === 0) return false
 
-  // Batas kata mencegah "separate" dianggap mengandung "rate".
   return new RegExp(`\\b(${words.join('|')})\\b`, 'i').test(text)
 }
 
@@ -68,10 +54,6 @@ export function finalizeAnswer(raw: string): string {
   return value || visitorMessages.emptyAnswer
 }
 
-/**
- * true bila jawaban model menawarkan koneksi ke Daniel (jalur "tidak ada di knowledge base").
- * Dipakai server untuk menampilkan tombol kontak meski pertanyaan pengunjung tidak memicu intent.
- */
 export function answerOffersContact(answer: string): boolean {
   const text = normalizeForMatch(answer)
 
@@ -82,8 +64,6 @@ export function answerOffersContact(answer: string): boolean {
     "don't have any information",
     'no information about',
     'connect you with daniel',
-    // Penolakan menyuruh pengunjung menghubungi lewat halaman kontak,
-    // jadi tombol kontak harus ikut tampil.
     normalizeForMatch(visitorMessages.declinedRequest),
     normalizeForMatch(visitorMessages.declinedRequestId),
     "can't share my instructions",

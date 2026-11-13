@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import MotionElement from '../../components/MotionElement'
 import ContactForm from '@/components/ContactForm'
 import SubInfo from '@/components/SubInfo'
+import { client } from '@/sanity/lib/client'
+import type { About } from '@/types/sanity.types'
 import { IG, LI, Github } from "../../components/IconLibrary";
 
 // 1. const
@@ -13,6 +15,9 @@ const socialMedia = [
 export const SUPPORT = "flex md:flex-row flex-col min-[1280px]:gap-40 gap-24 w-full"
 
 // 2. queries
+const query = `*[_type == "about" && _id == "about"][0] {
+    contact,
+}`
 
 // 3. metadata
 export const metadata: Metadata = {
@@ -26,7 +31,8 @@ export const metadata: Metadata = {
 }
 
 // 4. render
-export default function Contact() {
+export default async function Contact() {
+    const about = await client.fetch<Pick<About, "contact">>(query)
 
     return (
         <>
@@ -43,9 +49,13 @@ export default function Contact() {
                 <div className={SUPPORT}>
                     <MotionElement as="aside" del={0.5} styles="flex flex-col h-fit md:max-w-90 w-full items-center sm:items-start gap-6 order-2 md:order-1">
                         <dl className="flex flex-col w-full gap-6">
-                            <SubInfo title="Email" subtitle="wijayadaniel19@gmail.com" />
-                            <SubInfo title="Location" subtitle="Jakarta, Indonesia" />
-                            <SubInfo title="WhatsApp" subtitle="+628111388895" />
+                            {about.contact?.map((e) => (
+                                <SubInfo
+                                    key={e._key}
+                                    title={e.title}
+                                    subtitle={e.subtitle}
+                                />
+                            ))}
                         </dl>
 
                         <ul className="flex gap-6 items-start pt-2">

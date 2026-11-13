@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const contactFormSchema = z.object({
+export const contactFormFieldsSchema = z.object({
   name: z.string().trim().min(1, 'Name is required.'),
   email: z.email('Invalid email format.').trim(),
   message: z
@@ -8,6 +8,9 @@ export const contactFormSchema = z.object({
     .trim()
     .min(50, 'Message must be at least 50 characters.')
     .max(500, 'Message must be at most 500 characters.'),
+})
+
+export const contactFormSchema = contactFormFieldsSchema.extend({
   recaptcha: z.string().trim().min(1, 'reCAPTCHA verification is required.'),
 })
 

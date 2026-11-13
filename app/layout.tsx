@@ -12,12 +12,8 @@ import type { About } from "@/types/sanity.types"
 import Chatbot from "@/components/Chatbot";
 import CookieBanner from "@/components/CookieBanner";
 import AnalyticsConsentGate from "@/components/AnalyticsConsentGate";
-import { chatbotContent } from '@/lib/knowledge'
-import { resolveChatbotContent } from '@/lib/chat/content'
 import { chatConfig } from '@/lib/config/chat'
 
-// Konten chatbot: default di kode, ditimpa isi doc `chatbot` di Sanity bila ada.
-const chatbotCopy = resolveChatbotContent(chatbotContent)
 const whatsappNumber = process.env.WHATSAPP_NUMBER?.trim() ?? ''
 
 // 1. const
@@ -121,10 +117,9 @@ export default async function RootLayout({
                 <ToggleTheme styles="fixed top-8 right-8 z-50 sm:flex hidden" />
                 <Chatbot
                   styles="fixed lg:bottom-8 lg:right-8 bottom-5 right-5 z-50"
-                  content={chatbotCopy}
                   whatsappNumber={whatsappNumber}
                   contactPath={chatConfig.escalation.contactPath}
-                  recaptchaSiteKey={process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY ?? ''}
+                  recaptchaSiteKey={envPublic.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY}
                   recaptchaAction={chatConfig.recaptcha.action}
                 />
                 <main>

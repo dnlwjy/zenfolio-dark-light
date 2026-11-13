@@ -57,8 +57,7 @@ cd sanity && npx sanity deploy
 
 To run Sanity TypeGen:
 ```bash
-npx sanity schema extract
-npx sanity typegen generate
+cd sanity && npm run typegen
 ```
 (this keeps `schema.json` and `sanity.types.ts` in sync with the updated schema)
 

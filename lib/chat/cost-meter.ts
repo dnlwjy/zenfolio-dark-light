@@ -1,7 +1,3 @@
-/**
- * Meter biaya dari data yang tersimpan (bukan perkiraan): dipakai sebagai pengaman
- * utama sebelum memanggil provider.
- */
 
 import { getSql } from '@/db/client'
 import { chatConfig } from '@/lib/config/chat'
@@ -21,7 +17,6 @@ export type BudgetStatus = {
   spentUsd: number
   limitUsd: number
   exceeded: boolean
-  /** true bila pemakaian sudah melewati ambang peringatan (mis. 80%). */
   warning: boolean
 }
 

@@ -1,10 +1,3 @@
-/**
- * Normalisasi teks untuk pencocokan frasa.
- *
- * Model (khususnya OpenAI) sering mengeluarkan tanda kutip tipografis: `don’t` (U+2019),
- * `“…”` (U+201C/U+201D). Pencocokan frasa apa pun harus menormalkannya lebih dulu,
- * kalau tidak tombol kontak / penilaian eval akan gagal mengenali jawaban yang benar.
- */
 
 export function normalizeForMatch(text: string): string {
   return text

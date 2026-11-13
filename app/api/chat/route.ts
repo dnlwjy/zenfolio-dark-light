@@ -1,14 +1,8 @@
 /**
- * Endpoint chat: satu-satunya jalur server untuk widget.
  *
- * Alur satu permintaan:
- *   validasi payload → rate limit → reCAPTCHA → susun prompt → panggil provider (streaming)
- *   → saring token penalaran → kirim event SSE ke widget.
  *
- * Kontrak event SSE (protokol internal, bukan format provider):
  *   { "type": "delta",  "text": "..." }
  *   { "type": "done",   "usage": {...}, "costUsd": 0.0004, "escalated": false }
- *   { "type": "error",  "message": "<pesan manusia yang tenang>" }
  */
 
 import { NextResponse } from 'next/server'
@@ -18,9 +12,9 @@ import { computeCost } from '@/lib/ai/pricing'
 import { resolveActiveModel, type ResolvedModel } from '@/lib/ai/providers'
 import { chatConfig } from '@/lib/config/chat'
 import { answerOffersContact, detectEscalationIntent } from '@/lib/chat/boundary'
-import { kbVersion, chatbotContent } from '@/lib/knowledge'
+import { kbVersion } from '@/lib/knowledge'
 import { visitorMessages } from '@/lib/chat/messages'
-import { resolveChatbotContent } from '@/lib/chat/content'
+import { CHATBOT_CONTENT } from '@/lib/chat/content'
 import { runCompletion } from '@/lib/chat/complete'
 import { buildMessages, type ChatMessage, type HistoryMessage } from '@/lib/chat/prompt'
 import { checkMessageLimits, checkSessionLimit } from '@/lib/chat/rate-limit'
@@ -89,7 +83,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: visitorMessages.temporarilyUnavailable }, { status: 429 })
     }
   } catch (error) {
-    // Meter biaya tidak boleh memblokir pengunjung; rate limit tetap menjadi pengaman.
     logEvent('warn', 'chat.budget_check_failed', { message: error instanceof Error ? error.message : String(error) })
   }
 
@@ -105,10 +98,10 @@ export async function POST(request: Request) {
     route: turn.route,
     history: turn.history as HistoryMessage[],
     question: turn.question,
-    faqs: resolveChatbotContent(chatbotContent).faqs,
+    faqs: CHATBOT_CONTENT.faqs,
   })
 
-  const triggers = resolveChatbotContent(chatbotContent).escalation.triggers
+  const triggers = CHATBOT_CONTENT.escalation.triggers
   const startedAt = Date.now()
 
   const stream = new ReadableStream<Uint8Array>({
@@ -116,8 +109,6 @@ export async function POST(request: Request) {
       const send = (payload: unknown) => controller.enqueue(sseEvent(payload))
       const answer = await runCompletion({ resolved, messages, send })
 
-      // Dua jalur kontak muncul bila: pengunjung minta kontak/hiring, ATAU jawaban
-      // model menawarkan koneksi (jalur "tidak ada di knowledge base"), ATAU permintaan gagal.
       const escalated =
         detectEscalationIntent(turn.question, triggers) || (answer.text ? answerOffersContact(answer.text) : true)
 

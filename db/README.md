@@ -14,15 +14,10 @@ dan RLS di semua tabel aktif **tanpa policy** (deny-all untuk `anon`/`authentica
 ## Alur migrasi
 
 ```bash
-# 1. ubah db/schema.ts, lalu hasilkan SQL yang bisa dibaca & direview
 npx drizzle-kit generate
 
-# 2. tinjau file di db/migrations/ (pastikan blok ROLLBACK di akhir benar)
-
-# 3. backup dulu (free tier tanpa PITR)
 pg_dump "$DATABASE_URL_MIGRATE" -f "backup-$(date +%F).sql"
 
-# 4. terapkan
 DATABASE_URL_MIGRATE="$(grep '^DATABASE_URL_MIGRATE=' .env | cut -d= -f2-)" npx drizzle-kit migrate
 ```
 

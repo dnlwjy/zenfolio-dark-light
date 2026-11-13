@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const serverEnvSchema = z.object({
-  RECAPTCHA_SECRET_KEY: z.string().min(1, 'RECAPTCHA_SECRET_KEY is required'),
+  RECAPTCHA_V3_SECRET_KEY: z.string().min(1, 'RECAPTCHA_V3_SECRET_KEY is required'),
   RESEND_API_KEY: z.string().min(1, 'RESEND_API_KEY is required'),
   CONTACT_TO_EMAIL: z.email('CONTACT_TO_EMAIL must be a valid email'),
   CONTACT_FROM_EMAIL: z.string().min(1, 'CONTACT_FROM_EMAIL is required'),
@@ -18,7 +18,7 @@ const serverEnvSchema = z.object({
 })
 
 const parsed = serverEnvSchema.safeParse({
-  RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+  RECAPTCHA_V3_SECRET_KEY: process.env.RECAPTCHA_V3_SECRET_KEY,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL,
   CONTACT_FROM_EMAIL: process.env.CONTACT_FROM_EMAIL,

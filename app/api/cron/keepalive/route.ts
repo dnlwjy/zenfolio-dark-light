@@ -1,10 +1,3 @@
-/**
- * Keep-alive database untuk Supabase free tier (di-pause setelah 7 hari tanpa aktivitas).
- *
- * Dijadwalkan harian lewat Vercel Cron (lihat vercel.json). Dilindungi CRON_SECRET:
- * Vercel mengirim header Authorization: Bearer <CRON_SECRET>; panggilan tanpa itu ditolak.
- */
-
 import { NextResponse } from 'next/server'
 
 import { pingDatabase } from '@/db/client'

@@ -104,6 +104,37 @@ export const about = defineType({
         },
 
         {
+            name: "contact",
+            title: "Contact",
+            type: "array",
+            of: [
+                {
+                    type: "object",
+                    fields: [
+                        {
+                            name: "title",
+                            title: "Title",
+                            type: "string",
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "subtitle",
+                            title: "Subtitle",
+                            type: "string",
+                            validation: (Rule) => Rule.required(),
+                        },
+                    ],
+                    preview: {
+                        select: {
+                            title: "title",
+                            subtitle: "subtitle",
+                        },
+                    },
+                },
+            ],
+        },
+
+        {
             name: "clients",
             title: "Clients / Brands",
             type: "array",

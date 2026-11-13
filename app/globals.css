@@ -42,11 +42,11 @@
 /* semantic styling */
 @layer base {
 ::selection {
-    background-color: var(--white);
+    background-color: var(--gray);
     color: var(--black);
   }
   ::-moz-selection {
-    background-color: var(--white);
+    background-color: var(--gray);
     color: var(--black);
   }
 

@@ -40,11 +40,20 @@ describe('buildSystemPrompt', () => {
     expect(buildSystemPrompt('/builds')).toContain('About Daniel Wijaya')
   })
 
-  it('menaruh entri halaman aktif lebih dulu, lalu seluruh korpus', () => {
+  it('memuat konteks umum dan halaman aktif tanpa menambahkan seluruh korpus', () => {
+    const prompt = buildSystemPrompt('/builds')
+
+    expect(prompt).toContain('About Daniel Wijaya')
+    expect(prompt).toContain('Foosball')
+    expect(prompt).not.toContain('PodRoll')
+  })
+
+  it('menghormati batas jumlah entri konteks', () => {
     const prompt = buildSystemPrompt('/builds', 1)
 
-    expect(prompt.indexOf('Builds')).toBeLessThan(prompt.indexOf('About Daniel Wijaya'))
-    expect(prompt).toContain('Animated Framer Website')
+    expect(prompt).toContain('Foosball')
+    expect(prompt).not.toContain('About Daniel Wijaya')
+    expect(prompt).not.toContain('PodRoll')
   })
 
   it('menyertakan FAQ saat diberikan', () => {

@@ -1,15 +1,3 @@
-/**
- * Klasifikasi kegagalan provider → perilaku aplikasi + pesan pengunjung.
- *
- * Latar belakang (hasil uji live 2026-10-13 terhadap OpenCode Console):
- * - model yang sudah pensiun ternyata masih terdaftar di /v1/models → 404 "Endpoint is unavailable"
- * - model free tier ditolak dari luar aplikasi OpenCode → 403 FreeTierError
- * - permintaan dengan parameter tidak didukung → 400 invalid_request_error
- * Semua bentuk itu harus berakhir sebagai pesan manusia yang tenang, bukan stack trace.
- *
- * `adminDetail` hanya untuk log server; pengunjung tidak pernah melihatnya.
- */
-
 import { visitorMessages } from '../chat/messages'
 
 export type ProviderFailureKind =
@@ -25,9 +13,7 @@ export type ProviderFailureKind =
 
 export type ProviderFailure = {
   kind: ProviderFailureKind
-  /** Boleh dicoba ulang (ke model yang sama atau model cadangan). */
   retryable: boolean
-  /** Boleh dicoba ke model cadangan di registry. */
   fallbackEligible: boolean
   adminDetail: string
   status?: number
@@ -104,7 +90,6 @@ export function classifyProviderFailure({ status, body, error }: RawFailure): Pr
   return { kind: 'unknown', retryable: true, fallbackEligible: true, adminDetail: message || type, status }
 }
 
-/** Pesan yang ditampilkan ke pengunjung — tidak pernah menyebut teknis/limit/kredit. */
 export function visitorMessageForFailure(kind: ProviderFailureKind): string {
   if (kind === 'rate_limited') return visitorMessages.slowDown
   return visitorMessages.temporarilyUnavailable

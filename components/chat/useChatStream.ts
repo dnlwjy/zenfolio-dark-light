@@ -1,11 +1,5 @@
 'use client'
 
-/**
- * Hook widget: mengirim pertanyaan ke `/api/chat` dan merawat keadaan percakapan.
- *
- * Semua keputusan tampilan berasal dari reducer murni (`lib/chat/stream-reducer.ts`)
- * yang diuji terpisah; hook ini hanya urusan jaringan.
- */
 
 import { useCallback, useRef, useState } from 'react'
 
@@ -18,7 +12,6 @@ const INITIAL_STATE: ChatState = { bubbles: [], streaming: false, showEscalation
 export type UseChatStreamArgs = {
   route: string
   sessionId: string
-  /** Pengambil token reCAPTCHA v3; dipanggil per pesan karena token sekali pakai. */
   getToken?: () => Promise<string>
   onEvent?: (event: StreamEvent) => void
 }

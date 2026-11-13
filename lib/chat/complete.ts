@@ -1,10 +1,3 @@
-/**
- * Menjalankan satu penyelesaian chat: coba model aktif, lalu model cadangan
- * bila kegagalannya layak dicoba ulang (model pensiun, gangguan upstream, jaringan).
- *
- * Mengembalikan teks jawaban, pemakaian token, biaya, dan pesan gagal yang tenang
- * sehingga route tidak perlu tahu detail provider.
- */
 
 import { ProviderRequestError, streamChat } from '@/lib/ai/chat-completion'
 import { classifyProviderFailure, visitorMessageForFailure } from '@/lib/ai/errors'
@@ -74,8 +67,6 @@ export async function runCompletion({
   try {
     const first = await attempt(resolved, messages, onDelta, fetchImpl)
 
-    // Provider kadang mengembalikan jawaban kosong (terlihat sekali saat eval):
-    // coba sekali lagi dengan model cadangan sebelum menyerah ke pesan ramah.
     if (first.text) return first
 
     if (!resolved.fallback) return { ...first, failureMessage: visitorMessages.emptyAnswer }

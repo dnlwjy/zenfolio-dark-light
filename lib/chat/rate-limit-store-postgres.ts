@@ -1,9 +1,3 @@
-/**
- * Store rate limit berbasis Postgres — pengganti store memory untuk produksi.
- *
- * Satu statement UPSERT atomik per counter, jadi aman dipakai beberapa instance
- * serverless sekaligus (memory store tidak: hitungannya per instance).
- */
 
 import { getSql } from '@/db/client'
 

@@ -7,7 +7,7 @@ import { m } from 'framer-motion'
 import Button from './Button'
 import { Chat, Close, Contact } from './IconLibrary'
 import { useChatStream } from './chat/useChatStream'
-import { resolveGreeting, resolveSuggestedQuestions, type ResolvedChatbotContent } from '@/lib/chat/content'
+import { CHATBOT_CONTENT, resolveGreeting, resolveSuggestedQuestions } from '@/lib/chat/content'
 import { trackEvent } from '@/lib/chat/events'
 import { getRecaptchaToken } from '@/lib/chat/recaptcha-client'
 import { getOrCreateSessionId } from '@/lib/chat/session'
@@ -16,10 +16,9 @@ import Tooltip from './Tooltip'
 import { useConsent } from '@/context/ConsentProvider'
 
 const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
-const GREETING_DELAY_MS = 600
+const GREETING_DELAY_MS = 300
 
 export interface ChatbotProps {
-  content: ResolvedChatbotContent
   whatsappNumber: string
   contactPath: string
   recaptchaSiteKey: string
@@ -28,7 +27,6 @@ export interface ChatbotProps {
 }
 
 export default function Chatbot({
-  content,
   whatsappNumber,
   contactPath,
   recaptchaSiteKey,
@@ -40,35 +38,30 @@ export default function Chatbot({
   const [open, setOpen] = useState(false)
   const [mount, setMount] = useState(false)
   const [input, setInput] = useState('')
-  const [teaser, setTeaser] = useState('')
+  const [greetingRoute, setGreetingRoute] = useState<string | null>(null)
   const sessionId = useMemo(() => getOrCreateSessionId(), [])
   const getToken = useCallback(() => getRecaptchaToken(recaptchaSiteKey, recaptchaAction), [recaptchaSiteKey, recaptchaAction])
   const { state, send, stop } = useChatStream({ route: pathname, sessionId, getToken })
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const greetingShownRef = useRef(false)
 
-  const greeting = resolveGreeting(pathname, content)
-  const questions = resolveSuggestedQuestions(pathname, content)
+  const greeting = resolveGreeting(pathname)
+  const questions = resolveSuggestedQuestions(pathname)
 
-  // Sapaan muncul sekali per muat-halaman (navigasi antar halaman tidak mengulang,
-  // refresh/reload memunculkannya lagi), tidak di halaman kontak, dan tidak auto-membuka panel.
   useEffect(() => {
-    if (pathname === contactPath || !greeting || greetingShownRef.current) return
+    if (!greeting) return
 
     const timer = window.setTimeout(() => {
-      greetingShownRef.current = true
-      setTeaser(greeting)
+      setGreetingRoute(pathname)
       trackEvent('greeting_shown', sessionId, pathname)
     }, GREETING_DELAY_MS)
 
     return () => window.clearTimeout(timer)
-  }, [pathname, greeting, contactPath, sessionId])
+  }, [pathname, greeting, sessionId])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
   }, [state.bubbles])
 
-  // Tercatat sekali per kemunculan agar funnel (chat → eskalasi → WhatsApp) terukur.
   useEffect(() => {
     if (state.showEscalation) trackEvent('escalation_offered', sessionId, pathname)
   }, [state.showEscalation, sessionId, pathname])
@@ -76,7 +69,8 @@ export default function Chatbot({
   const handleToggleChatbot = () => {
     if (!mount) setMount(true)
     if (!open) trackEvent('chat_open', sessionId, pathname)
-    setTeaser('')
+
+    setGreetingRoute(null)
     setOpen((previous) => !previous)
   }
 
@@ -91,29 +85,30 @@ export default function Chatbot({
     if (!whatsappNumber) return ''
 
     const page = pathname === '/' ? 'home' : pathname.replace(/^\//, '')
-    const text = encodeURIComponent(content.escalation.waMessageTemplate.replace('{page}', page))
+    const text = encodeURIComponent(CHATBOT_CONTENT.escalation.waMessageTemplate.replace('{page}', page))
 
-    // Selalu wa.me: WhatsApp menangani desktop maupun mobile sendiri.
     return `https://wa.me/${whatsappNumber}?text=${text}`
-  }, [whatsappNumber, pathname, content.escalation.waMessageTemplate])
+  }, [whatsappNumber, pathname])
 
   return (
     <div className={`${SUPPORT} ${styles} ${bannerOpen ? 'max-sm:hidden' : ''}`}>
-      {/* Teaser sapaan per halaman (bukan panel) */}
-      {teaser && !open && (
-        <Tooltip variant="bottomright" styles="flex flex-row absolute bottom-full right-0 mb-2 w-60">
-          {teaser}
+
+      {/* greetings */}
+      {greetingRoute === pathname && !open && (
+        <Tooltip key={pathname} variant="bottomright" styles="flex flex-row absolute bottom-full right-0 mb-2 w-60 fade-in-theme-transition">
+          {greeting}
           <button
             type="button"
             aria-label="Dismiss greeting"
-            onClick={() => setTeaser('')}
+            onClick={() => setGreetingRoute(null)}
             className="group text-(--gray) cursor-pointer"
           >
-            <Close size={12} styles="group-hover:text-(--white) transition-colors duration-150"/>
+            <Close size={12} styles="group-hover:text-(--white) transition-colors duration-150" />
           </button>
         </Tooltip>
       )}
 
+      {/* glowing effect */}
       <span className={`absolute inset-0 ${open ? '' : 'bg-(--white)/70 blur-lg animate-pulse [animation-duration:1s]'} rounded-full transition-all duration-800 pointer-events-none`} />
 
       <Button
@@ -135,7 +130,31 @@ export default function Chatbot({
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
           <div className="flex-1 min-h-0 overflow-y-auto px-3 py-6 flex flex-col gap-5" aria-live="polite">
-            {state.bubbles.length === 0 && <p className="text-(--white)/70">{greeting}</p>}
+
+            {/* greetings */}
+            {state.bubbles.length === 0 && (
+              <div className="flex items-start gap-3 self-start w-full">
+                <div className="relative shrink-0 -top-1">
+                  <Image src="/favicon.png" alt="" width={24} height={24} className="rounded-full border border-(--divider)" />
+                </div>
+                <p className="text-(--white)/70">{greeting}</p>
+              </div>
+            )}
+
+            {state.bubbles.length === 0 && questions.length > 0 && (
+              <div className="px-3 pb-2 flex flex-wrap gap-2">
+                {questions.map((e) => (
+                  <button
+                    key={e}
+                    type="button"
+                    onClick={() => void handleSend(e)}
+                    className="rounded-full border border-(--divider) px-3 py-1 text-[12px] cursor-pointer hover:bg-(--white)/10 transition-colors duration-150"
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {state.bubbles.map((bubble) => (
               <div key={bubble.id} className={`flex items-start gap-3 ${bubble.role === 'user' ? 'self-end w-[88%]' : 'self-start w-full'}`}>
@@ -153,49 +172,37 @@ export default function Chatbot({
             <div ref={messagesEndRef} />
           </div>
           {state.showEscalation && (
-            <p className="px-3 pb-1 text-(--white)/80 text-[13px]">{content.escalation.message}</p>
+            <p className="px-3 pb-1 text-(--white)/80 text-[13px]">{CHATBOT_CONTENT.escalation.message}</p>
           )}
 
-          {/* Dua jalur kontak muncul saat pengunjung minta kontak/hiring,
-              saat jawaban menawarkan koneksi, atau saat permintaan gagal. */}
           {state.showEscalation && (
-          <div className="px-3 pb-1 flex flex-wrap gap-2">
-            {whatsappHref && (
+            <div className="px-3 pb-1 flex flex-wrap gap-2">
+              {whatsappHref && (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('whatsapp_open', sessionId, pathname)}
+                  className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px] font-medium flex items-center gap-2"
+                >
+                  {visitorMessages.escalation.cta}
+                </a>
+              )}
+
               <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackEvent('whatsapp_open', sessionId, pathname)}
-                className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px] font-medium flex items-center gap-2"
+                href={contactPath}
+                onClick={() => trackEvent('contact_link_click', sessionId, pathname)}
+                className="rounded-md border border-(--divider) px-3 py-2 text-[13px]"
               >
-                <Contact size={16} styles="text-(--black) mix-blend-normal" />
-                {visitorMessages.escalation.cta}
+                {visitorMessages.escalation.secondary}
               </a>
-            )}
-
-            <a
-              href={contactPath}
-              onClick={() => trackEvent('contact_link_click', sessionId, pathname)}
-              className="rounded-md border border-(--white)/25 px-3 py-2 text-[13px]"
-            >
-              {visitorMessages.escalation.secondary}
-            </a>
-          </div>
-          )}
-
-          {state.bubbles.length === 0 && questions.length > 0 && (
-            <div className="px-3 pb-2 flex flex-wrap gap-2">
-              {questions.map((question) => (
-                <button key={question} type="button" onClick={() => void handleSend(question)} className="rounded-full border border-(--white)/25 px-3 py-1 text-[12px]">
-                  {question}
-                </button>
-              ))}
             </div>
           )}
+
           <div className="p-3 flex gap-3 items-end">
             <textarea
               className="flex-1"
-              placeholder="Ask about my work..."
+              placeholder="Ask me anything..."
               rows={1}
               value={input}
               onChange={(event) => setInput(event.target.value)}

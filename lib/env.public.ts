@@ -1,12 +1,12 @@
 import { z } from 'zod'
 
 const publicEnvSchema = z.object({
-  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1, 'NEXT_PUBLIC_RECAPTCHA_SITE_KEY is required'),
+  NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY: z.string().min(1, 'NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY is required'),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().min(1, 'NEXT_PUBLIC_GA_MEASUREMENT_ID is required'),
 })
 
 const parsed = publicEnvSchema.safeParse({
-  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+  NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY,
   NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
 })
 

@@ -1,33 +1,13 @@
-/**
- * Registry provider LLM — satu jalur kode, provider diganti lewat env.
- *
- * Semua endpoint di sini berbicara format OpenAI (`/chat/completions`); perbedaan
- * perilaku antar provider/model ditangkap sebagai profil model, bukan cabang `if`
- * yang berserakan di route handler.
- *
- * Catatan hasil uji live 2026-10-13 (OpenCode Console):
- * - `deepseek-v4.1-flash` selalu memakai thinking mode; parameter `thinking.type=disabled`
- *   diabaikan dan justru bisa menghabiskan jatah output → profil menandai `neverSendThinkingParam`.
- * - `glm-5.3-flash` tidak mengeluarkan token penalaran sama sekali.
- * - `/v1/models` masih mencantumkan model pensiun (404/410), jadi registry ini yang jadi acuan,
- *   bukan daftar dari provider.
- */
-
 export type ModelFamily = 'chat-completions' | 'responses'
 
 export type ModelProfile = {
   id: string
   label: string
   family: ModelFamily
-  /** Mengeluarkan token penalaran yang tetap ditagih sebagai output. */
   emitsReasoning: boolean
-  /** Endpoint menolak atau menyalahgunakan parameter thinking → jangan pernah dikirim. */
   neverSendThinkingParam: boolean
-  /** Saat streaming, usage hanya dilaporkan bila `stream_options.include_usage` dikirim. */
   streamUsageRequiresFlag: boolean
-  /** Nama parameter batas output: model OpenAI terbaru menolak `max_tokens`. */
   maxTokensParam: 'max_tokens' | 'max_completion_tokens'
-  /** Tanggal uji live dari repo ini (null = belum diuji, hanya berdasarkan dokumentasi). */
   liveVerified: string | null
 }
 
@@ -86,7 +66,6 @@ export const providers: Record<string, ProviderEntry> = {
         ...MODEL_DEFAULTS,
         label: 'DeepSeek V4.1 Flash (langsung)',
         emitsReasoning: true,
-        // Di API resmi DeepSeek, thinking memang bisa dimatikan lewat parameter ini.
         neverSendThinkingParam: false,
       },
     },
@@ -109,11 +88,9 @@ export type ResolvedModel = {
   model: ModelProfile
   apiKey: string
   endpoint: string
-  /** Model cadangan (opsional) untuk kegagalan yang layak dicoba ulang. */
   fallback: { model: ModelProfile; apiKey: string; endpoint: string } | null
 }
 
-/** Referensi model cadangan; boleh berasal dari provider berbeda. */
 export type FallbackRef = { providerId: string; modelId: string }
 
 function profileFor(provider: ProviderEntry, modelId: string): ModelProfile {
@@ -131,7 +108,6 @@ function apiKeyFor(provider: ProviderEntry): string {
   return key
 }
 
-/** Bentuk resolved model dari pasangan provider+model eksplisit (dipakai uji live & eval). */
 function providerOf(providerId: string): ProviderEntry {
   const provider = providers[providerId]
   if (!provider) {
@@ -163,8 +139,7 @@ export function resolveModelById(providerId: string, modelId: string, fallback?:
 }
 
 /**
- * Cadangan boleh dari provider lain (mis. utama OpenAI, cadangan OpenCode):
- *   LLM_FALLBACK_MODEL=opencode/glm-5.3-flash      (bentuk provider/model)
+ *   LLM_FALLBACK_MODEL=opencode/glm-5.3-flash      (provider/model format)
  *   LLM_FALLBACK_PROVIDER=opencode + LLM_FALLBACK_MODEL=glm-5.3-flash
  */
 function fallbackRef(primaryProviderId: string): FallbackRef | undefined {
@@ -177,7 +152,6 @@ function fallbackRef(primaryProviderId: string): FallbackRef | undefined {
   return { providerId: process.env.LLM_FALLBACK_PROVIDER?.trim() || primaryProviderId, modelId: raw }
 }
 
-/** Model aktif aplikasi: `LLM_PROVIDER` + `LLM_MODEL` (+ `LLM_FALLBACK_MODEL` opsional). */
 export function resolveActiveModel(): ResolvedModel {
   const providerId = process.env.LLM_PROVIDER?.trim() || 'opencode'
 

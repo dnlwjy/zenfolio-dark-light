@@ -1,0 +1,17 @@
+# Daniel Wijaya
+
+> Daniel Wijaya is a frontend engineer who bridges design and development to build user-centered digital products.
+
+This site contains information about Daniel's background, experience, skills, projects, and products.
+
+## Main pages
+
+- [Home](https://danielwijaya.com/): Introduction and selected work.
+- [About](https://danielwijaya.com/about): Biography, experience, skills, clients, and tools.
+- [Case Studies](https://danielwijaya.com/case-study): Project case studies and details.
+- [Builds](https://danielwijaya.com/builds): Products and themes built by Daniel.
+- [Contact](https://danielwijaya.com/contact): Contact information and form.
+
+## Policies
+
+- [Cookie Policy](https://danielwijaya.com/legal/cookie-policy): Cookie and consent information.

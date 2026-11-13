@@ -1,12 +1,4 @@
-/**
- * Runner eval chatbot: menguji pipeline prompt yang SAMA dengan produksi
- * (knowledge bundle → buildMessages → streamChat), bukan lewat HTTP.
- *
- * Jalankan: bun scripts/eval-chat.mts
- * Grup "hire" tidak memanggil model — hanya menguji deteksi intent (cepat & gratis).
- */
-
-import './load-env.mts' // WAJIB paling atas: memuat .env sebelum modul lib dievaluasi
+import './load-env.mts'
 
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -16,11 +8,11 @@ import { streamChat } from '../lib/ai/chat-completion.ts'
 import { computeCost } from '../lib/ai/pricing.ts'
 import { resolveActiveModel } from '../lib/ai/providers.ts'
 import { detectEscalationIntent } from '../lib/chat/boundary.ts'
-import { resolveChatbotContent } from '../lib/chat/content.ts'
+import { CHATBOT_CONTENT } from '../lib/chat/content.ts'
 import { visitorMessages } from '../lib/chat/messages.ts'
 import { normalizeForMatch } from '../lib/chat/text.ts'
 import { buildMessages } from '../lib/chat/prompt.ts'
-import { chatbotContent, kbVersion } from '../lib/knowledge/index.ts'
+import { kbVersion } from '../lib/knowledge/index.ts'
 
 type EvalCase = {
   id: string
@@ -46,7 +38,7 @@ type EvalCase = {
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const set = JSON.parse(await readFile(path.resolve(dirname, '../eval/chat-eval-set.json'), 'utf8')) as { cases: EvalCase[] }
-const faqs = resolveChatbotContent(chatbotContent).faqs
+const faqs = CHATBOT_CONTENT.faqs
 let resolved = resolveActiveModel()
 
 const INDONESIAN_REFUSAL_MARKERS = [
@@ -111,8 +103,6 @@ function judge(testCase: EvalCase, answer: string): boolean {
     case 'contains':
       return any.some((needle) => text.includes(normalizeForMatch(needle)))
     case 'general':
-      // Pertanyaan umum ringan harus dijawab (bukan ditolak), tetap pendek,
-      // dan bila `any` diberikan harus memuat salah satu penanda.
       return (
         answer.trim().length > 0 &&
         !refused &&
@@ -125,8 +115,6 @@ function judge(testCase: EvalCase, answer: string): boolean {
     case 'honest-unknown':
       return unknown
     case 'refusal-or-unknown':
-      // Pertanyaan di luar portfolio kadang ditolak dengan template tetap, kadang dijawab
-      // "tidak ada detailnya" — keduanya benar, tombol kontak ikut tampil pada keduanya.
       return refused || unknown
     case 'escalation':
       return detectEscalationIntent(testCase.question)
@@ -154,8 +142,6 @@ for (const testCase of set.cases) {
   const usage = { tokensIn: 0, cachedTokensIn: 0, tokensOut: 0 }
   const caseStart = Date.now()
 
-  // Meniru perilaku produksi: provider kadang mengembalikan jawaban kosong sekali,
-  // jadi runner juga mencoba ulang sekali sebelum menilai.
   const runOnce = async () => {
     answer = ''
     for await (const event of streamChat({ resolved, messages, maxOutputTokens: 400 })) {
@@ -167,7 +153,6 @@ for (const testCase of set.cases) {
   try {
     await runOnce()
     if (!answer.trim()) {
-      // Paritas produksi: coba ulang, lalu jatuh ke model cadangan bila masih kosong.
       console.info(`RETRY ${testCase.id.padEnd(12)} jawaban kosong — dicoba ulang`)
       await runOnce()
     }
