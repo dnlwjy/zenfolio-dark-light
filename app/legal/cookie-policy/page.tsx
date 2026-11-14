@@ -3,6 +3,8 @@ import CookieSettingsButton from '@/components/CookieSettingsButton'
 import MotionElement from '@/components/MotionElement'
 import Divider from '../../../components/Divider';
 import A from '../../../components/A';
+import { client } from '@/sanity/lib/client'
+import type { CookiePolicy } from '@/types/sanity.types'
 
 // 1. const
 const LAST_UPDATED = '11 Nov 2026'
@@ -11,6 +13,13 @@ const SUPPORT_2 = "flex flex-col gap-4 max-w-280 items-center"
 const UNORDERED_LIST_GRID = "grid sm:grid-cols-2 grid-cols-1 md:gap-x-24 gap-x-16 gap-y-8"
 
 // 2. queries
+const query = `*[_type == "cookiePolicy" && _id == "cookiePolicy"][0] {
+  items[] {
+    _key,
+    label,
+    description
+  }
+}`
 
 // 3. metadata
 export const metadata: Metadata = {
@@ -25,7 +34,9 @@ export const metadata: Metadata = {
 }
 
 // 4. render
-export default function CookiePolicy() {
+export default async function CookiePolicy() {
+    const cookiePolicy = await client.fetch<CookiePolicy>(query)
+
     return (
         <>
             <section id="cookie-policy" className="sm">
@@ -38,27 +49,11 @@ export default function CookiePolicy() {
                     <p className="text-center max-w-240">By default, analytics and tracking are disabled until you click “Accept”. You can <A title="change your preference" link="/legal/cookie-policy#cookie-settings" /> at any time. Essential data like theme preference are not collected, this site only collects information as seen below:</p>
                 </MotionElement>
                 <MotionElement as="ul" variant="up" del={0.5} styles={UNORDERED_LIST_GRID}>
-                    <li>
-                        <span className="text-(--white)">Chat data.</span> When you use the chatbot, your message,
-                        conversation history, and current page are sent to the configured AI provider to generate
-                        a reply. Messages and technical metadata, including model and usage, are stored in Supabase
-                        to operate the service and monitor costs. Do not share sensitive or confidential information.
-                    </li>
-                    <li>
-                        <span className="text-(--white)">Analytics events.</span> Google Analytics and first-party
-                        interaction events, such as opening the chat or clicking the WhatsApp button, are
-                        enabled only after you accept analytics.
-                    </li>
-                    <li>
-                        <span className="text-(--white)">Consent record.</span> What you chose, when you chose
-                        it, and which version of this policy applied, is stored in a first-party cookie. A
-                        consent-update record is also sent to the site's analytics database.
-                    </li>
-                    <li>
-                        <span className="text-(--white)">Network and security data.</span> Rate limiting stores
-                        a salted, one-way hash of your IP address. When you use reCAPTCHA, your IP address and
-                        browser signals may also be sent to Google for bot protection.
-                    </li>
+                    {cookiePolicy.items.map((item) => (
+                        <li key={item._key}>
+                            <span className="text-(--white)">{item.label}</span> — {item.description}
+                        </li>
+                    ))}
                 </MotionElement>
             </section>
 

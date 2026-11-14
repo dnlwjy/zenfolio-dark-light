@@ -1,6 +1,6 @@
 import bundle from './knowledge.static.json'
 
-export type KnowledgeEntryType = 'route' | 'about' | 'caseStudy' | 'caseStudyIndex' | 'builds'
+export type KnowledgeEntryType = 'route' | 'about' | 'caseStudy' | 'caseStudyIndex' | 'builds' | 'legal'
 
 export type KnowledgeEntry = {
   id: string

@@ -25,6 +25,15 @@ export default defineConfig({
                   .documentId('about')
               ),
 
+            S.listItem()
+              .title('Cookie Policy')
+              .id('cookiePolicy')
+              .child(
+                S.document()
+                  .schemaType('cookiePolicy')
+                  .documentId('cookiePolicy')
+              ),
+
             orderableDocumentListDeskItem({
               type: 'shop',
               title: 'Builds',
@@ -41,7 +50,7 @@ export default defineConfig({
 
             ...S.documentTypeListItems().filter(
               (listItem) =>
-                !['shop', 'projects', 'about'].includes(
+                !['shop', 'projects', 'about', 'cookiePolicy'].includes(
                   listItem.getId() || ''
                 )
             ),
@@ -56,10 +65,10 @@ export default defineConfig({
 
   document: {
     newDocumentOptions: (prev) =>
-      prev.filter((item) => item.templateId !== 'about'),
+      prev.filter((item) => !['about', 'cookiePolicy'].includes(item.templateId)),
 
     actions: (prev, context) => {
-      if (context.schemaType === 'about') {
+      if (['about', 'cookiePolicy'].includes(context.schemaType)) {
         return prev.filter(
           ({ action }) => action !== 'delete'
         )

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { applyStreamEvent, sendUserMessage, type ChatState } from './stream-reducer'
 
 function freshState(): ChatState {
-  return { bubbles: [], streaming: false, showEscalation: false }
+  return { bubbles: [], streaming: false }
 }
 
 describe('sendUserMessage', () => {
@@ -38,7 +38,21 @@ describe('applyStreamEvent', () => {
     const started = sendUserMessage(freshState(), 'Berapa rate?', 'm1')
     const done = applyStreamEvent(started, { type: 'done', escalated: true })
 
-    expect(done.showEscalation).toBe(true)
+    expect(done.bubbles.at(-1)?.showEscalation).toBe(true)
+  })
+
+  it('menyimpan tawaran hanya pada bubble jawaban yang memicunya', () => {
+    const firstAnswer = applyStreamEvent(
+      sendUserMessage(freshState(), 'Berapa rate?', 'm1'),
+      { type: 'done', escalated: true },
+    )
+    const secondAnswer = applyStreamEvent(
+      sendUserMessage(firstAnswer, 'Terima kasih', 'm2'),
+      { type: 'done', escalated: false },
+    )
+
+    expect(secondAnswer.bubbles.find((bubble) => bubble.id === 'm1-assistant')?.showEscalation).toBe(true)
+    expect(secondAnswer.bubbles.find((bubble) => bubble.id === 'm2-assistant')?.showEscalation).toBe(false)
   })
 
   it('mengganti jawaban kosong dengan pesan tenang dan tetap menawarkan eskalasi', () => {
@@ -46,7 +60,11 @@ describe('applyStreamEvent', () => {
     const failed = applyStreamEvent(started, { type: 'error', message: 'Pesan tenang' })
 
     expect(failed.streaming).toBe(false)
-    expect(failed.showEscalation).toBe(true)
-    expect(failed.bubbles.at(-1)).toMatchObject({ role: 'assistant', text: 'Pesan tenang', pending: false })
+    expect(failed.bubbles.at(-1)).toMatchObject({
+      role: 'assistant',
+      text: 'Pesan tenang',
+      pending: false,
+      showEscalation: true,
+    })
   })
 })

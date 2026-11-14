@@ -15,6 +15,19 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type CookiePolicy = {
+  _id: string;
+  _type: "cookiePolicy";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  items: Array<{
+    label: string;
+    description: string;
+    _key: string;
+  }>;
+};
+
 export type About = {
   _id: string;
   _type: "about";
@@ -313,6 +326,7 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | CookiePolicy
   | About
   | SanityImageAssetReference
   | Projects

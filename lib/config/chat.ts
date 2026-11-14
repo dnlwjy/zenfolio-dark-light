@@ -46,7 +46,7 @@ function envEnum<T extends string>(key: string, allowed: readonly T[], fallback:
   return value
 }
 
-// ── Konfigurasi ───────────────────────────────────────────────────────────────
+// ── Config ───────────────────────────────────────────────────────────────
 
 export const chatConfig = {
   limits: {
@@ -79,11 +79,6 @@ export const chatConfig = {
     action: envStr('CHAT_RECAPTCHA_ACTION', 'chat'),
   },
 
-  escalation: {
-    whatsappNumber: envStr('WHATSAPP_NUMBER', ''),
-    contactPath: envStr('CHAT_CONTACT_PATH', '/contact'),
-  },
-
   data: {
     retentionDays: envInt('CHAT_RETENTION_DAYS', 0),
   },
@@ -97,8 +92,4 @@ if (chatConfig.budget.dailyUsd * 30 > chatConfig.budget.monthlyUsd * 1.2) {
     `[config/chat] Breaker harian ($${chatConfig.budget.dailyUsd}) × 30 melebihi batas bulanan ($${chatConfig.budget.monthlyUsd}). ` +
       'Periksa CHAT_DAILY_BUDGET_USD / CHAT_MONTHLY_BUDGET_USD.',
   )
-}
-
-if (!chatConfig.escalation.whatsappNumber) {
-  console.warn('[config/chat] WHATSAPP_NUMBER kosong — tombol eskalasi WhatsApp tidak akan tampil.')
 }

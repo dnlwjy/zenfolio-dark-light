@@ -1,9 +1,9 @@
 
 const GREETINGS: Record<string, string> = {
   '/': "Welcome to my portfolio website! Feel free to ask me anything =D",
-  '/about': "This is about page where you can learn more about me.",
-  '/case-study': "This is my case study. Feel free to ask me anything =D",
-  '/builds': "This is what I've built in the past. Feel free to ask me anything =D",
+  '/about': "This is about page you can learn more about me in here",
+  '/case-study': "This is my case study of client projects, feel free to throw a question :)",
+  '/builds': "This is what I've built in the past, feel free to ask :)",
   '/contact': "Yoohooo, let's discuss something!",
   '*': "Feel free to ask me anything about my works =D",
 }
@@ -18,11 +18,6 @@ const SUGGESTED_QUESTIONS: Record<string, string[]> = {
 }
 
 const FAQS: Array<{ question: string; answer: string }> = [
-  {
-    question: 'Is Daniel available for new projects?',
-    answer:
-      'Availability is kept current on the contact page. The quickest way to confirm timing for a specific project is to message him directly.',
-  },
   {
     question: 'How does Daniel usually work with a client?',
     answer:
@@ -59,6 +54,18 @@ export type ChatbotContent = {
   suggestedQuestions: Record<string, string[]>
   faqs: Array<{ question: string; answer: string }>
   escalation: { triggers: string[]; message: string; waMessageTemplate: string }
+}
+
+export function createAvailabilityFaq(availableForProjects: boolean, note?: string) {
+  const answer = availableForProjects
+    ? 'Daniel is currently available for new projects.'
+    : 'Daniel is not currently available for new projects.'
+  const availabilityNote = note?.trim()
+
+  return {
+    question: 'Is Daniel currently available for new projects?',
+    answer: availabilityNote ? `${answer} Availability note: ${availabilityNote}` : answer,
+  }
 }
 
 export const CHATBOT_CONTENT: ChatbotContent = {

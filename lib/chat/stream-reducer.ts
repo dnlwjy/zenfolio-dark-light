@@ -8,12 +8,12 @@ export type ChatBubble = {
   role: 'user' | 'assistant'
   text: string
   pending: boolean
+  showEscalation: boolean
 }
 
 export type ChatState = {
   bubbles: ChatBubble[]
   streaming: boolean
-  showEscalation: boolean
 }
 
 export type StreamEvent =
@@ -25,11 +25,10 @@ export function sendUserMessage(state: ChatState, text: string, messageId: strin
   return {
     bubbles: [
       ...state.bubbles,
-      { id: `${messageId}-user`, role: 'user', text, pending: false },
-      { id: `${messageId}-assistant`, role: 'assistant', text: '', pending: true },
+      { id: `${messageId}-user`, role: 'user', text, pending: false, showEscalation: false },
+      { id: `${messageId}-assistant`, role: 'assistant', text: '', pending: true, showEscalation: false },
     ],
     streaming: true,
-    showEscalation: state.showEscalation,
   }
 }
 
@@ -45,15 +44,22 @@ export function applyStreamEvent(state: ChatState, event: StreamEvent): ChatStat
 
   if (event.type === 'done') {
     return {
-      bubbles: updateLastAssistant(state, (bubble) => ({ ...bubble, pending: false })),
+      bubbles: updateLastAssistant(state, (bubble) => ({
+        ...bubble,
+        pending: false,
+        showEscalation: Boolean(event.escalated),
+      })),
       streaming: false,
-      showEscalation: state.showEscalation || Boolean(event.escalated),
     }
   }
 
   return {
-    bubbles: updateLastAssistant(state, (bubble) => ({ ...bubble, text: event.message, pending: false })),
+    bubbles: updateLastAssistant(state, (bubble) => ({
+      ...bubble,
+      text: event.message,
+      pending: false,
+      showEscalation: true,
+    })),
     streaming: false,
-    showEscalation: true,
   }
 }

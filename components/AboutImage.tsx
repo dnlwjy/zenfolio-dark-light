@@ -16,7 +16,7 @@ const AboutImage = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0 }}
             transition={{ duration: 1, ease: [0.44, 0, 0.56, 1], delay: 0.5 }}
-            className="inset-0 select-none"
+            className="absolute inset-0 select-none"
         >
             <Image
                 key={theme}

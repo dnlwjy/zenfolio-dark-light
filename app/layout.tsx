@@ -14,8 +14,6 @@ import CookieBanner from "@/components/CookieBanner";
 import AnalyticsConsentGate from "@/components/AnalyticsConsentGate";
 import { chatConfig } from '@/lib/config/chat'
 
-const whatsappNumber = process.env.WHATSAPP_NUMBER?.trim() ?? ''
-
 // 1. const
 const SITE_NAME = "Daniel Wijaya"
 const JOB_TITLE = "Frontend Engineer"
@@ -117,8 +115,6 @@ export default async function RootLayout({
                 <ToggleTheme styles="fixed top-8 right-8 z-50 sm:flex hidden" />
                 <Chatbot
                   styles="fixed lg:bottom-8 lg:right-8 bottom-5 right-5 z-50"
-                  whatsappNumber={whatsappNumber}
-                  contactPath={chatConfig.escalation.contactPath}
                   recaptchaSiteKey={envPublic.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY}
                   recaptchaAction={chatConfig.recaptcha.action}
                 />

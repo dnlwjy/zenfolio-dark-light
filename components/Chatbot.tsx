@@ -16,19 +16,14 @@ import Tooltip from './Tooltip'
 import { useConsent } from '@/context/ConsentProvider'
 
 const SUPPORT = 'lg:h-14 lg:w-14 h-12 w-12'
-const GREETING_DELAY_MS = 300
 
 export interface ChatbotProps {
-  whatsappNumber: string
-  contactPath: string
   recaptchaSiteKey: string
   recaptchaAction: string
   styles?: string
 }
 
 export default function Chatbot({
-  whatsappNumber,
-  contactPath,
   recaptchaSiteKey,
   recaptchaAction,
   styles = '',
@@ -38,39 +33,37 @@ export default function Chatbot({
   const [open, setOpen] = useState(false)
   const [mount, setMount] = useState(false)
   const [input, setInput] = useState('')
-  const [greetingRoute, setGreetingRoute] = useState<string | null>(null)
+  const [greetingState, setGreetingState] = useState({ route: pathname, dismissed: false })
+  if (greetingState.route !== pathname) {
+    setGreetingState({ route: pathname, dismissed: false })
+  }
   const sessionId = useMemo(() => getOrCreateSessionId(), [])
   const getToken = useCallback(() => getRecaptchaToken(recaptchaSiteKey, recaptchaAction), [recaptchaSiteKey, recaptchaAction])
   const { state, send, stop } = useChatStream({ route: pathname, sessionId, getToken })
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const lastBubble = state.bubbles[state.bubbles.length - 1]
+  const lastBubbleId = lastBubble?.id
+  const lastBubbleEscalated = lastBubble?.showEscalation ?? false
 
   const greeting = resolveGreeting(pathname)
   const questions = resolveSuggestedQuestions(pathname)
 
   useEffect(() => {
-    if (!greeting) return
-
-    const timer = window.setTimeout(() => {
-      setGreetingRoute(pathname)
-      trackEvent('greeting_shown', sessionId, pathname)
-    }, GREETING_DELAY_MS)
-
-    return () => window.clearTimeout(timer)
-  }, [pathname, greeting, sessionId])
+    if (greeting && !open && !greetingState.dismissed) trackEvent('greeting_shown', sessionId, pathname)
+  }, [pathname, greeting, sessionId, open, greetingState.dismissed])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
   }, [state.bubbles])
 
   useEffect(() => {
-    if (state.showEscalation) trackEvent('escalation_offered', sessionId, pathname)
-  }, [state.showEscalation, sessionId, pathname])
+    if (lastBubbleEscalated) trackEvent('escalation_offered', sessionId, pathname)
+  }, [lastBubbleId, lastBubbleEscalated, sessionId, pathname])
 
   const handleToggleChatbot = () => {
     if (!mount) setMount(true)
     if (!open) trackEvent('chat_open', sessionId, pathname)
 
-    setGreetingRoute(null)
     setOpen((previous) => !previous)
   }
 
@@ -81,26 +74,17 @@ export default function Chatbot({
     await send(text.trim())
   }
 
-  const whatsappHref = useMemo(() => {
-    if (!whatsappNumber) return ''
-
-    const page = pathname === '/' ? 'home' : pathname.replace(/^\//, '')
-    const text = encodeURIComponent(CHATBOT_CONTENT.escalation.waMessageTemplate.replace('{page}', page))
-
-    return `https://wa.me/${whatsappNumber}?text=${text}`
-  }, [whatsappNumber, pathname])
-
   return (
     <div className={`${SUPPORT} ${styles} ${bannerOpen ? 'max-sm:hidden' : ''}`}>
 
       {/* greetings */}
-      {greetingRoute === pathname && !open && (
+      {greeting && !greetingState.dismissed && !open && (
         <Tooltip key={pathname} variant="bottomright" styles="flex flex-row absolute bottom-full right-0 mb-2 w-60 fade-in-theme-transition">
           {greeting}
           <button
             type="button"
             aria-label="Dismiss greeting"
-            onClick={() => setGreetingRoute(null)}
+            onClick={() => setGreetingState({ route: pathname, dismissed: true })}
             className="group text-(--gray) cursor-pointer"
           >
             <Close size={12} styles="group-hover:text-(--white) transition-colors duration-150" />
@@ -129,7 +113,7 @@ export default function Chatbot({
             w-[calc(100dvw-40px)] max-w-85 h-[calc(100dvh-170px)] max-h-140
             ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
-          <div className="flex-1 min-h-0 overflow-y-auto px-3 py-6 flex flex-col gap-5" aria-live="polite">
+          <div className="flex-1 min-h-0 overflow-y-auto px-3 py-6 flex flex-col gap-4" aria-live="polite">
 
             {/* greetings */}
             {state.bubbles.length === 0 && (
@@ -156,48 +140,44 @@ export default function Chatbot({
               </div>
             )}
 
-            {state.bubbles.map((bubble) => (
-              <div key={bubble.id} className={`flex items-start gap-3 ${bubble.role === 'user' ? 'self-end w-[88%]' : 'self-start w-full'}`}>
-                {bubble.role !== 'user' && (
-                  <div className="relative shrink-0 -top-1">
+            {state.bubbles.map((e) => (
+              <div key={e.id} className={`flex items-start gap-3 ${e.role === 'user' ? 'self-end w-[88%] justify-end' : 'self-start w-full'}`}>
+                {e.role !== 'user' && (
+                  <div className="relative shrink-0">
                     <Image src="/favicon.png" alt="" width={24} height={24} className="rounded-full border border-(--divider)" />
                   </div>
                 )}
 
-                <p className={`p-3 py-2 rounded-lg wrap-break-word whitespace-pre-wrap ${bubble.role === 'user' ? 'bg-(--white) text-(--black) rounded-tr-none!' : 'text-(--white) p-0!'}`}>
-                  {bubble.text || (bubble.pending ? '…' : '')}
-                </p>
+                <div className={e.role === 'assistant' ? 'flex min-w-0 flex-col items-start gap-3' : ''}>
+                  <p className={`p-3 py-2 wrap-break-word whitespace-pre-wrap ${e.role === 'user' ? 'bg-(--white) text-(--black) rounded-lg rounded-tr-none! justify-end items-end' : 'text-(--white) p-0!'}`}>
+                    {e.text || (e.pending ? '…' : '')}
+                  </p>
+
+                  {e.showEscalation && (
+                    <a
+                      href={`https://wa.me/628111388895?text=${encodeURIComponent(
+                        CHATBOT_CONTENT.escalation.waMessageTemplate.replace(
+                          '{page}',
+                          pathname === '/' ? 'home' : pathname.replace(/^\//, '')
+                        )
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackEvent('whatsapp_open', sessionId, pathname)}
+                      className="rounded-md -mt-1 border border-(--divider) px-3 py-2 text-[13px] w-fit flex gap-2 items-center group"
+                    >
+                      <Contact size={14} styles="text-(--white) group-hover:text-(--gray) transition-colors duration-300" />
+                      {visitorMessages.escalation.cta}
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
+
+            {/* auto scroll to the bottom */}
             <div ref={messagesEndRef} />
+
           </div>
-          {state.showEscalation && (
-            <p className="px-3 pb-1 text-(--white)/80 text-[13px]">{CHATBOT_CONTENT.escalation.message}</p>
-          )}
-
-          {state.showEscalation && (
-            <div className="px-3 pb-1 flex flex-wrap gap-2">
-              {whatsappHref && (
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackEvent('whatsapp_open', sessionId, pathname)}
-                  className="rounded-md bg-(--white) px-3 py-2 text-(--black) text-[13px] font-medium flex items-center gap-2"
-                >
-                  {visitorMessages.escalation.cta}
-                </a>
-              )}
-
-              <a
-                href={contactPath}
-                onClick={() => trackEvent('contact_link_click', sessionId, pathname)}
-                className="rounded-md border border-(--divider) px-3 py-2 text-[13px]"
-              >
-                {visitorMessages.escalation.secondary}
-              </a>
-            </div>
-          )}
 
           <div className="p-3 flex gap-3 items-end">
             <textarea

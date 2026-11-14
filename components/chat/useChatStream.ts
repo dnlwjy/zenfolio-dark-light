@@ -7,7 +7,7 @@ import { applyStreamEvent, sendUserMessage, type ChatState, type StreamEvent } f
 import type { HistoryMessage } from '@/lib/chat/prompt'
 import { visitorMessages } from '@/lib/chat/messages'
 
-const INITIAL_STATE: ChatState = { bubbles: [], streaming: false, showEscalation: false }
+const INITIAL_STATE: ChatState = { bubbles: [], streaming: false }
 
 export type UseChatStreamArgs = {
   route: string
